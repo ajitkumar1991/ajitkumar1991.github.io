@@ -1,0 +1,196 @@
+---
+title: "Research"
+subtitle: "Bridging geometry, computation, and quantum matter"
+toc: true
+toc-depth: 2
+---
+
+My research program centers on understanding strongly coupled quantum systems through a combination of geometric, computational, and field-theoretic methods. I draw on tools from string theory, condensed matter physics, and machine learning to attack problems where conventional perturbative approaches fail.
+
+---
+
+## String Theory & High-Energy Physics {#string-theory}
+
+The framework of string theory provides a remarkable geometric perspective on quantum field theory. Through **geometric engineering**, we can construct supersymmetric gauge theories by engineering configurations of D-branes at singularities—the resulting physics is encoded in the geometry of the internal Calabi-Yau manifold.
+
+### Current Projects
+
+::: {.callout-note collapse="true"}
+#### Geometric Engineering of $\mathcal{N}=1$ SCFTs
+
+I study 4d $\mathcal{N}=1$ superconformal field theories realized via toric Calabi-Yau threefold orientifolds. The key question: how do orientifold projections, flavor D7-branes, and discrete torsion affect the resulting gauge theory and its conformal manifold?
+
+Starting from parent $\mathcal{N}=2$ theories engineered at toric singularities, the orientifold projects out certain states while introducing O-planes that source D-brane charge. The interplay between the orientifold action on the toric diagram and the resulting quiver gauge theory reveals intricate structures—including the emergence of real and pseudoreal gauge groups and specific patterns of chiral matter.
+
+**Key techniques:** Brane tilings (dimer models), toric geometry, orientifold projections, anomaly cancellation.
+:::
+
+::: {.callout-note collapse="true"}
+#### Brane Tilings and Dimer Models
+
+Brane tilings provide a powerful combinatorial tool for studying D3-branes probing toric Calabi-Yau singularities. The bipartite graph on $T^2$ encodes both the quiver gauge theory and the mesonic moduli space.
+
+I am exploring how orientifold projections act on brane tilings, mapping the dimer to itself and identifying gauge groups and matter fields. This provides a systematic way to construct large classes of orientifold theories and study their infrared physics.
+
+**Mathematical connections:** Perfect matchings, Kasteleyn matrices, cluster algebras.
+:::
+
+::: {.callout-note collapse="true"}
+#### Discrete Torsion and Wilson Lines
+
+In orientifold constructions, discrete choices—such as discrete torsion and Wilson lines—can dramatically affect the low-energy physics. I investigate how these discrete data modify the spectrum and interactions of the resulting gauge theory.
+
+This connects to deep mathematical structures: discrete torsion corresponds to elements of $H^2(G, U(1))$ for the orbifold group $G$, while Wilson lines parameterize flat connections on the orientifold planes.
+:::
+
+[View related blog posts →](topics/string-theory.qmd)
+
+---
+
+## Condensed Matter & Many-Body Physics {#condensed-matter}
+
+Quantum many-body systems exhibit rich phenomena—from quantum criticality to topological order—that challenge our computational and conceptual tools. I develop and apply numerical methods to study these systems, with a focus on **boundary critical phenomena** and **long-range interactions**.
+
+### Current Projects
+
+::: {.callout-tip collapse="true"}
+#### Boundary RG Flows in Interacting Majorana Chains
+
+The Kitaev Majorana chain hosts topologically protected edge modes. But what happens at quantum critical points when the bulk is tuned to criticality? The boundary can exhibit its own rich phase structure.
+
+Using DMRG (Density Matrix Renormalization Group), I study how boundary conditions affect the critical behavior of interacting Majorana chains. The boundary can flow between different conformally invariant boundary conditions as bulk or boundary parameters are varied—a boundary RG flow.
+
+**Key observables:** Boundary entropy (g-factor), boundary scaling dimensions, entanglement spectra.
+
+The interacting critical point is described by the tricritical Ising CFT, and the boundary CFT (BCFT) structure reveals multiple conformally invariant boundary conditions connected by RG flows.
+:::
+
+::: {.callout-tip collapse="true"}
+#### Monte Carlo for Long-Range Coulomb Interactions
+
+Simulating systems with $1/r$ Coulomb interactions is notoriously difficult due to the long-range nature of the potential. Standard local-update algorithms suffer from critical slowing down, while the $O(N^2)$ cost of evaluating all pairwise interactions limits system sizes.
+
+I am developing efficient Monte Carlo algorithms for 3D Bose gases with Coulomb interactions, combining:
+
+- **Worm algorithms** that work in the path-integral representation
+- **Cluster updates** that move many particles collectively  
+- **Hierarchical methods** for efficient energy evaluation
+
+The goal: access the phase diagram of charged Bose systems, including the superfluid-to-Wigner-crystal transition.
+:::
+
+::: {.callout-tip collapse="true"}
+#### Quantum Criticality and Scaling
+
+A unifying theme in my work is quantum criticality—the physics near continuous phase transitions at zero temperature. Critical systems exhibit universal behavior characterized by scaling dimensions, correlation functions, and central charges.
+
+I study how:
+
+- Boundary conditions affect universal critical data
+- Long-range interactions modify universality classes
+- Numerical methods can extract conformal data
+
+**Example:** The 1D transverse-field Ising model at criticality is described by the $c = 1/2$ Ising CFT. Adding interactions tunes to the $c = 7/10$ tricritical Ising CFT—a rare example of an interacting 2D CFT with exact solutions.
+:::
+
+[View related blog posts →](topics/condensed-matter.qmd)
+
+---
+
+## Tensor Networks & Numerical Methods {#tensor-networks}
+
+Tensor networks provide a variational ansatz for quantum many-body wave functions that respects the entanglement structure of low-energy states. The **area law** of entanglement in gapped systems makes tensor networks particularly efficient.
+
+### Current Projects
+
+::: {.callout-warning collapse="true"}
+#### MPS and DMRG for Critical Systems
+
+Matrix Product States (MPS) are the workhorses of 1D quantum many-body numerics. The DMRG algorithm optimizes an MPS approximation to the ground state with remarkable efficiency.
+
+I use ITensor (Julia) to implement DMRG calculations for:
+
+- Interacting Majorana chains near quantum criticality
+- Systems with open boundaries to study boundary phenomena
+- Extraction of conformal data (scaling dimensions, OPE coefficients)
+
+**Challenge:** Critical systems violate the area law logarithmically, requiring larger bond dimensions. But this logarithmic scaling is still tractable for 1D systems.
+:::
+
+::: {.callout-warning collapse="true"}
+#### Entanglement and Holography
+
+The entanglement structure of tensor networks has deep connections to holography and AdS/CFT. The Ryu-Takayanagi formula relates entanglement entropy to minimal surfaces—and tensor networks like MERA (Multiscale Entanglement Renormalization Ansatz) seem to discretize this geometric picture.
+
+I am interested in:
+
+- How boundary DMRG data connects to bulk AdS physics
+- Extracting CFT data from tensor network calculations
+- The role of tensor networks in understanding quantum gravity
+:::
+
+[View related blog posts →](topics/tensor-networks.qmd)
+
+---
+
+## Machine Learning & Generative Models {#machine-learning}
+
+Modern generative models—diffusion models, normalizing flows, transformers—offer powerful tools for sampling complex probability distributions. These techniques are increasingly relevant to physics, from lattice QCD to statistical mechanics.
+
+### Current Projects
+
+::: {.callout-caution collapse="true"}
+#### Diffusion Models for Sampling
+
+Diffusion models (score-based generative models) learn to sample distributions by reversing a noise process. Starting from pure noise, the model iteratively denoises to produce samples from the target distribution.
+
+I am exploring applications to:
+
+- **Lattice field theory**: Sampling field configurations for path integrals
+- **Statistical mechanics**: Generating equilibrium configurations of spin systems
+- **Molecular dynamics**: Sampling rare events and transition states
+
+**Key idea:** The score function $\nabla_x \log p(x)$ can be learned from data and used to reverse the diffusion process.
+:::
+
+::: {.callout-caution collapse="true"}
+#### Normalizing Flows for Physics
+
+Normalizing flows learn an invertible map between a simple base distribution (e.g., Gaussian) and the target distribution. The change of variables formula gives the exact density.
+
+For physics applications, flows offer:
+
+- **Exact sampling** without MCMC autocorrelation
+- **Tractable density evaluation** for thermodynamic quantities
+- **Incorporation of symmetries** via equivariant architectures
+
+I am particularly interested in flows that respect the symmetries of physical systems—gauge invariance, translation symmetry, etc.
+:::
+
+::: {.callout-caution collapse="true"}
+#### Transformers and Attention for Sequences
+
+Transformers have revolutionized natural language processing and are increasingly applied to scientific problems. The self-attention mechanism allows modeling long-range dependencies in sequences.
+
+I am exploring:
+
+- **Autoregressive models** for spin configurations
+- **Transformer architectures** for molecular property prediction
+- **Attention mechanisms** in the context of tensor network contractions
+
+**Speculation:** Can attention-based architectures learn efficient tensor network contractions?
+:::
+
+[View related blog posts →](topics/machine-learning.qmd)
+
+---
+
+## Connections and Philosophy
+
+The common thread through my work is the use of **geometric and structural thinking** to understand complex physical systems. Whether the geometry is that of a Calabi-Yau manifold or the entanglement structure of a quantum state, I find that the right mathematical framework often illuminates the underlying physics.
+
+I am particularly drawn to problems where:
+
+- Different areas of physics inform each other (e.g., holography connecting strings and condensed matter)
+- Computational methods reveal structure invisible to analytics
+- Mathematical elegance guides physical intuition

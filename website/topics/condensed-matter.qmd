@@ -1,0 +1,21 @@
+---
+title: "Condensed Matter & Many-Body"
+subtitle: "Posts on quantum criticality, boundary phenomena, and Monte Carlo"
+listing:
+  contents: ../blog/*.qmd
+  type: default
+  sort: "date desc"
+  include:
+    categories: "{condensed-matter,monte-carlo}"
+toc: false
+---
+
+My condensed matter work focuses on **quantum critical phenomena** and **numerical methods** for strongly correlated systems.
+
+Current research directions:
+
+- **Boundary RG flows**: How boundary conditions affect critical behavior
+- **Long-range interactions**: Monte Carlo for Coulomb systems
+- **Quantum criticality**: CFT data from numerics
+
+[→ Return to Research Overview](../research.qmd#condensed-matter)

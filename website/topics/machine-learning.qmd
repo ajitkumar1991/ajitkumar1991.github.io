@@ -1,0 +1,21 @@
+---
+title: "Machine Learning & Generative Models"
+subtitle: "Posts on diffusion models, flows, and ML for physics"
+listing:
+  contents: ../blog/*.qmd
+  type: default
+  sort: "date desc"
+  include:
+    categories: "{machine-learning}"
+toc: false
+---
+
+Modern **generative models**—diffusion models, normalizing flows, transformers—offer powerful tools for sampling complex distributions. I'm interested in their application to physics problems.
+
+Topics:
+
+- **Diffusion models**: Score-based sampling for statistical physics
+- **Normalizing flows**: Exact density estimation for lattice field theory
+- **Neural network architectures**: Equivariant networks, attention mechanisms
+
+[→ Return to Research Overview](../research.qmd#machine-learning)

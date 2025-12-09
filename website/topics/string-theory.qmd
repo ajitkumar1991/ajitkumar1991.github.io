@@ -1,0 +1,21 @@
+---
+title: "String Theory & High-Energy"
+subtitle: "Posts on geometric engineering, brane tilings, and SCFTs"
+listing:
+  contents: ../blog/*.qmd
+  type: default
+  sort: "date desc"
+  include:
+    categories: "{string-theory,brane-tilings}"
+toc: false
+---
+
+My string theory research focuses on **geometric engineering**—constructing supersymmetric gauge theories by studying D-branes at singularities. The geometry of the internal Calabi-Yau manifold encodes the physics of the resulting 4d theory.
+
+Key topics:
+
+- **Brane tilings**: Combinatorial tools for toric singularities
+- **Orientifolds**: Projecting to $\mathcal{N}=1$ theories with real/symplectic gauge groups
+- **Discrete choices**: Wilson lines, discrete torsion, and their physical effects
+
+[→ Return to Research Overview](../research.qmd#string-theory)

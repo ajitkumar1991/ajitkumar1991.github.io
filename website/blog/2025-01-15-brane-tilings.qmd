@@ -1,0 +1,142 @@
+---
+title: "Orientifolds of Brane Tilings: A Pictorial Guide"
+description: "How to compute orientifold projections on brane tilings, with worked examples."
+date: 2025-01-15
+categories: [string-theory, brane-tilings]
+image: images/brane-tiling-thumb.png
+draft: false
+---
+
+Brane tilings (or dimer models) provide a beautiful combinatorial framework for understanding D3-branes probing toric Calabi-Yau singularities. In this post, I'll explain how orientifold projections act on these tilings and what we can learn about the resulting gauge theories.
+
+## What is a Brane Tiling?
+
+A brane tiling is a bipartite graph embedded on a torus $T^2$. The graph has two types of nodes (black and white), with edges connecting only nodes of opposite color. Each face of the graph corresponds to a gauge group, and edges correspond to bifundamental matter fields.
+
+::: {.callout-note}
+## The Conifold Example
+
+The simplest non-trivial example is the conifold, whose tiling looks like a checkerboard with two faces. This gives $SU(N) \times SU(N)$ gauge theory with bifundamental matter—the famous Klebanov-Witten theory.
+:::
+
+The superpotential is encoded in the nodes: each black (white) node contributes a term that is the product of incoming (outgoing) edges, with alternating signs.
+
+For a toric singularity, the master space and mesonic moduli space can be computed from the **perfect matchings** of the tiling—these are collections of edges that cover each node exactly once.
+
+## Orientifold Projections
+
+An orientifold involves modding out by a combination of worldsheet parity $\Omega$ and a geometric involution $\sigma$. For brane tilings, the involution $\sigma$ must be a symmetry of the tiling itself.
+
+There are two main types:
+
+1. **Fixed-point orientifolds**: $\sigma$ has isolated fixed points on $T^2$
+2. **Fixed-line orientifolds**: $\sigma$ has fixed lines (circles) on $T^2$
+
+### Fixed-Point Example
+
+Consider an involution $\sigma: (x,y) \mapsto (-x, -y)$ on the torus. This has four fixed points. The orientifold projection identifies:
+
+- Faces (gauge groups) with their images
+- Edges (matter fields) with their images
+- Nodes (superpotential terms) with their images
+
+If a face maps to itself, we get a real gauge group ($SO$ or $Sp$). The choice depends on the orientifold charge at the fixed points.
+
+## Computing the Projected Theory
+
+Let me walk through the algorithm:
+
+1. **Draw the involution**: Identify the fundamental domain and how $\sigma$ acts on the tiling.
+
+2. **Classify gauge groups**: 
+   - Face $\to$ different face: becomes single $SU(N)$
+   - Face $\to$ itself: becomes $SO(2N)$ or $Sp(N)$
+
+3. **Classify matter fields**:
+   - Edge $\to$ different edge: survives as bifundamental
+   - Edge $\to$ itself (same orientation): antisymmetric or symmetric tensor
+   - Edge $\to$ itself (opposite orientation): adjoint (survives or projected out)
+
+4. **Check anomaly cancellation**: The final theory must be anomaly-free.
+
+## A Worked Example: $\mathbb{C}^3/\mathbb{Z}_3$ Orientifold
+
+The $\mathbb{Z}_3$ orbifold of $\mathbb{C}^3$ has a beautiful hexagonal tiling. Let's orientifold it.
+
+The tiling has three faces and a $\mathbb{Z}_3$ symmetry rotating them. Consider an involution that combines this rotation with a reflection.
+
+The quiver of the parent theory has gauge group $SU(N)^3$ with chiral superfields:
+$$
+X_{12}, Y_{12}, Z_{12}, \quad X_{23}, Y_{23}, Z_{23}, \quad X_{31}, Y_{31}, Z_{31}
+$$
+and superpotential:
+$$
+W = \epsilon_{ijk} \mathrm{Tr}(X_{12}^i X_{23}^j X_{31}^k) - \epsilon_{ijk} \mathrm{Tr}(X_{21}^i X_{13}^j X_{32}^k)
+$$
+
+After the orientifold projection... [I'll spare you the details, but the result is quite pretty!]
+
+## Code: Analyzing Tilings
+
+Here's a simple Julia snippet to count perfect matchings:
+
+```julia
+using Graphs
+using Combinatorics
+
+function count_perfect_matchings(adj_matrix)
+    """
+    Count perfect matchings of a bipartite graph.
+    Uses the permanent, computed naively (exponential time).
+    """
+    n = size(adj_matrix, 1) ÷ 2
+    # Extract biadjacency matrix (connections between black and white nodes)
+    B = adj_matrix[1:n, n+1:end]
+    
+    # Compute permanent (sum over permutations)
+    perm = sum(
+        prod(B[i, σ[i]] for i in 1:n)
+        for σ in permutations(1:n)
+    )
+    return perm
+end
+
+# Example: conifold (2x2 checkerboard)
+# Black nodes: 1,2; White nodes: 3,4
+adj = [0 0 1 1;
+       0 0 1 1;
+       1 1 0 0;
+       1 1 0 0]
+
+println("Perfect matchings: ", count_perfect_matchings(adj))
+```
+
+For real computations, you'd want a more sophisticated algorithm (FKT algorithm for planar graphs, or network flow methods).
+
+## Connections to CFT
+
+The orientifold projection affects not just the gauge theory but also the dual $\text{AdS}_5 \times X_5$ geometry. The holographic dual involves orientifold planes wrapping cycles in $X_5$.
+
+The central charges $(a, c)$ of the 4d SCFT can be computed from the volume of $X_5$ and the orientifold contribution:
+$$
+a = \frac{\pi^3}{4 \text{Vol}(X_5)} N^2 + \mathcal{O}(1), \quad c = \frac{\pi^3}{4 \text{Vol}(X_5)} N^2 + \mathcal{O}(1)
+$$
+
+The $\mathcal{O}(1)$ corrections contain interesting information about the orientifold!
+
+## What's Next
+
+In upcoming posts, I'll discuss:
+
+- How discrete torsion affects the orientifold projection
+- Wilson lines on orientifold planes  
+- The special role of "anomalous" $U(1)$s in orientifold theories
+
+If you have questions or spot errors, feel free to reach out!
+
+---
+
+*Further reading:* 
+
+- Franco et al., "Brane Dimers and Quiver Gauge Theories" [hep-th/0505211](https://arxiv.org/abs/hep-th/0505211)
+- García-Etxebarria & Uranga, "From F-theory GUTs to the LHC" [arXiv:0810.3388](https://arxiv.org/abs/0810.3388)

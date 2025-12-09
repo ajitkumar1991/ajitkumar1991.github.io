@@ -1,0 +1,128 @@
+---
+title: "About"
+subtitle: "Background, publications, and contact"
+toc: true
+---
+
+## Bio
+
+I am a physics PhD student at the **University of Massachusetts Amherst**, working with Prof. Benjamin Heidenreich at the Amherst Center for Fundamental Interactions. My research bridges string theory, condensed matter physics, and computational methods.
+
+Before coming to UMass, I received my [undergraduate degree information here]. My path to physics was shaped by a fascination with the mathematical structures underlying nature—from the geometry of extra dimensions to the entanglement patterns of quantum matter.
+
+When not doing physics, I enjoy [hobbies/interests].
+
+---
+
+## Education
+
+::: {.callout-note appearance="minimal" icon=false}
+### PhD in Physics (Expected 2026)
+**University of Massachusetts Amherst**  
+Advisor: Prof. Benjamin Heidenreich  
+Thesis: *[Working title of your dissertation]*  
+Amherst Center for Fundamental Interactions
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Previous Degree], [Year]
+**[University Name]**  
+[Thesis/project title if applicable]
+:::
+
+---
+
+## Research Interests
+
+- **String Theory & High-Energy Physics**
+  - Geometric engineering of supersymmetric gauge theories
+  - Brane tilings and orientifolds
+  - Superconformal field theories and their moduli spaces
+
+- **Condensed Matter & Many-Body Physics**
+  - Boundary critical phenomena and RG flows
+  - Monte Carlo algorithms for long-range interactions
+  - Quantum criticality and scaling
+
+- **Computational Methods**
+  - Tensor networks (DMRG, MPS)
+  - Machine learning for physics (diffusion models, flows)
+  - High-performance scientific computing
+
+---
+
+## Publications & Preprints
+
+### Published
+
+1. **A. K. Sorout**, I. García-Etxebarria, M. Lotito. *Geometric Engineering of $\mathcal{N}=1$ SCFTs from Orientifolds*. JHEP **XX**, XXX (2024). [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX)
+
+2. [Collaborators], **A. K. Sorout**, et al. *Boundary Conformal Field Theory in Interacting Majorana Chains*. [Journal] (2024). [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX)
+
+### In Preparation
+
+3. **A. K. Sorout**, N. Prokof'ev, B. Svistunov. *Efficient Monte Carlo Algorithms for Long-Range Coulomb Interactions in Three Dimensions*. In preparation.
+
+4. **A. K. Sorout**, [Collaborators]. *Boundary RG Flows in the Tricritical Ising Universality Class*. In preparation.
+
+---
+
+## Talks & Presentations
+
+- **Boundary RG Flows in Interacting Majorana Chains**  
+  APS New England Section Meeting, October 2024
+
+- **Geometric Engineering of $\mathcal{N}=1$ SCFTs**  
+  [Conference/Seminar Name], [Date]
+
+- **[Talk Title]**  
+  [Venue], [Date]
+
+---
+
+## Teaching
+
+I have served as a teaching assistant for the following courses at UMass Amherst:
+
+- **PHYSICS XXX**: [Course Name] — [Semester]
+- **PHYSICS XXX**: [Course Name] — [Semester]
+- **PHYSICS XXX**: [Course Name] — [Semester]
+
+::: {.callout-tip appearance="simple"}
+I received the **Distinguished Teaching Award** from the UMass Physics Department in [Year] for excellence in undergraduate instruction.
+:::
+
+---
+
+## Skills
+
+**Programming Languages:** Julia, Python, C++, Mathematica
+
+**Scientific Computing:** 
+- ITensor (tensor network calculations)
+- PyTorch, JAX (machine learning)
+- Monte Carlo methods (worm algorithm, cluster algorithms)
+- MPI, parallel computing
+
+**Tools:** Git, LaTeX, Quarto, Linux/Unix
+
+---
+  
+## Contact
+
+The best way to reach me is by email:
+
+📧 **[YOUR_EMAIL@umass.edu](mailto:YOUR_EMAIL@umass.edu)**
+
+**Office:**  
+[Building Name], Room [XXX]  
+University of Massachusetts Amherst  
+Amherst, MA 01003
+
+---
+
+## CV
+
+A PDF version of my full curriculum vitae is available here:
+
+[{{< fa file-pdf >}} Download CV (PDF)](assets/cv.pdf){.btn .btn-primary}

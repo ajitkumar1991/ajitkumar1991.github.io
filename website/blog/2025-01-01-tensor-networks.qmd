@@ -1,0 +1,211 @@
+---
+title: "Tensor Networks and the Geometry of Entanglement"
+description: "How tensor networks encode entanglement structure and connect to holography."
+date: 2025-01-01
+categories: [tensor-networks, condensed-matter]
+image: images/tensor-network-thumb.png
+draft: false
+---
+
+Tensor networks have revolutionized our ability to simulate quantum many-body systems. But they're more than just a computational tool—they encode deep physics about entanglement structure and may even illuminate quantum gravity.
+
+## The Entanglement Problem
+
+The Hilbert space of $N$ qubits has dimension $2^N$. Storing a general quantum state requires exponentially many coefficients:
+$$
+|\psi\rangle = \sum_{s_1, \ldots, s_N} c_{s_1 \ldots s_N} |s_1, \ldots, s_N\rangle
+$$
+
+This seems hopeless. But here's the miracle: *ground states of local Hamiltonians are not generic*. They have limited entanglement, quantified by the **area law**.
+
+::: {.callout-important}
+## The Area Law
+For gapped systems in 1D, the entanglement entropy of a region $A$ scales as:
+$$
+S_A = O(1)
+$$
+For critical systems (gapless), there's a logarithmic correction:
+$$
+S_A = \frac{c}{3} \log L + O(1)
+$$
+where $c$ is the central charge.
+:::
+
+This limited entanglement is exactly what tensor networks exploit.
+
+## Matrix Product States
+
+The simplest tensor network is the **Matrix Product State** (MPS). Instead of one giant tensor, we write:
+$$
+c_{s_1 \ldots s_N} = \sum_{\alpha_1, \ldots, \alpha_{N-1}} A^{s_1}_{\alpha_1} A^{s_2}_{\alpha_1 \alpha_2} \cdots A^{s_N}_{\alpha_{N-1}}
+$$
+
+Each $A^{s_i}$ is a matrix (or tensor for boundary sites). The indices $\alpha_i$ are **bond indices** with dimension $\chi$ (the **bond dimension**).
+
+The total number of parameters: $O(N \chi^2 d)$ where $d$ is the local Hilbert space dimension. For fixed $\chi$, this is *linear* in system size!
+
+### What Does the Bond Dimension Mean?
+
+The bond dimension $\chi$ controls the maximum entanglement across any cut:
+$$
+S_{\text{max}} = \log \chi
+$$
+
+For area-law states, a constant $\chi$ suffices. For critical states, $\chi$ must grow polynomially with system size—but that's still tractable.
+
+## DMRG: The Workhorse
+
+The **Density Matrix Renormalization Group** (DMRG) optimizes an MPS variationally. The key insight: optimize one tensor at a time while keeping others fixed.
+
+Here's a sketch in Julia using ITensor:
+
+```julia
+using ITensors
+
+function simple_dmrg_step(psi::MPS, H::MPO, site::Int)
+    """Single DMRG sweep step at one site."""
+    
+    # Contract environment tensors
+    # (everything except site being optimized)
+    L = left_environment(psi, H, site)
+    R = right_environment(psi, H, site)
+    
+    # Build effective Hamiltonian for this site
+    H_eff = L * H[site] * R
+    
+    # Solve local eigenvalue problem
+    # (usually use iterative solver like Lanczos)
+    vals, vecs = eigen(H_eff; ishermitian=true)
+    
+    # Update the local tensor
+    psi[site] = vecs[:, 1]  # Ground state
+    
+    return psi, vals[1]
+end
+
+function dmrg_sweep!(psi::MPS, H::MPO; nsweeps=10)
+    """Full DMRG with sweeping."""
+    
+    N = length(psi)
+    energy = Inf
+    
+    for sweep in 1:nsweeps
+        # Sweep right
+        for site in 1:N-1
+            psi, energy = simple_dmrg_step(psi, H, site)
+            # Move orthogonality center right
+            orthogonalize!(psi, site + 1)
+        end
+        
+        # Sweep left  
+        for site in N:-1:2
+            psi, energy = simple_dmrg_step(psi, H, site)
+            orthogonalize!(psi, site - 1)
+        end
+        
+        @info "Sweep $sweep: E = $energy"
+    end
+    
+    return psi, energy
+end
+```
+
+In practice, ITensor's built-in `dmrg` function handles all the subtleties (subspace expansion, noise terms, convergence criteria).
+
+## Extracting CFT Data
+
+For critical systems, DMRG can extract conformal data. The key observables:
+
+### Central Charge from Entanglement
+
+The entanglement entropy across a cut at position $\ell$ in a system of length $L$ with periodic boundary conditions:
+$$
+S(\ell) = \frac{c}{3} \log\left(\frac{L}{\pi} \sin\frac{\pi \ell}{L}\right) + s_0
+$$
+
+Fitting this curve gives $c$!
+
+### Scaling Dimensions from Correlation Functions
+
+Two-point correlators of primary operators $\phi$ decay as:
+$$
+\langle \phi(x) \phi(0) \rangle \sim |x|^{-2\Delta_\phi}
+$$
+
+With DMRG, we compute $\langle O_i O_j \rangle$ for various operators and extract $\Delta$ from the power-law decay.
+
+### Conformal Tower from Spectrum
+
+The energy spectrum organizes into conformal towers:
+$$
+E_n - E_0 = \frac{2\pi v}{L} \left( \Delta_n - \frac{c}{12} \right)
+$$
+
+where $v$ is the velocity and $\Delta_n$ are scaling dimensions.
+
+## Boundary CFT
+
+My current work focuses on **boundary critical phenomena**. When a 1D critical system has boundaries, we must specify boundary conditions—and these are classified by BCFT.
+
+The boundary entropy (or $g$-factor):
+$$
+\ln g = S_{\text{open}} - \frac{1}{2} S_{\text{periodic}}
+$$
+
+measures "how much" boundary condition we have. Under RG, $g$ decreases—this is the **$g$-theorem**.
+
+### DMRG for Boundary RG Flows
+
+By tuning boundary parameters, we can drive RG flows between different conformally invariant boundary conditions. DMRG lets us:
+
+1. Compute $g$ at different boundary couplings
+2. Extract boundary scaling dimensions
+3. Map out the boundary phase diagram
+
+The tricritical Ising model (central charge $c = 7/10$) has a particularly rich boundary structure with multiple relevant boundary operators.
+
+## Connections to Holography
+
+Here's where things get speculative and exciting.
+
+The Ryu-Takayanagi formula relates entanglement entropy to geometry:
+$$
+S_A = \frac{\text{Area}(\gamma_A)}{4 G_N}
+$$
+
+where $\gamma_A$ is the minimal surface in AdS homologous to region $A$.
+
+Tensor networks like MERA (Multiscale Entanglement Renormalization Ansatz) seem to discretize this picture. The tensor network *is* the bulk geometry, in some sense.
+
+::: {.callout-note}
+## The HaPPY Code
+Pastawski et al. showed that certain tensor networks (perfect tensors) realize **holographic quantum error correction**. The boundary state can reconstruct bulk operators—exactly like AdS/CFT!
+:::
+
+Open questions I find fascinating:
+
+- Can we derive the Einstein equations from tensor network dynamics?
+- What tensor networks describe excited states / black holes?
+- How does DMRG connect to bulk reconstruction?
+
+## Practical Tips
+
+If you're getting started with tensor networks, here's my advice:
+
+1. **Start with ITensor** (Julia) or **TeNPy** (Python). Don't reinvent the wheel.
+
+2. **Bond dimension matters more than you think**. Plot observables vs $1/\chi$ and extrapolate.
+
+3. **For critical systems**, use finite-entanglement scaling. The "effective correlation length" $\xi_\chi \sim \chi^\kappa$ where $\kappa$ depends on the universality class.
+
+4. **Open boundaries are your friend**. Periodic boundary conditions require much larger $\chi$.
+
+5. **Check your results** against exact solutions when available (free fermions, Bethe ansatz).
+
+---
+
+*References:*
+
+- Schollwöck, "The density-matrix renormalization group in the age of matrix product states," Annals of Physics **326**, 96 (2011)
+- Calabrese & Cardy, "Entanglement entropy and conformal field theory," J. Phys. A **42**, 504005 (2009)
+- Swingle, "Entanglement renormalization and holography," PRD **86**, 065007 (2012)

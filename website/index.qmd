@@ -1,0 +1,70 @@
+---
+title: "Ajit Kumar Sorout"
+subtitle: "Physics PhD Student"
+about:
+  template: trestles
+  image: images/profile.jpg
+  image-width: 12em
+  image-shape: rounded
+  links:
+    - icon: envelope
+      text: Email
+      href: mailto:YOUR_EMAIL@umass.edu
+    - icon: github
+      text: GitHub
+      href: https://github.com/YOUR_GITHUB_USERNAME
+    - icon: mortarboard
+      text: Google Scholar
+      href: https://scholar.google.com/citations?user=YOUR_ID
+    - icon: file-earmark-pdf
+      text: CV
+      href: assets/cv.pdf
+page-layout: full
+toc: false
+---
+
+::: {.column-page}
+
+## Welcome
+
+I am a PhD student in physics at the University of Massachusetts Amherst, working at the intersection of **string theory**, **condensed matter physics**, and **machine learning**. My research spans geometric engineering of supersymmetric gauge theories, Monte Carlo simulations of quantum many-body systems, and applications of modern generative models to physics problems.
+
+I am particularly interested in how mathematical structures—from Calabi-Yau manifolds to tensor networks—illuminate the physics of strongly coupled systems. Whether through the geometry of brane tilings or the entanglement structure of critical systems, I seek unifying perspectives that connect seemingly disparate areas of physics.
+
+---
+
+## Research Highlights
+
+::: {.callout-note appearance="minimal" icon=false}
+### String Theory & Geometric Engineering
+Constructing 4d $\mathcal{N}=1$ SCFTs via toric Calabi-Yau orientifolds, exploring the interplay of D-branes, orientifold planes, and discrete torsion.
+:::
+
+::: {.callout-tip appearance="minimal" icon=false}
+### Condensed Matter & Many-Body Physics
+Studying boundary RG flows in interacting Majorana chains using DMRG, and developing efficient Monte Carlo algorithms for long-range Coulomb interactions.
+:::
+
+::: {.callout-important appearance="minimal" icon=false}
+### Machine Learning & Generative Models
+Exploring diffusion models and normalizing flows for sampling complex distributions in statistical physics and quantum field theory.
+:::
+
+---
+
+## Latest from the Blog
+
+::: {#blog-listing}
+:::
+
+```{=html}
+<style>
+#blog-listing {
+  margin-top: 1em;
+}
+</style>
+```
+
+[See all posts →](blog/index.qmd)
+
+:::

@@ -1,0 +1,34 @@
+# Quarto output
+_site/
+.quarto/
+
+# R/Python caches
+__pycache__/
+*.pyc
+.Rproj.user/
+.Rhistory
+.RData
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log
+
+# Node (if using extensions)
+node_modules/
+
+# Rendered notebooks
+*.nb.html
+
+# Freeze directory (optional - some prefer to commit this)
+# _freeze/

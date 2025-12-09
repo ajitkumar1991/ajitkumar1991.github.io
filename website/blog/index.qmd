@@ -1,0 +1,17 @@
+---
+title: "Blog"
+subtitle: "Research notes, explorations, and thoughts"
+listing:
+  contents: "*.qmd"
+  type: default
+  sort: "date desc"
+  categories: true
+  feed: true
+  fields: [title, date, description, categories]
+page-layout: full
+toc: false
+---
+
+A research diary where I write about topics I'm exploring, interesting calculations, and occasional reflections on the practice of physics.
+
+Posts are tagged by topic—click a category to filter.

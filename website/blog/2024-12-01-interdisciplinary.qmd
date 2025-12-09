@@ -1,0 +1,88 @@
+---
+title: "On Being an Interdisciplinary Physicist"
+description: "Reflections on working at the intersection of string theory, condensed matter, and computation."
+date: 2024-12-01
+categories: [personal]
+draft: false
+---
+
+A few months into my PhD, a senior theorist asked me a pointed question: "So what *are* you? A string theorist? A condensed matter person? A computational physicist?"
+
+I didn't have a good answer then. I'm not sure I have one now. But I've come to see this ambiguity as a feature, not a bug.
+
+## The Traditional View
+
+Physics departments have tribes. String theorists talk to string theorists. Condensed matter folks go to their own conferences. Computational people are sometimes viewed as "merely" doing numerics rather than "real" theory.
+
+These divisions made more sense historically. A PhD program was supposed to make you an expert in one thing. Depth over breadth. Master the tools of your subfield, make contributions, and eventually you'd be the world expert on some narrow topic.
+
+This still works—but I think the most exciting physics often happens at the boundaries.
+
+## Why I Wander
+
+My path has been unusual:
+
+- Started with string theory, seduced by the mathematical elegance
+- Realized that many string constructions never touch experiment
+- Got curious about systems where we *can* compute and compare
+- Discovered that condensed matter has beautiful mathematical structures too
+- Found that numerical methods force you to really understand what's going on
+- Now interested in how ML connects to all of this
+
+Each transition felt like starting over. New literature, new conferences, new jargon. It's inefficient if your goal is maximizing publications.
+
+But I've found that ideas *transfer*. The RG ideas in string theory (holography, emergent space) connect to tensor networks and entanglement in condensed matter. Monte Carlo techniques from particle physics apply to quantum spin systems. And machine learning is injecting new ideas everywhere.
+
+## Concrete Examples
+
+Some connections I've found valuable:
+
+**Brane tilings ↔ Dimer models**: Brane tilings in string theory are mathematically identical to dimer models studied in statistical mechanics. The string theorist's "perfect matching" is the condensed matter physicist's "dimer covering." Different motivation, same math.
+
+**Conformal field theory**: CFT appears everywhere—at critical points in condensed matter, on the worldsheet in string theory, as the boundary theory in AdS/CFT. Learning it once pays dividends across subfields.
+
+**Entanglement**: Originally a quantum information concept, now central to understanding holography, area laws, and topological order. It bridges communities.
+
+**Numerical methods**: String theorists are often allergic to numerics. But even "exact" string theory calculations require understanding what you're calculating and why. Numerics builds intuition.
+
+## The Downsides
+
+I won't pretend it's all rosy:
+
+- **Jack of all trades**: I'm not the best at any single technique
+- **Publication pressure**: Interdisciplinary work can be harder to publish—it falls between stools
+- **Job market**: Search committees want to categorize you
+- **Impostor syndrome**: Always feeling like you don't know enough
+
+The job market concern is real. When I apply for postdocs, I worry about being seen as unfocused. A string theory position wants someone who can hit the ground running on string amplitudes. A condensed matter position wants someone who knows DMRG inside out.
+
+My hope is that there are PIs who value breadth, who want someone who can bridge subfields and bring fresh perspectives. They exist—I've met them. But they're not the majority.
+
+## Advice (to My Past Self)
+
+If you're a grad student contemplating an interdisciplinary path:
+
+1. **Have a home base**: Pick one area where you go deep. You need *some* expertise that's undeniable. Mine is probably geometric engineering—I know the string theory construction well.
+
+2. **Learn to translate**: Every subfield has jargon. Learning to speak multiple languages is valuable, but you have to actually learn them, not just hand-wave.
+
+3. **Find bridges**: Look for problems where multiple perspectives help. Not "I'll do string theory on Monday and condensed matter on Tuesday" but genuine synthesis.
+
+4. **Don't apologize**: "I'm interested in many things" sounds weak. "I work on quantum systems using geometric and computational methods" sounds stronger. Frame your breadth as coherence.
+
+5. **Find your people**: Interdisciplinary work is lonely if you're isolated. Find collaborators who appreciate boundary-crossing. They're out there.
+
+## What I'm Excited About
+
+Looking forward, I see several areas where boundaries are blurring:
+
+- **Holography and condensed matter**: The tensor network / AdS connection is still mysterious
+- **ML and physics**: Not just "ML for simulations" but ML as a lens on physics
+- **Quantum information and high-energy**: Entanglement, complexity, and quantum gravity
+- **Mathematical physics**: Rigorous connections (not just analogies) between areas
+
+Whether I end up in a traditional subfield or carve out a niche at the intersection, I'm grateful for the wandering. Physics is one subject, after all, even if we've divided it up.
+
+---
+
+*Next post back to technical content, I promise. But occasionally I need to reflect on the meta-level.*

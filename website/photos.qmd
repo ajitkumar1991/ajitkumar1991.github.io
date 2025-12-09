@@ -1,0 +1,86 @@
+---
+title: "Photos"
+subtitle: "Conferences, whiteboards, and adventures"
+toc: false
+---
+
+A collection of photos from conferences, research trips, and whiteboard sessions.
+
+---
+
+## Conferences & Workshops
+
+::: {layout-ncol=3}
+
+![APS New England Section Meeting 2024](images/conference-placeholder-1.jpg){group="conferences" description="Presenting my work on boundary RG flows at the APS NES meeting."}
+
+![Strings 2024](images/conference-placeholder-2.jpg){group="conferences" description="[Description of photo]"}
+
+![Workshop on Tensor Networks](images/conference-placeholder-3.jpg){group="conferences" description="[Description of photo]"}
+
+:::
+
+---
+
+## Whiteboards & Research
+
+Some of my favorite whiteboard moments. There's something satisfying about filling a board with calculations.
+
+::: {layout-ncol=2}
+
+![Brane tiling calculations](images/whiteboard-placeholder-1.jpg){group="whiteboards" description="Working through a brane tiling orientifold projection."}
+
+![DMRG brainstorming](images/whiteboard-placeholder-2.jpg){group="whiteboards" description="Planning the boundary DMRG calculation strategy."}
+
+:::
+
+---
+
+## Plots & Figures
+
+Selected figures from my research.
+
+::: {layout-ncol=2}
+
+![Entanglement entropy scaling](images/plot-placeholder-1.png){group="plots" description="Entanglement entropy vs subsystem size showing the expected CFT scaling."}
+
+![Phase diagram](images/plot-placeholder-2.png){group="plots" description="Phase diagram of the interacting Majorana chain."}
+
+:::
+
+---
+
+## Travel & Life
+
+::: {layout-ncol=3}
+
+![Photo 1](images/travel-placeholder-1.jpg){group="travel"}
+
+![Photo 2](images/travel-placeholder-2.jpg){group="travel"}
+
+![Photo 3](images/travel-placeholder-3.jpg){group="travel"}
+
+:::
+
+---
+
+## How to Add Photos
+
+To add a new photo:
+
+1. Place the image file in the `images/` folder
+2. Add it to this page using:
+
+```markdown
+![Alt text](images/your-image.jpg){description="Caption text"}
+```
+
+For a gallery layout, wrap multiple images in:
+
+```markdown
+::: {layout-ncol=3}
+![](images/img1.jpg)
+![](images/img2.jpg)  
+![](images/img3.jpg)
+:::
+```

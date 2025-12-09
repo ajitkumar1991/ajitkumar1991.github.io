@@ -1,0 +1,197 @@
+---
+title: "The Worm Algorithm: Sampling Path Integrals Efficiently"
+description: "An introduction to the worm algorithm for simulating quantum many-body systems."
+date: 2025-01-08
+categories: [condensed-matter, monte-carlo]
+image: images/worm-thumb.png
+draft: false
+---
+
+Monte Carlo simulation of quantum systems is notoriously difficult. The fermion sign problem makes many systems intractable, and even bosonic systems can suffer from critical slowing down near phase transitions. The **worm algorithm**, introduced by Prokof'ev and Svistunov, elegantly solves many of these problems by working directly in the path integral representation.
+
+## The Path Integral Picture
+
+Consider a system of bosons described by a Hamiltonian $H$. The partition function is:
+$$
+Z = \mathrm{Tr}\, e^{-\beta H} = \sum_n \langle n | e^{-\beta H} | n \rangle
+$$
+
+In imaginary time, we can write this as a path integral. For lattice bosons, each worldline is a path in spacetime $(x, \tau)$ where $\tau \in [0, \beta]$ is imaginary time.
+
+::: {.callout-tip}
+## The Key Insight
+The path integral representation converts a quantum problem in $d$ dimensions into a classical problem in $d+1$ dimensions. Worldlines are just classical strings!
+:::
+
+The weight of a configuration is determined by:
+- **Kinetic energy**: Hopping events (worldlines moving in space)
+- **Potential energy**: On-site interactions (worldlines at the same site)
+
+## Why Standard Algorithms Fail
+
+A naive local-update algorithm would:
+1. Pick a site and time
+2. Propose inserting/removing a small segment of worldline
+3. Accept/reject with Metropolis
+
+The problem: worldlines are *closed loops*. You can't locally change the topology—inserting a small kink doesn't change the winding number. Near a superfluid transition, the winding number diverges, and local updates completely fail.
+
+## Enter the Worm
+
+The worm algorithm introduces two special points: the **head** (Ira) and **tail** (Masha) of a worm. The key idea:
+
+1. Start with closed worldlines (physical configuration)
+2. Open a worm by creating a pair (Ira, Masha) at the same spacetime point
+3. Let Ira move around, tracing out a path
+4. When Ira meets Masha, they annihilate → back to physical configuration
+
+The genius: the worm can wind around the torus, changing the total winding number! This solves critical slowing down.
+
+## The Algorithm
+
+Here's the basic structure:
+
+```python
+import numpy as np
+from dataclasses import dataclass
+
+@dataclass
+class WormState:
+    worldlines: list  # List of closed worldline segments
+    ira: tuple | None  # Head position (site, time) or None
+    masha: tuple | None  # Tail position or None
+    
+def worm_step(state: WormState, lattice, beta, params):
+    """Single worm algorithm step."""
+    
+    if state.ira is None:
+        # No worm present: try to create one
+        site = np.random.randint(lattice.n_sites)
+        tau = np.random.uniform(0, beta)
+        
+        # Acceptance probability for worm creation
+        # (depends on chemical potential and local density)
+        if np.random.random() < p_create(site, tau, params):
+            state.ira = (site, tau)
+            state.masha = (site, tau)
+    else:
+        # Worm present: move Ira
+        move_type = np.random.choice(['advance', 'recede', 'hop'])
+        
+        if move_type == 'advance':
+            # Extend worldline forward in time
+            new_tau = state.ira[1] + np.random.exponential(params.tau_step)
+            if accept_advance(state, new_tau, params):
+                state.ira = (state.ira[0], new_tau % beta)
+                
+        elif move_type == 'recede':
+            # Retract worldline backward in time
+            # Similar logic...
+            pass
+            
+        elif move_type == 'hop':
+            # Move to neighboring site
+            neighbor = lattice.random_neighbor(state.ira[0])
+            if accept_hop(state, neighbor, params):
+                state.ira = (neighbor, state.ira[1])
+        
+        # Check for worm closure
+        if close_enough(state.ira, state.masha, params.tolerance):
+            if np.random.random() < p_close(state, params):
+                # Annihilate worm
+                state.ira = None
+                state.masha = None
+                
+    return state
+```
+
+## Measuring Observables
+
+The real power of the worm algorithm is in what we can measure:
+
+### Superfluid Density
+
+The winding number $W_\mu$ counts how many times worldlines wrap around direction $\mu$:
+$$
+\rho_s = \frac{\langle W^2 \rangle}{\beta L^{d-1}}
+$$
+
+This is *exact*—no extrapolation needed!
+
+### Green's Functions
+
+The worm naturally measures the single-particle Green's function:
+$$
+G(x, \tau) = \langle a^\dagger(x, \tau) a(0, 0) \rangle
+$$
+
+When the worm is open, the head and tail positions sample exactly this correlator.
+
+### Correlation Functions
+
+Off-diagonal long-range order (ODLRO) is detected from:
+$$
+\lim_{|x| \to \infty} G(x, 0) = n_0 > 0 \quad \text{(superfluid)}
+$$
+
+## Long-Range Interactions: The Challenge
+
+The worm algorithm as described works beautifully for local interactions. But what about Coulomb interactions?
+
+$$
+H_{\text{int}} = \frac{1}{2} \sum_{i \neq j} \frac{e^2}{|r_i - r_j|}
+$$
+
+The challenge is twofold:
+
+1. **Computational cost**: Naively $O(N^2)$ per update
+2. **Sign problem**: For some systems, the action becomes complex!
+
+I'm currently working on combining the worm algorithm with:
+
+- **Ewald summation** for periodic systems
+- **Hierarchical methods** (FMM, treecodes) for efficient energy evaluation
+- **Cluster moves** that update many particles at once
+
+## A Taste of Results
+
+Here's what a typical simulation produces for a 2D Bose gas:
+
+```julia
+using Statistics
+
+function analyze_winding(windings::Vector{Int}, L::Int, beta::Float64)
+    """Compute superfluid density from winding numbers."""
+    W2 = mean(windings.^2)
+    W4 = mean(windings.^4)
+    
+    rho_s = W2 / (2 * beta * L)
+    
+    # Binder cumulant for universality class
+    binder = 1 - W4 / (3 * W2^2)
+    
+    return rho_s, binder
+end
+
+# Example: crossing analysis for critical temperature
+# Different system sizes should cross at T_c
+```
+
+Near the BKT transition in 2D, the winding number distribution changes qualitatively—from Gaussian (superfluid) to exponentially suppressed (normal).
+
+## What's Next
+
+In future posts, I'll cover:
+
+- **Cluster algorithms**: For systems with discrete symmetries
+- **Directed loop algorithms**: The worm's cousin for quantum spin systems
+- **Coulomb worm**: My current project!
+
+The path integral representation opens many doors. The art is finding the right moves to efficiently explore the configuration space.
+
+---
+
+*References:*
+
+- Prokof'ev, Svistunov, Tupitsyn, JETP Lett. **64**, 911 (1996)
+- Boninsegni, Prokof'ev, Svistunov, PRE **74**, 036701 (2006)
