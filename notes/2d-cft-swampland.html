@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ajit Kumar Sorout">
+<meta name="dcterms.date" content="2025-11-15">
+<meta name="description" content="Two-dimensional conformal field theory, orbifold constructions, zeta regularization, and the swampland program — with connections to string compactifications.">
+
+<title>2D CFT, Orbifolding, and the Swampland – Ajit Kumar Sorout</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-7bf7ec51a0ae41cf919e5f30745009cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bfcea955b98ba2cb061c1bafd60eaa82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Ajit Kumar Sorout</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-writing" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Writing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-writing">    
+        <li>
+    <a class="dropdown-item" href="../notes/index.html">
+ <span class="dropdown-text">Notes &amp; Expositions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../blog/index.html">
+ <span class="dropdown-text">Blog</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../tools/index.html"> 
+<span class="menu-text">Computational Tools</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">More</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-more">    
+        <li>
+    <a class="dropdown-item" href="../about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../contact.html">
+ <span class="dropdown-text">Contact &amp; CV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../photos.html">
+ <span class="dropdown-text">Photos</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=mjxdcyMAAAAJ&amp;hl=en"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../assets/cv.pdf"> <i class="bi bi-file-earmark-pdf" role="img" aria-label="CV">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/brane-tilings.html">String Theory &amp; Geometry</a></li><li class="breadcrumb-item"><a href="../notes/2d-cft-swampland.html">2D CFT, Orbifolding, and the Swampland</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notes &amp; Expositions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">String Theory &amp; Geometry</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/brane-tilings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Brane Tilings and 4D Supersymmetric Field Theory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/mirror-symmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mirror Symmetry and T-Duality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/2d-cft-swampland.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">2D CFT, Orbifolding, and the Swampland</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Many-Body &amp; Computation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/tensor-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tensor Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/monte-carlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monte Carlo and Computational Statistical Physics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/quantum-information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quantum Information and Computation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/machine-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning and Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/group-theory-qm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Theory in Quantum Mechanics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-conformal-group-in-two-dimensions" id="toc-the-conformal-group-in-two-dimensions" class="nav-link" data-scroll-target="#the-conformal-group-in-two-dimensions">The Conformal Group in Two Dimensions</a>
+  <ul class="collapse">
+  <li><a href="#why-2d-is-special" id="toc-why-2d-is-special" class="nav-link" data-scroll-target="#why-2d-is-special">Why 2D is special</a></li>
+  <li><a href="#the-virasoro-algebra" id="toc-the-virasoro-algebra" class="nav-link" data-scroll-target="#the-virasoro-algebra">The Virasoro algebra</a></li>
+  <li><a href="#primary-operators-and-the-state-operator-correspondence" id="toc-primary-operators-and-the-state-operator-correspondence" class="nav-link" data-scroll-target="#primary-operators-and-the-state-operator-correspondence">Primary operators and the state-operator correspondence</a></li>
+  <li><a href="#the-operator-product-expansion" id="toc-the-operator-product-expansion" class="nav-link" data-scroll-target="#the-operator-product-expansion">The operator product expansion</a></li>
+  </ul></li>
+  <li><a href="#modular-invariance" id="toc-modular-invariance" class="nav-link" data-scroll-target="#modular-invariance">Modular Invariance</a>
+  <ul class="collapse">
+  <li><a href="#the-torus-partition-function" id="toc-the-torus-partition-function" class="nav-link" data-scroll-target="#the-torus-partition-function">The torus partition function</a></li>
+  <li><a href="#modular-s-and-t-matrices" id="toc-modular-s-and-t-matrices" class="nav-link" data-scroll-target="#modular-s-and-t-matrices">Modular S and T matrices</a></li>
+  <li><a href="#the-verlinde-formula" id="toc-the-verlinde-formula" class="nav-link" data-scroll-target="#the-verlinde-formula">The Verlinde formula</a></li>
+  <li><a href="#example-the-free-boson-partition-function" id="toc-example-the-free-boson-partition-function" class="nav-link" data-scroll-target="#example-the-free-boson-partition-function">Example: The Free Boson Partition Function</a></li>
+  <li><a href="#the-minimal-models" id="toc-the-minimal-models" class="nav-link" data-scroll-target="#the-minimal-models">The Minimal Models</a></li>
+  </ul></li>
+  <li><a href="#zeta-regularization-vacuum-energy-and-the-critical-dimension" id="toc-zeta-regularization-vacuum-energy-and-the-critical-dimension" class="nav-link" data-scroll-target="#zeta-regularization-vacuum-energy-and-the-critical-dimension">Zeta Regularization, Vacuum Energy, and the Critical Dimension</a>
+  <ul class="collapse">
+  <li><a href="#the-riemann-zeta-function-and-analytic-continuation" id="toc-the-riemann-zeta-function-and-analytic-continuation" class="nav-link" data-scroll-target="#the-riemann-zeta-function-and-analytic-continuation">The Riemann zeta function and analytic continuation</a></li>
+  <li><a href="#ground-state-energy-in-2d-cft-and-the--c24-shift" id="toc-ground-state-energy-in-2d-cft-and-the--c24-shift" class="nav-link" data-scroll-target="#ground-state-energy-in-2d-cft-and-the--c24-shift">Ground-state energy in 2D CFT and the <span class="math inline">\(-c/24\)</span> shift</a></li>
+  <li><a href="#the-bosonic-string-and-the-critical-dimension-d-26" id="toc-the-bosonic-string-and-the-critical-dimension-d-26" class="nav-link" data-scroll-target="#the-bosonic-string-and-the-critical-dimension-d-26">The bosonic string and the critical dimension <span class="math inline">\(D = 26\)</span></a></li>
+  </ul></li>
+  <li><a href="#orbifolds" id="toc-orbifolds" class="nav-link" data-scroll-target="#orbifolds">Orbifolds</a>
+  <ul class="collapse">
+  <li><a href="#gauging-a-discrete-symmetry" id="toc-gauging-a-discrete-symmetry" class="nav-link" data-scroll-target="#gauging-a-discrete-symmetry">Gauging a discrete symmetry</a></li>
+  <li><a href="#the-orbifold-partition-function" id="toc-the-orbifold-partition-function" class="nav-link" data-scroll-target="#the-orbifold-partition-function">The orbifold partition function</a></li>
+  <li><a href="#canonical-example-the-mathbbz_2-orbifold-of-the-free-boson" id="toc-canonical-example-the-mathbbz_2-orbifold-of-the-free-boson" class="nav-link" data-scroll-target="#canonical-example-the-mathbbz_2-orbifold-of-the-free-boson">Canonical example: the <span class="math inline">\(\mathbb{Z}_2\)</span> orbifold of the free boson</a></li>
+  </ul></li>
+  <li><a href="#discrete-torsion" id="toc-discrete-torsion" class="nav-link" data-scroll-target="#discrete-torsion">Discrete Torsion</a>
+  <ul class="collapse">
+  <li><a href="#definition-and-classification" id="toc-definition-and-classification" class="nav-link" data-scroll-target="#definition-and-classification">Definition and classification</a></li>
+  <li><a href="#physical-effects" id="toc-physical-effects" class="nav-link" data-scroll-target="#physical-effects">Physical effects</a></li>
+  </ul></li>
+  <li><a href="#the-swampland-program" id="toc-the-swampland-program" class="nav-link" data-scroll-target="#the-swampland-program">The Swampland Program</a>
+  <ul class="collapse">
+  <li><a href="#the-landscape-and-the-swampland" id="toc-the-landscape-and-the-swampland" class="nav-link" data-scroll-target="#the-landscape-and-the-swampland">The landscape and the swampland</a></li>
+  <li><a href="#key-swampland-conjectures" id="toc-key-swampland-conjectures" class="nav-link" data-scroll-target="#key-swampland-conjectures">Key swampland conjectures</a></li>
+  <li><a href="#connections-to-2d-cft-and-modular-invariance" id="toc-connections-to-2d-cft-and-modular-invariance" class="nav-link" data-scroll-target="#connections-to-2d-cft-and-modular-invariance">Connections to 2D CFT and modular invariance</a></li>
+  </ul></li>
+  <li><a href="#related-notes" id="toc-related-notes" class="nav-link" data-scroll-target="#related-notes">Related Notes</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/brane-tilings.html">String Theory &amp; Geometry</a></li><li class="breadcrumb-item"><a href="../notes/2d-cft-swampland.html">2D CFT, Orbifolding, and the Swampland</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">2D CFT, Orbifolding, and the Swampland</h1>
+<p class="subtitle lead">Conformal symmetry, discrete gauging, and the boundaries of the landscape</p>
+</div>
+
+<div>
+  <div class="description">
+    Two-dimensional conformal field theory, orbifold constructions, zeta regularization, and the swampland program — with connections to string compactifications.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ajit Kumar Sorout </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 15, 2025</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 24, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Two-dimensional conformal field theory sits at the heart of string theory. The worldsheet theory of a string propagating in spacetime is a 2D CFT, and the consistency conditions of this CFT — modular invariance, unitarity, the correct operator content — determine the allowed spacetime physics. Understanding 2D CFT is therefore not optional for anyone working on string compactifications.</p>
+<p>These notes cover the essential machinery: the Virasoro algebra and its representation theory, the state-operator correspondence, modular invariance of the torus partition function, and orbifold constructions. We also include a detailed treatment of zeta regularization (explaining the origin of the <span class="math inline">\(-c/24\)</span> shift and the critical dimension <span class="math inline">\(D=26\)</span>), and close with the swampland program, which uses string consistency conditions to constrain effective field theories coupled to gravity.</p>
+<hr>
+</section>
+<section id="the-conformal-group-in-two-dimensions" class="level2">
+<h2 class="anchored" data-anchor-id="the-conformal-group-in-two-dimensions">The Conformal Group in Two Dimensions</h2>
+<section id="why-2d-is-special" class="level3">
+<h3 class="anchored" data-anchor-id="why-2d-is-special">Why 2D is special</h3>
+<p>In <span class="math inline">\(d\)</span> dimensions, the conformal group is finite-dimensional: it is <span class="math inline">\(SO(d+1,1)\)</span> in Euclidean signature, with <span class="math inline">\(\frac{1}{2}(d+1)(d+2)\)</span> generators. But in <span class="math inline">\(d=2\)</span>, something remarkable happens. The conformal transformations are the <strong>holomorphic</strong> and <strong>antiholomorphic</strong> maps: <span class="math display">\[
+z \mapsto f(z), \qquad \bar{z} \mapsto \bar{f}(\bar{z}),
+\]</span> where <span class="math inline">\(f\)</span> and <span class="math inline">\(\bar{f}\)</span> are (locally) arbitrary holomorphic functions. The algebra of infinitesimal conformal transformations is therefore <strong>infinite-dimensional</strong>, generated by <span class="math display">\[
+\ell_n = -z^{n+1}\partial_z, \qquad \bar{\ell}_n = -\bar{z}^{n+1}\partial_{\bar{z}}, \qquad n \in \mathbb{Z}.
+\]</span></p>
+<p>These satisfy <span class="math display">\[
+[\ell_m, \ell_n] = (m-n)\ell_{m+n}, \qquad [\bar{\ell}_m, \bar{\ell}_n] = (m-n)\bar{\ell}_{m+n}, \qquad [\ell_m, \bar{\ell}_n] = 0.
+\]</span></p>
+<p>This is two copies of the <strong>Witt algebra</strong>. The global conformal group — the subgroup that is well-defined on the Riemann sphere <span class="math inline">\(\mathbb{CP}^1\)</span> — is generated by <span class="math inline">\(\{\ell_{-1}, \ell_0, \ell_1\}\)</span> and their antiholomorphic counterparts, giving <span class="math inline">\(SL(2,\mathbb{C}) / \mathbb{Z}_2\)</span>, the group of Mobius transformations.</p>
+</section>
+<section id="the-virasoro-algebra" class="level3">
+<h3 class="anchored" data-anchor-id="the-virasoro-algebra">The Virasoro algebra</h3>
+<p>In the quantum theory, the Witt algebra acquires a <strong>central extension</strong>. The generators <span class="math inline">\(L_n\)</span> of the holomorphic Virasoro algebra satisfy <span class="math display">\[
+[L_m, L_n] = (m-n)L_{m+n} + \frac{c}{12}m(m^2-1)\delta_{m+n,0},
+\]</span> where <span class="math inline">\(c\)</span> is the <strong>central charge</strong>. The antiholomorphic copy has generators <span class="math inline">\(\bar{L}_n\)</span> with central charge <span class="math inline">\(\bar{c}\)</span> (often <span class="math inline">\(\bar{c} = c\)</span> for non-chiral theories). The central extension is unique up to normalization: <span class="math inline">\(H^2(\text{Witt}, \mathbb{C}) = \mathbb{C}\)</span>.</p>
+<p>The central charge is the most important datum of a 2D CFT. It counts the “number of degrees of freedom” in a rough sense: a free boson has <span class="math inline">\(c = 1\)</span>, a free Majorana fermion has <span class="math inline">\(c = 1/2\)</span>, and a system of <span class="math inline">\(n\)</span> free bosons has <span class="math inline">\(c = n\)</span>. The unitarity bound requires <span class="math inline">\(c \geq 0\)</span> (for the discrete series, <span class="math inline">\(c\)</span> takes the values <span class="math inline">\(1 - 6/m(m+1)\)</span> for <span class="math inline">\(m = 3, 4, 5, \ldots\)</span>, approaching <span class="math inline">\(c = 1\)</span> from below).</p>
+</section>
+<section id="primary-operators-and-the-state-operator-correspondence" class="level3">
+<h3 class="anchored" data-anchor-id="primary-operators-and-the-state-operator-correspondence">Primary operators and the state-operator correspondence</h3>
+<p>A <strong>primary operator</strong> <span class="math inline">\(\mathcal{O}(z, \bar{z})\)</span> of conformal weights <span class="math inline">\((h, \bar{h})\)</span> transforms under conformal transformations as <span class="math display">\[
+\mathcal{O}(z, \bar{z}) \mapsto \left(\frac{\partial f}{\partial z}\right)^h \left(\frac{\partial \bar{f}}{\partial \bar{z}}\right)^{\bar{h}} \mathcal{O}(f(z), \bar{f}(\bar{z})).
+\]</span></p>
+<p>Equivalently, the Virasoro generators act on the state <span class="math inline">\(|h\rangle = \mathcal{O}(0)|0\rangle\)</span> as <span class="math display">\[
+L_0 |h\rangle = h|h\rangle, \qquad L_n |h\rangle = 0 \quad \text{for } n &gt; 0.
+\]</span></p>
+<p>The <strong>state-operator correspondence</strong> is the bijection between local operators and states in radial quantization: inserting <span class="math inline">\(\mathcal{O}(0)\)</span> at the origin of the complex plane creates the state <span class="math inline">\(|h, \bar{h}\rangle\)</span> on the unit circle. This is a powerful organizing principle that has no direct analogue in higher-dimensional QFT.</p>
+<p>The full Hilbert space is built by acting with the creation operators <span class="math inline">\(L_{-n}\)</span> (<span class="math inline">\(n &gt; 0\)</span>) on primary states. The resulting states <span class="math inline">\(L_{-n_1} L_{-n_2} \cdots |h\rangle\)</span> are called <strong>descendants</strong>, and the primary together with all its descendants forms a <strong>Verma module</strong> <span class="math inline">\(V_{c,h}\)</span>.</p>
+</section>
+<section id="the-operator-product-expansion" class="level3">
+<h3 class="anchored" data-anchor-id="the-operator-product-expansion">The operator product expansion</h3>
+<p>The <strong>OPE</strong> of two primary operators takes the form <span class="math display">\[
+\mathcal{O}_i(z) \mathcal{O}_j(0) = \sum_k C_{ij}^{\;\;k} \, z^{h_k - h_i - h_j} \bigl[\mathcal{O}_k(0) + \text{descendants}\bigr],
+\]</span> where <span class="math inline">\(C_{ij}^{\;\;k}\)</span> are the <strong>OPE coefficients</strong> (or structure constants). The OPE is an operator identity, valid inside any correlation function, and it encodes the entire dynamical content of the theory. Associativity of the OPE imposes powerful constraints — the <strong>bootstrap equations</strong> — that in favorable cases determine the theory completely.</p>
+<hr>
+</section>
+</section>
+<section id="modular-invariance" class="level2">
+<h2 class="anchored" data-anchor-id="modular-invariance">Modular Invariance</h2>
+<section id="the-torus-partition-function" class="level3">
+<h3 class="anchored" data-anchor-id="the-torus-partition-function">The torus partition function</h3>
+<p>Placing a 2D CFT on a torus <span class="math inline">\(T^2\)</span> with modular parameter <span class="math inline">\(\tau\)</span> (with <span class="math inline">\(\mathrm{Im}(\tau) &gt; 0\)</span>), the partition function is <span class="math display">\[
+Z(\tau, \bar{\tau}) = \mathrm{Tr}_{\mathcal{H}}\bigl(q^{L_0 - c/24} \, \bar{q}^{\bar{L}_0 - \bar{c}/24}\bigr), \qquad q = e^{2\pi i \tau}.
+\]</span></p>
+<p>The shifts <span class="math inline">\(-c/24\)</span> and <span class="math inline">\(-\bar{c}/24\)</span> arise from the conformal anomaly when mapping from the plane to the torus (see the zeta regularization section below for the physical origin).</p>
+<p>The torus is defined by identifications <span class="math inline">\(z \sim z + 1 \sim z + \tau\)</span>, and different values of <span class="math inline">\(\tau\)</span> related by <span class="math inline">\(SL(2,\mathbb{Z})\)</span> transformations describe the same torus. The modular group <span class="math inline">\(SL(2,\mathbb{Z})\)</span> is generated by <span class="math display">\[
+T: \tau \mapsto \tau + 1, \qquad S: \tau \mapsto -1/\tau.
+\]</span></p>
+<p>Physical consistency of the CFT on the torus requires <strong>modular invariance</strong>: <span class="math display">\[
+Z(\tau + 1, \bar{\tau} + 1) = Z(\tau, \bar{\tau}), \qquad Z(-1/\tau, -1/\bar{\tau}) = Z(\tau, \bar{\tau}).
+\]</span></p>
+</section>
+<section id="modular-s-and-t-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="modular-s-and-t-matrices">Modular S and T matrices</h3>
+<p>For a <strong>rational CFT</strong> (RCFT) with a finite number of primary fields <span class="math inline">\(\phi_i\)</span>, <span class="math inline">\(i = 0, 1, \ldots, N-1\)</span>, the partition function decomposes as <span class="math display">\[
+Z(\tau, \bar{\tau}) = \sum_{i,j} M_{ij} \, \chi_i(\tau) \, \overline{\chi_j(\tau)},
+\]</span> where <span class="math inline">\(\chi_i(\tau) = \mathrm{Tr}_{V_i}(q^{L_0 - c/24})\)</span> is the <strong>character</strong> of the Verma module <span class="math inline">\(V_i\)</span>, and <span class="math inline">\(M_{ij}\)</span> is a matrix of non-negative integers with <span class="math inline">\(M_{00} = 1\)</span> (uniqueness of the vacuum).</p>
+<p>Under the modular transformations, the characters transform linearly: <span class="math display">\[
+\chi_i(\tau + 1) = \sum_j T_{ij} \chi_j(\tau), \qquad \chi_i(-1/\tau) = \sum_j S_{ij} \chi_j(\tau),
+\]</span> where <span class="math inline">\(T_{ij} = e^{2\pi i (h_i - c/24)} \delta_{ij}\)</span> and <span class="math inline">\(S_{ij}\)</span> is the <strong>modular S-matrix</strong>, a unitary symmetric matrix.</p>
+<p>Modular invariance then requires <span class="math inline">\([M, S] = [M, T] = 0\)</span>. Classifying all such <span class="math inline">\(M\)</span> is the <strong>modular invariant classification problem</strong>. For <span class="math inline">\(SU(2)\)</span> WZW models, this was solved by Cappelli, Itzykson, and Zuber, yielding the famous <strong>ADE classification</strong>: the modular invariants are in correspondence with the simply-laced Lie algebras <span class="math inline">\(A_n\)</span>, <span class="math inline">\(D_n\)</span>, <span class="math inline">\(E_6\)</span>, <span class="math inline">\(E_7\)</span>, <span class="math inline">\(E_8\)</span>.</p>
+</section>
+<section id="the-verlinde-formula" class="level3">
+<h3 class="anchored" data-anchor-id="the-verlinde-formula">The Verlinde formula</h3>
+<p>The modular S-matrix also determines the <strong>fusion rules</strong> via the <strong>Verlinde formula</strong>: <span class="math display">\[
+N_{ij}^{\;\;k} = \sum_l \frac{S_{il} S_{jl} S^*_{kl}}{S_{0l}},
+\]</span> where <span class="math inline">\(N_{ij}^{\;\;k}\)</span> are the fusion coefficients appearing in the OPE <span class="math inline">\(\phi_i \times \phi_j = \sum_k N_{ij}^{\;\;k} \phi_k\)</span>. That the modular S-matrix (a property of the torus) determines the OPE (a property of the sphere) is a deep consequence of the consistency of CFT on all Riemann surfaces.</p>
+</section>
+<section id="example-the-free-boson-partition-function" class="level3">
+<h3 class="anchored" data-anchor-id="example-the-free-boson-partition-function">Example: The Free Boson Partition Function</h3>
+<p>The free boson compactified on a circle of radius <span class="math inline">\(R\)</span> is the canonical example for seeing modular invariance at work. The partition function is: <span class="math display">\[
+Z(\tau) = \frac{1}{|\eta(\tau)|^2} \sum_{n, w \in \mathbb{Z}} q^{\frac{1}{4}\left(\frac{n}{R} + wR\right)^2} \, \bar{q}^{\frac{1}{4}\left(\frac{n}{R} - wR\right)^2}
+\]</span> where <span class="math inline">\(n\)</span> is the momentum quantum number, <span class="math inline">\(w\)</span> is the winding number, <span class="math inline">\(q = e^{2\pi i \tau}\)</span>, and <span class="math inline">\(\eta(\tau) = q^{1/24} \prod_{n=1}^\infty (1 - q^n)\)</span> is the Dedekind eta function.</p>
+<p>The sum over <span class="math inline">\(n\)</span> and <span class="math inline">\(w\)</span> is a lattice sum over the <strong>Narain lattice</strong> <span class="math inline">\(\Gamma_{1,1}\)</span>, a two-dimensional even self-dual lattice with signature <span class="math inline">\((1,1)\)</span>. The key to modular invariance is that:</p>
+<ul>
+<li>Under <span class="math inline">\(T: \tau \to \tau + 1\)</span>, the lattice sum picks up phases <span class="math inline">\(e^{2\pi i (h - \bar{h})}\)</span> which are integers by the evenness of <span class="math inline">\(\Gamma_{1,1}\)</span>.</li>
+<li>Under <span class="math inline">\(S: \tau \to -1/\tau\)</span>, Poisson resummation exchanges momentum and winding, mapping <span class="math inline">\(\Gamma_{1,1} \to \Gamma_{1,1}^*\)</span>. Self-duality of the Narain lattice ensures <span class="math inline">\(\Gamma_{1,1}^* = \Gamma_{1,1}\)</span>, so the partition function is invariant.</li>
+</ul>
+<p>This is the pattern for all toroidal compactifications: modular invariance of the partition function is equivalent to the Narain lattice being even and self-dual. For compactification on <span class="math inline">\(T^d\)</span>, the lattice is <span class="math inline">\(\Gamma_{d,d}\)</span>, and the moduli space of even self-dual lattices of signature <span class="math inline">\((d,d)\)</span> is <span class="math inline">\(O(d,d;\mathbb{Z}) \backslash O(d,d;\mathbb{R}) / (O(d) \times O(d))\)</span>. This is the moduli space of Narain CFTs.</p>
+</section>
+<section id="the-minimal-models" class="level3">
+<h3 class="anchored" data-anchor-id="the-minimal-models">The Minimal Models</h3>
+<p>The <strong>Virasoro minimal models</strong> <span class="math inline">\(\mathcal{M}(m, m+1)\)</span> for <span class="math inline">\(m = 3, 4, 5, \ldots\)</span> are the simplest examples of interacting 2D CFTs. They have central charge: <span class="math display">\[
+c = 1 - \frac{6}{m(m+1)}
+\]</span> and a finite number of primary fields <span class="math inline">\(\phi_{r,s}\)</span> with conformal weights: <span class="math display">\[
+h_{r,s} = \frac{[(m+1)r - ms]^2 - 1}{4m(m+1)}, \qquad 1 \leq r \leq m-1, \quad 1 \leq s \leq m.
+\]</span></p>
+<p>The first few examples are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><span class="math inline">\(m\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(c\)</span></th>
+<th style="text-align: left;">Theory</th>
+<th style="text-align: left;">Primary fields</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><span class="math inline">\(1/2\)</span></td>
+<td style="text-align: left;">Ising model</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{1}\)</span>, <span class="math inline">\(\sigma\)</span> (<span class="math inline">\(h = 1/16\)</span>), <span class="math inline">\(\varepsilon\)</span> (<span class="math inline">\(h = 1/2\)</span>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;"><span class="math inline">\(7/10\)</span></td>
+<td style="text-align: left;">Tricritical Ising</td>
+<td style="text-align: left;">6 primaries, including <span class="math inline">\(\sigma\)</span> (<span class="math inline">\(h = 3/80\)</span>) and <span class="math inline">\(\varepsilon\)</span> (<span class="math inline">\(h = 1/10\)</span>)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;"><span class="math inline">\(4/5\)</span></td>
+<td style="text-align: left;">Three-state Potts</td>
+<td style="text-align: left;">10 primaries</td>
+</tr>
+</tbody>
+</table>
+<p>The modular invariant partition function for each minimal model has been classified (ADE classification): the diagonal invariant <span class="math inline">\(Z = \sum_i |\chi_i|^2\)</span> always works, but non-diagonal invariants exist and correspond to the D and E series of simply-laced Lie algebras.</p>
+<p>The minimal models are exactly the CFTs that appear at the critical points of 2D lattice models: the Ising model at <span class="math inline">\(c = 1/2\)</span>, the tricritical Ising at <span class="math inline">\(c = 7/10\)</span> (which appears in my work on boundary RG flows in Majorana chains), and so on. Their finite operator content makes them exactly solvable: all correlation functions can be computed from the OPE coefficients and conformal blocks.</p>
+<hr>
+</section>
+</section>
+<section id="zeta-regularization-vacuum-energy-and-the-critical-dimension" class="level2">
+<h2 class="anchored" data-anchor-id="zeta-regularization-vacuum-energy-and-the-critical-dimension">Zeta Regularization, Vacuum Energy, and the Critical Dimension</h2>
+<section id="the-riemann-zeta-function-and-analytic-continuation" class="level3">
+<h3 class="anchored" data-anchor-id="the-riemann-zeta-function-and-analytic-continuation">The Riemann zeta function and analytic continuation</h3>
+<p>The <strong>Riemann zeta function</strong> is defined for <span class="math inline">\(\mathrm{Re}(s) &gt; 1\)</span> by the convergent series <span class="math display">\[
+\zeta(s) = \sum_{n=1}^{\infty} \frac{1}{n^s}.
+\]</span></p>
+<p>For <span class="math inline">\(\mathrm{Re}(s) \leq 1\)</span> this series diverges, but <span class="math inline">\(\zeta(s)\)</span> has an <strong>analytic continuation</strong> to a meromorphic function on the entire complex plane, with a single simple pole at <span class="math inline">\(s = 1\)</span>. The functional equation <span class="math display">\[
+\zeta(s) = 2^s \pi^{s-1} \sin\!\left(\frac{\pi s}{2}\right) \Gamma(1-s) \, \zeta(1-s)
+\]</span> relates values at <span class="math inline">\(s\)</span> and <span class="math inline">\(1-s\)</span>.</p>
+<p>In particular, at <span class="math inline">\(s = -1\)</span> the analytic continuation gives <span class="math display">\[
+\zeta(-1) = -\frac{1}{12}.
+\]</span></p>
+<p>Formally, one writes <span class="math display">\[
+\zeta(-1) = \sum_{n=1}^{\infty} n \quad \text{(zeta-regularized)}.
+\]</span></p>
+<p>This does <strong>not</strong> mean the ordinary sum <span class="math inline">\(1 + 2 + 3 + \cdots\)</span> converges — it diverges to <span class="math inline">\(+\infty\)</span> in every conventional sense. But in QFT, CFT, and string theory, we frequently encounter divergent sums of this type from zero-point energies, and replacing them by their zeta-regularized values is a consistent and physically correct procedure: <span class="math display">\[
+1 + 2 + 3 + \cdots \;\xrightarrow{\text{zeta reg.}}\; \zeta(-1) = -\frac{1}{12}.
+\]</span></p>
+</section>
+<section id="ground-state-energy-in-2d-cft-and-the--c24-shift" class="level3">
+<h3 class="anchored" data-anchor-id="ground-state-energy-in-2d-cft-and-the--c24-shift">Ground-state energy in 2D CFT and the <span class="math inline">\(-c/24\)</span> shift</h3>
+<p>Consider a 2D CFT on a circle of circumference <span class="math inline">\(L\)</span>. The Hamiltonian on the cylinder is related to the Virasoro generators by <span class="math display">\[
+H = \frac{2\pi}{L}\left(L_0 + \bar{L}_0 - \frac{c}{12}\right).
+\]</span></p>
+<p>The vacuum is not at zero energy; instead, <span class="math display">\[
+E_0 = -\frac{\pi c}{6L}.
+\]</span></p>
+<p>This <strong>Casimir energy</strong> arises from normal ordering the infinite sum of oscillator zero-point energies. For a single chiral boson, the modes are labeled by positive integers <span class="math inline">\(n = 1, 2, 3, \ldots\)</span> and each mode contributes zero-point energy <span class="math inline">\(\frac{1}{2}\omega_n\)</span> with <span class="math inline">\(\omega_n \propto n\)</span> on the circle: <span class="math display">\[
+E_{\text{zero-point}} \propto \frac{1}{2}\sum_{n=1}^{\infty} n.
+\]</span></p>
+<p>This sum diverges, but zeta regularization gives <span class="math display">\[
+\sum_{n=1}^{\infty} n \;\xrightarrow{\text{zeta reg.}}\; \zeta(-1) = -\frac{1}{12},
+\]</span> yielding a finite negative vacuum energy. This is the origin of the shifts <span class="math display">\[
+L_0 \to L_0 - \frac{c}{24},
+\]</span> and the factor <span class="math inline">\(q^{-c/24}\)</span> in the torus partition function <span class="math display">\[
+Z(\tau) = \mathrm{Tr}\bigl(q^{L_0 - c/24} \, \bar{q}^{\bar{L}_0 - \bar{c}/24}\bigr), \qquad q = e^{2\pi i \tau}.
+\]</span></p>
+<p>The shift <span class="math inline">\(-c/24\)</span> is not merely a regularization artifact: it is required by modular invariance. The partition function <span class="math inline">\(Z(\tau)\)</span> must be invariant under <span class="math inline">\(\tau \to \tau + 1\)</span>, which requires the spectrum of <span class="math inline">\(L_0\)</span> to differ from integers by <span class="math inline">\(c/24 \pmod{1}\)</span>. The zeta regularization is the mechanism that implements this physical requirement.</p>
+</section>
+<section id="the-bosonic-string-and-the-critical-dimension-d-26" class="level3">
+<h3 class="anchored" data-anchor-id="the-bosonic-string-and-the-critical-dimension-d-26">The bosonic string and the critical dimension <span class="math inline">\(D = 26\)</span></h3>
+<p>In the <strong>bosonic string</strong>, we have <span class="math inline">\(D\)</span> spacetime coordinates <span class="math inline">\(X^\mu\)</span>. In light-cone gauge, only <span class="math inline">\(D-2\)</span> transverse coordinates are physical oscillators. For each transverse boson, the normal-ordering constant is <span class="math display">\[
+a_{\text{1 boson}} = -\frac{1}{24},
+\]</span> coming from <span class="math inline">\(\frac{1}{2}\sum_{n=1}^{\infty} n \to \frac{1}{2}\zeta(-1) = -\frac{1}{24}\)</span>.</p>
+<p>For <span class="math inline">\(D-2\)</span> transverse bosons, the total intercept is <span class="math display">\[
+a = -\frac{D-2}{24}.
+\]</span></p>
+<p>The mass formula for an open bosonic string (in units with <span class="math inline">\(\alpha' = 1\)</span>) is <span class="math display">\[
+m^2 = N - a,
+\]</span> where <span class="math inline">\(N\)</span> is the level number. The first excited state (<span class="math inline">\(N = 1\)</span>) is a vector, and for the string spectrum to be consistent (specifically, for this vector to be massless and form a representation of the little group <span class="math inline">\(SO(D-2)\)</span>), we require <span class="math display">\[
+a = 1 \quad \Longrightarrow \quad \frac{D-2}{24} = 1 \quad \Longrightarrow \quad D = 26.
+\]</span></p>
+<p>The critical dimension of the bosonic string is <span class="math inline">\(D = 26\)</span>, and the value <span class="math inline">\(-1/12\)</span> from <span class="math inline">\(\zeta(-1)\)</span> is the key ingredient. For the superstring, the additional fermionic oscillators modify the calculation and give <span class="math inline">\(D = 10\)</span>.</p>
+<hr>
+</section>
+</section>
+<section id="orbifolds" class="level2">
+<h2 class="anchored" data-anchor-id="orbifolds">Orbifolds</h2>
+<section id="gauging-a-discrete-symmetry" class="level3">
+<h3 class="anchored" data-anchor-id="gauging-a-discrete-symmetry">Gauging a discrete symmetry</h3>
+<p>An <strong>orbifold</strong> is obtained by gauging a discrete symmetry group <span class="math inline">\(G\)</span> of a CFT. If the parent theory has a symmetry <span class="math inline">\(G\)</span> acting on the fields, the orbifold theory <span class="math inline">\(\mathcal{C}/G\)</span> is constructed in two steps:</p>
+<ol type="1">
+<li><strong>Project</strong> onto <span class="math inline">\(G\)</span>-invariant states in the original (untwisted) Hilbert space.</li>
+<li><strong>Add twisted sectors</strong>: for each conjugacy class <span class="math inline">\([g]\)</span> of <span class="math inline">\(G\)</span>, include a new sector <span class="math inline">\(\mathcal{H}_g\)</span> of states satisfying twisted boundary conditions.</li>
+</ol>
+<p>Both steps are necessary for modular invariance. The projection alone would break modular invariance (the <span class="math inline">\(S\)</span>-transform of an untwisted, projected state involves twisted states), and the twisted sectors restore it.</p>
+</section>
+<section id="the-orbifold-partition-function" class="level3">
+<h3 class="anchored" data-anchor-id="the-orbifold-partition-function">The orbifold partition function</h3>
+<p>For an abelian group <span class="math inline">\(G\)</span>, the orbifold partition function on the torus is <span class="math display">\[
+Z_{\text{orb}}(\tau) = \frac{1}{|G|} \sum_{g, h \in G \atop [g,h]=e} Z_{g,h}(\tau),
+\]</span> where <span class="math inline">\(Z_{g,h}(\tau) = \mathrm{Tr}_{\mathcal{H}_g}\bigl(h \cdot q^{L_0 - c/24} \bar{q}^{\bar{L}_0 - \bar{c}/24}\bigr)\)</span> is the trace over the <span class="math inline">\(g\)</span>-twisted sector with an insertion of <span class="math inline">\(h\)</span> (implementing the projection). The sum runs over commuting pairs <span class="math inline">\((g,h)\)</span> because the torus has two independent cycles, and a consistent assignment of boundary conditions requires the monodromies around the two cycles to commute.</p>
+<p>Under the modular <span class="math inline">\(S\)</span>-transformation <span class="math inline">\(\tau \to -1/\tau\)</span>, the two cycles of the torus are exchanged, so <span class="math inline">\(Z_{g,h} \to Z_{h,g^{-1}}\)</span>. Under <span class="math inline">\(T: \tau \to \tau+1\)</span>, we get <span class="math inline">\(Z_{g,h} \to Z_{g, gh}\)</span>. The sum over all commuting pairs is manifestly invariant under both.</p>
+</section>
+<section id="canonical-example-the-mathbbz_2-orbifold-of-the-free-boson" class="level3">
+<h3 class="anchored" data-anchor-id="canonical-example-the-mathbbz_2-orbifold-of-the-free-boson">Canonical example: the <span class="math inline">\(\mathbb{Z}_2\)</span> orbifold of the free boson</h3>
+<p>Consider a free boson <span class="math inline">\(X\)</span> compactified on a circle of radius <span class="math inline">\(R\)</span>, with the <span class="math inline">\(\mathbb{Z}_2\)</span> symmetry <span class="math inline">\(X \to -X\)</span>. The orbifold <span class="math inline">\(S^1/\mathbb{Z}_2\)</span> is a line segment (an interval), and the resulting CFT is the theory on this interval with appropriate boundary conditions at the endpoints.</p>
+<p><strong>Untwisted sector:</strong> We keep only the <span class="math inline">\(\mathbb{Z}_2\)</span>-even states of the original circle theory. This eliminates states with odd winding or momentum quantum numbers from the original partition function.</p>
+<p><strong>Twisted sector:</strong> The <span class="math inline">\(\mathbb{Z}_2\)</span>-twisted boundary condition is <span class="math inline">\(X(\sigma + 2\pi) = -X(\sigma)\)</span>, so the mode expansion has <strong>half-integer</strong> moding: <span class="math inline">\(\alpha_{n+1/2}\)</span> instead of <span class="math inline">\(\alpha_n\)</span>. There is no zero mode (the string is stuck at a fixed point), and the ground-state energy shifts to <span class="math display">\[
+E_0^{\text{tw}} = \frac{1}{2}\sum_{n=0}^{\infty}\left(n + \frac{1}{2}\right) \;\xrightarrow{\text{zeta reg.}}\; \frac{1}{2}\zeta(-1, 1/2) = \frac{1}{48},
+\]</span> where <span class="math inline">\(\zeta(s, a) = \sum_{n=0}^{\infty}(n+a)^{-s}\)</span> is the Hurwitz zeta function.</p>
+<p>This orbifold produces two fixed points on the circle (at <span class="math inline">\(X = 0\)</span> and <span class="math inline">\(X = \pi R\)</span>), each contributing a twisted-sector ground state. The full partition function combines untwisted and twisted sectors and is modular invariant.</p>
+<p>The <span class="math inline">\(\mathbb{Z}_2\)</span> orbifold of the free boson is the simplest example of an orbifold construction, but the technique generalizes enormously. The <span class="math inline">\(\mathbb{Z}_5\)</span> orbifold used by Greene and Plesser to construct the mirror of the quintic is a direct higher-dimensional analogue.</p>
+<hr>
+</section>
+</section>
+<section id="discrete-torsion" class="level2">
+<h2 class="anchored" data-anchor-id="discrete-torsion">Discrete Torsion</h2>
+<section id="definition-and-classification" class="level3">
+<h3 class="anchored" data-anchor-id="definition-and-classification">Definition and classification</h3>
+<p>When orbifolding by a non-abelian group <span class="math inline">\(G\)</span> (or even an abelian group with multiple generators), there is an additional choice: <strong>discrete torsion</strong>, introduced by Vafa (1986).</p>
+<p>Different consistent orbifold theories associated to the same group <span class="math inline">\(G\)</span> are classified by the group cohomology <span class="math display">\[
+H^2(G, U(1)).
+\]</span></p>
+<p>An element <span class="math inline">\(\epsilon \in H^2(G, U(1))\)</span> is a <span class="math inline">\(U(1)\)</span>-valued 2-cocycle <span class="math inline">\(\epsilon(g, h)\)</span> satisfying the cocycle condition, modulo coboundaries. In the orbifold partition function, discrete torsion modifies the phases: <span class="math display">\[
+Z_{\text{orb}}^{(\epsilon)} = \frac{1}{|G|}\sum_{g,h \atop [g,h]=e} \epsilon(g,h) \, Z_{g,h}(\tau).
+\]</span></p>
+</section>
+<section id="physical-effects" class="level3">
+<h3 class="anchored" data-anchor-id="physical-effects">Physical effects</h3>
+<p>Discrete torsion changes the <strong>relative signs</strong> between twisted sectors, and thus modifies the spectrum of the orbifold theory. Two orbifolds related by different choices of discrete torsion have the same untwisted sector but different twisted sectors. In the context of Calabi–Yau orbifolds, discrete torsion can change the Hodge numbers of the resulting manifold.</p>
+<p>For the simplest non-trivial example, <span class="math inline">\(G = \mathbb{Z}_2 \times \mathbb{Z}_2\)</span>, we have <span class="math inline">\(H^2(\mathbb{Z}_2 \times \mathbb{Z}_2, U(1)) = \mathbb{Z}_2\)</span>, giving two inequivalent orbifold theories (with and without discrete torsion).</p>
+<hr>
+</section>
+</section>
+<section id="the-swampland-program" class="level2">
+<h2 class="anchored" data-anchor-id="the-swampland-program">The Swampland Program</h2>
+<section id="the-landscape-and-the-swampland" class="level3">
+<h3 class="anchored" data-anchor-id="the-landscape-and-the-swampland">The landscape and the swampland</h3>
+<p>String theory has an enormous number of vacua — the <strong>string landscape</strong>, estimated at <span class="math inline">\(10^{500}\)</span> or more. But not every low-energy effective field theory (EFT) coupled to gravity can arise from a consistent theory of quantum gravity. The set of consistent EFTs is the <strong>landscape</strong>; the set of apparently consistent but actually inconsistent EFTs is the <strong>swampland</strong>.</p>
+<p>The <strong>swampland program</strong>, initiated by Vafa (2005), aims to identify general principles that separate the landscape from the swampland. These principles take the form of <strong>swampland conjectures</strong> — proposed necessary conditions for an EFT to admit a UV completion in quantum gravity.</p>
+</section>
+<section id="key-swampland-conjectures" class="level3">
+<h3 class="anchored" data-anchor-id="key-swampland-conjectures">Key swampland conjectures</h3>
+<p><strong>No global symmetries.</strong> Every continuous global symmetry in a theory of quantum gravity must be either gauged or broken. This is supported by black hole arguments (a black hole can swallow global charge, and when it evaporates, the charge is lost, violating conservation) and by explicit string constructions (where every symmetry has a gauge origin).</p>
+<p><strong>Completeness hypothesis.</strong> For every gauge symmetry, all representations allowed by Dirac quantization must appear in the spectrum. In string theory, this is typically realized through the existence of appropriate branes.</p>
+<p><strong>Weak gravity conjecture (WGC).</strong> For a <span class="math inline">\(U(1)\)</span> gauge theory with coupling <span class="math inline">\(g\)</span> coupled to gravity, there must exist a particle of charge <span class="math inline">\(q\)</span> and mass <span class="math inline">\(m\)</span> satisfying <span class="math display">\[
+m \leq \sqrt{2}\, g \, q \, M_{\rm Pl},
+\]</span> (in 4D, with appropriate conventions). In other words, gravity must be the weakest force. The WGC has many generalizations (to <span class="math inline">\(p\)</span>-form gauge fields, to multiple <span class="math inline">\(U(1)\)</span>s, to towers of states) and is supported by extensive evidence from string theory.</p>
+<p><strong>Distance conjecture.</strong> In the moduli space of a theory of quantum gravity, as one moves a geodesic distance <span class="math inline">\(d \to \infty\)</span>, an infinite tower of states becomes exponentially light: <span class="math display">\[
+m_{\rm tower} \sim m_0 \, e^{-\alpha \, d / M_{\rm Pl}},
+\]</span> with <span class="math inline">\(\alpha\)</span> an order-one constant. This conjecture captures the idea that the EFT description breaks down at infinite distance in moduli space — new light degrees of freedom invalidate the low-energy truncation. In string theory, these towers are typically Kaluza–Klein modes (when an internal cycle decompactifies) or string winding modes (when a cycle shrinks).</p>
+<p><strong>De Sitter conjecture.</strong> The scalar potential <span class="math inline">\(V\)</span> in a theory of quantum gravity must satisfy either <span class="math display">\[
+M_{\rm Pl} \frac{|\nabla V|}{V} \geq c \quad \text{or} \quad M_{\rm Pl}^2 \frac{\min(\nabla_i \nabla_j V)}{V} \leq -c',
+\]</span> where <span class="math inline">\(c, c'\)</span> are positive order-one constants. If true, this rules out stable de Sitter vacua in quantum gravity. This is the most controversial swampland conjecture, as it is in tension with the observed dark energy (which behaves like a small positive cosmological constant). The status is actively debated: some constructions (like KKLT) claim to produce de Sitter vacua in string theory, while critics argue these constructions are not fully controlled.</p>
+</section>
+<section id="connections-to-2d-cft-and-modular-invariance" class="level3">
+<h3 class="anchored" data-anchor-id="connections-to-2d-cft-and-modular-invariance">Connections to 2D CFT and modular invariance</h3>
+<p>The swampland program has deep connections to the worldsheet perspective:</p>
+<ol type="1">
+<li><p><strong>Modular invariance as a swampland constraint.</strong> The requirement that the worldsheet CFT be modular invariant is itself a powerful constraint that eliminates many would-be string vacua. The ADE classification of <span class="math inline">\(SU(2)\)</span> WZW modular invariants is an example of how string consistency drastically limits the allowed theories.</p></li>
+<li><p><strong>No global symmetries from the worldsheet.</strong> On the worldsheet, global symmetries of the spacetime theory arise from worldsheet currents. The requirement that these currents couple to worldsheet gauge fields (from the vertex operators of spacetime gauge bosons) ensures that all spacetime symmetries are gauged.</p></li>
+<li><p><strong>Orbifolds and discrete gauge symmetries.</strong> Orbifold constructions gauge discrete symmetries, producing theories where the discrete symmetry is a gauge symmetry. The completeness hypothesis then predicts that all twisted sectors (carrying discrete gauge charge) must be present — exactly what modular invariance requires.</p></li>
+<li><p><strong>Distance conjecture and infinite-distance limits in moduli space.</strong> In 2D CFT terms, the distance conjecture corresponds to degeneration limits of the worldsheet theory, where the CFT develops a continuum of light states. The distance conjecture has been verified in numerous string compactifications by analyzing the behavior of the worldsheet CFT.</p></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="related-notes" class="level2">
+<h2 class="anchored" data-anchor-id="related-notes">Related Notes</h2>
+<ul>
+<li><a href="../notes/brane-tilings.html">Brane Tilings and Dimer Models</a> — toric Calabi–Yau geometries, quiver gauge theories, and their worldsheet descriptions</li>
+<li><a href="../notes/mirror-symmetry.html">Mirror Symmetry and T-Duality</a> — dualities of string compactifications, where orbifold constructions (Greene–Plesser) play a central role in constructing mirrors</li>
+<li><a href="../notes/group-theory-qm.html">Group Theory in Quantum Mechanics</a> — representation theory and symmetry, foundational for understanding discrete symmetry groups used in orbifolding</li>
+</ul>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><p>P. Di Francesco, P. Mathieu, and D. Senechal, <em>Conformal Field Theory</em> (Springer, 1997). The encyclopedic reference for 2D CFT.</p></li>
+<li><p>J. Polchinski, <em>String Theory, Volume 1: An Introduction to the Bosonic String</em> (Cambridge University Press, 1998). Chapters 2, 7, and 8 cover the worldsheet CFT, modular invariance, and orbifolds.</p></li>
+<li><p>C. Vafa, “The string landscape and the swampland,” [hep-th/0509212]. The paper that initiated the swampland program.</p></li>
+<li><p>N. Arkani-Hamed, L. Motl, A. Nicolis, and C. Vafa, “The string landscape, black holes and gravity as the weakest force,” <em>Journal of High Energy Physics</em> <strong>2007</strong>, 060 (2007). [hep-th/0601001]. The weak gravity conjecture.</p></li>
+<li><p>H. Ooguri and C. Vafa, “On the geometry of the string landscape and the swampland,” <em>Nuclear Physics B</em> <strong>766</strong>, 21 (2007). The distance conjecture.</p></li>
+<li><p>G. Obied, H. Ooguri, L. Spodyneiko, and C. Vafa, “De Sitter space and the swampland,” [arXiv:1806.08362]. The de Sitter conjecture.</p></li>
+<li><p>C. Vafa, “Modular invariance and discrete torsion on orbifolds,” <em>Nuclear Physics B</em> <strong>273</strong>, 592 (1986).</p></li>
+<li><p>A. Cappelli, C. Itzykson, and J.-B. Zuber, “The A-D-E classification of minimal and <span class="math inline">\(A_1^{(1)}\)</span> conformal invariant theories,” <em>Communications in Mathematical Physics</em> <strong>113</strong>, 1 (1987).</p></li>
+<li><p>E. Verlinde, “Fusion rules and modular transformations in 2D conformal field theory,” <em>Nuclear Physics B</em> <strong>300</strong>, 360 (1988).</p></li>
+<li><p>E. Witten, “Quantum gravity in de Sitter space,” [hep-th/0106109].</p></li>
+<li><p>B. R. Greene and M. R. Plesser, “Duality in Calabi–Yau moduli space,” <em>Nuclear Physics B</em> <strong>338</strong>, 15 (1990). The orbifold construction of mirror pairs.</p></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ajitkumar1991\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Ajit Kumar Sorout</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:ajitkumar@umass.edu">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

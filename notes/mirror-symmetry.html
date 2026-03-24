@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ajit Kumar Sorout">
+<meta name="dcterms.date" content="2026-03-23">
+<meta name="description" content="An overview of mirror symmetry and T-duality: Calabi-Yau pairs, the SYZ conjecture, and connections to string theory and brane constructions.">
+
+<title>Mirror Symmetry and T-Duality – Ajit Kumar Sorout</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-7bf7ec51a0ae41cf919e5f30745009cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bfcea955b98ba2cb061c1bafd60eaa82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Ajit Kumar Sorout</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-writing" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Writing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-writing">    
+        <li>
+    <a class="dropdown-item" href="../notes/index.html">
+ <span class="dropdown-text">Notes &amp; Expositions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../blog/index.html">
+ <span class="dropdown-text">Blog</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../tools/index.html"> 
+<span class="menu-text">Computational Tools</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">More</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-more">    
+        <li>
+    <a class="dropdown-item" href="../about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../contact.html">
+ <span class="dropdown-text">Contact &amp; CV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../photos.html">
+ <span class="dropdown-text">Photos</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=mjxdcyMAAAAJ&amp;hl=en"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../assets/cv.pdf"> <i class="bi bi-file-earmark-pdf" role="img" aria-label="CV">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/brane-tilings.html">String Theory &amp; Geometry</a></li><li class="breadcrumb-item"><a href="../notes/mirror-symmetry.html">Mirror Symmetry and T-Duality</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notes &amp; Expositions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">String Theory &amp; Geometry</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/brane-tilings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Brane Tilings and 4D Supersymmetric Field Theory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/mirror-symmetry.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Mirror Symmetry and T-Duality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/2d-cft-swampland.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2D CFT, Orbifolding, and the Swampland</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Many-Body &amp; Computation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/tensor-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tensor Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/monte-carlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monte Carlo and Computational Statistical Physics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/quantum-information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quantum Information and Computation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/machine-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning and Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/group-theory-qm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Theory in Quantum Mechanics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#t-duality-the-simplest-string-duality" id="toc-t-duality-the-simplest-string-duality" class="nav-link" data-scroll-target="#t-duality-the-simplest-string-duality">T-Duality: The Simplest String Duality</a>
+  <ul class="collapse">
+  <li><a href="#circle-compactification" id="toc-circle-compactification" class="nav-link" data-scroll-target="#circle-compactification">Circle compactification</a></li>
+  <li><a href="#the-duality" id="toc-the-duality" class="nav-link" data-scroll-target="#the-duality">The duality</a></li>
+  <li><a href="#detailed-example-free-boson-on-a-circle" id="toc-detailed-example-free-boson-on-a-circle" class="nav-link" data-scroll-target="#detailed-example-free-boson-on-a-circle">Detailed example: free boson on a circle</a></li>
+  <li><a href="#t-duality-and-type-ii-strings" id="toc-t-duality-and-type-ii-strings" class="nav-link" data-scroll-target="#t-duality-and-type-ii-strings">T-duality and type II strings</a></li>
+  </ul></li>
+  <li><a href="#calabiyau-geometry-primer" id="toc-calabiyau-geometry-primer" class="nav-link" data-scroll-target="#calabiyau-geometry-primer">Calabi–Yau Geometry Primer</a>
+  <ul class="collapse">
+  <li><a href="#definition-and-equivalent-characterizations" id="toc-definition-and-equivalent-characterizations" class="nav-link" data-scroll-target="#definition-and-equivalent-characterizations">Definition and equivalent characterizations</a></li>
+  <li><a href="#the-hodge-diamond" id="toc-the-hodge-diamond" class="nav-link" data-scroll-target="#the-hodge-diamond">The Hodge diamond</a></li>
+  <li><a href="#moduli-kahler-and-complex-structure" id="toc-moduli-kahler-and-complex-structure" class="nav-link" data-scroll-target="#moduli-kahler-and-complex-structure">Moduli: Kahler and complex structure</a></li>
+  </ul></li>
+  <li><a href="#mirror-symmetry" id="toc-mirror-symmetry" class="nav-link" data-scroll-target="#mirror-symmetry">Mirror Symmetry</a>
+  <ul class="collapse">
+  <li><a href="#calabiyau-compactification" id="toc-calabiyau-compactification" class="nav-link" data-scroll-target="#calabiyau-compactification">Calabi–Yau compactification</a></li>
+  <li><a href="#the-mirror-phenomenon" id="toc-the-mirror-phenomenon" class="nav-link" data-scroll-target="#the-mirror-phenomenon">The mirror phenomenon</a></li>
+  <li><a href="#why-mirror-symmetry-matters-enumerative-geometry" id="toc-why-mirror-symmetry-matters-enumerative-geometry" class="nav-link" data-scroll-target="#why-mirror-symmetry-matters-enumerative-geometry">Why mirror symmetry matters: enumerative geometry</a></li>
+  </ul></li>
+  <li><a href="#the-syz-conjecture" id="toc-the-syz-conjecture" class="nav-link" data-scroll-target="#the-syz-conjecture">The SYZ Conjecture</a>
+  <ul class="collapse">
+  <li><a href="#statement" id="toc-statement" class="nav-link" data-scroll-target="#statement">Statement</a></li>
+  <li><a href="#physical-reasoning" id="toc-physical-reasoning" class="nav-link" data-scroll-target="#physical-reasoning">Physical reasoning</a></li>
+  <li><a href="#singular-fibers-and-quantum-corrections" id="toc-singular-fibers-and-quantum-corrections" class="nav-link" data-scroll-target="#singular-fibers-and-quantum-corrections">Singular fibers and quantum corrections</a></li>
+  </ul></li>
+  <li><a href="#the-quintic-and-its-mirror" id="toc-the-quintic-and-its-mirror" class="nav-link" data-scroll-target="#the-quintic-and-its-mirror">The Quintic and Its Mirror</a>
+  <ul class="collapse">
+  <li><a href="#the-quintic-threefold" id="toc-the-quintic-threefold" class="nav-link" data-scroll-target="#the-quintic-threefold">The quintic threefold</a></li>
+  <li><a href="#the-greeneplesser-mirror-construction" id="toc-the-greeneplesser-mirror-construction" class="nav-link" data-scroll-target="#the-greeneplesser-mirror-construction">The Greene–Plesser mirror construction</a></li>
+  <li><a href="#periods-and-the-picardfuchs-equation" id="toc-periods-and-the-picardfuchs-equation" class="nav-link" data-scroll-target="#periods-and-the-picardfuchs-equation">Periods and the Picard–Fuchs equation</a></li>
+  </ul></li>
+  <li><a href="#mirror-symmetry-and-enumerative-geometry" id="toc-mirror-symmetry-and-enumerative-geometry" class="nav-link" data-scroll-target="#mirror-symmetry-and-enumerative-geometry">Mirror Symmetry and Enumerative Geometry</a>
+  <ul class="collapse">
+  <li><a href="#the-a-model-gromovwitten-invariants" id="toc-the-a-model-gromovwitten-invariants" class="nav-link" data-scroll-target="#the-a-model-gromovwitten-invariants">The A-model: Gromov–Witten invariants</a></li>
+  <li><a href="#the-b-model-periods-and-variation-of-hodge-structure" id="toc-the-b-model-periods-and-variation-of-hodge-structure" class="nav-link" data-scroll-target="#the-b-model-periods-and-variation-of-hodge-structure">The B-model: periods and variation of Hodge structure</a></li>
+  <li><a href="#the-mirror-map-and-computational-power" id="toc-the-mirror-map-and-computational-power" class="nav-link" data-scroll-target="#the-mirror-map-and-computational-power">The mirror map and computational power</a></li>
+  </ul></li>
+  <li><a href="#d-branes-and-mirror-symmetry" id="toc-d-branes-and-mirror-symmetry" class="nav-link" data-scroll-target="#d-branes-and-mirror-symmetry">D-Branes and Mirror Symmetry</a>
+  <ul class="collapse">
+  <li><a href="#branes-wrapping-cycles" id="toc-branes-wrapping-cycles" class="nav-link" data-scroll-target="#branes-wrapping-cycles">Branes wrapping cycles</a></li>
+  <li><a href="#calibrated-geometry" id="toc-calibrated-geometry" class="nav-link" data-scroll-target="#calibrated-geometry">Calibrated geometry</a></li>
+  </ul></li>
+  <li><a href="#connections-to-brane-tilings" id="toc-connections-to-brane-tilings" class="nav-link" data-scroll-target="#connections-to-brane-tilings">Connections to Brane Tilings</a>
+  <ul class="collapse">
+  <li><a href="#from-toric-data-to-mirror-curves" id="toc-from-toric-data-to-mirror-curves" class="nav-link" data-scroll-target="#from-toric-data-to-mirror-curves">From toric data to mirror curves</a></li>
+  <li><a href="#brane-tilings-and-the-kasteleyn-matrix" id="toc-brane-tilings-and-the-kasteleyn-matrix" class="nav-link" data-scroll-target="#brane-tilings-and-the-kasteleyn-matrix">Brane tilings and the Kasteleyn matrix</a></li>
+  <li><a href="#example-the-conifold" id="toc-example-the-conifold" class="nav-link" data-scroll-target="#example-the-conifold">Example: the conifold</a></li>
+  </ul></li>
+  <li><a href="#homological-mirror-symmetry" id="toc-homological-mirror-symmetry" class="nav-link" data-scroll-target="#homological-mirror-symmetry">Homological Mirror Symmetry</a></li>
+  <li><a href="#related-notes" id="toc-related-notes" class="nav-link" data-scroll-target="#related-notes">Related Notes</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/brane-tilings.html">String Theory &amp; Geometry</a></li><li class="breadcrumb-item"><a href="../notes/mirror-symmetry.html">Mirror Symmetry and T-Duality</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Mirror Symmetry and T-Duality</h1>
+<p class="subtitle lead">Dualities that reshape our understanding of geometry</p>
+</div>
+
+<div>
+  <div class="description">
+    An overview of mirror symmetry and T-duality: Calabi-Yau pairs, the SYZ conjecture, and connections to string theory and brane constructions.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ajit Kumar Sorout </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 23, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 24, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Mirror symmetry is one of the most profound and surprising discoveries to emerge from string theory. At its core, it asserts that two topologically distinct Calabi–Yau manifolds can give rise to identical physics when used as string compactification backgrounds. What began as a computational coincidence in the late 1980s has since grown into a deep mathematical subject, connecting enumerative geometry, symplectic topology, algebraic geometry, and homological algebra.</p>
+<p>These notes give an overview of the key ideas: T-duality as the simplest string duality, mirror symmetry as a generalization thereof, the SYZ conjecture that connects the two, and the role of D-branes. We work at a level of detail appropriate for someone who has seen the basics of string theory and wants to understand how mirror symmetry fits together.</p>
+<hr>
+</section>
+<section id="t-duality-the-simplest-string-duality" class="level2">
+<h2 class="anchored" data-anchor-id="t-duality-the-simplest-string-duality">T-Duality: The Simplest String Duality</h2>
+<section id="circle-compactification" class="level3">
+<h3 class="anchored" data-anchor-id="circle-compactification">Circle compactification</h3>
+<p>Consider a closed bosonic string propagating on a spacetime where one direction is compactified on a circle of radius <span class="math inline">\(R\)</span>. The center-of-mass momentum along the circle is quantized: <span class="math display">\[
+p = \frac{n}{R}, \qquad n \in \mathbb{Z},
+\]</span> since the wavefunction must be single-valued, <span class="math inline">\(e^{ipX} = e^{ip(X+2\pi R)}\)</span>. But strings, unlike point particles, can also <strong>wind</strong> around the circle. The winding contribution to the energy depends on the string length stretched around the circle: <span class="math display">\[
+E_{\text{winding}} \propto \frac{w R}{\alpha'}, \qquad w \in \mathbb{Z},
+\]</span> where <span class="math inline">\(w\)</span> is the winding number and <span class="math inline">\(\alpha' = l_s^2\)</span> is the Regge slope.</p>
+<p>The full mass formula for a string on <span class="math inline">\(\mathbb{R}^{1,d-1} \times S^1\)</span> is <span class="math display">\[
+m^2 = \frac{n^2}{R^2} + \frac{w^2 R^2}{\alpha'^2} + \frac{2}{\alpha'}(N_L + N_R - 2),
+\]</span> with the level-matching condition <span class="math inline">\(N_L - N_R = nw\)</span>.</p>
+</section>
+<section id="the-duality" class="level3">
+<h3 class="anchored" data-anchor-id="the-duality">The duality</h3>
+<p>The spectrum is invariant under the simultaneous exchange <span class="math display">\[
+R \;\longleftrightarrow\; \frac{\alpha'}{R}, \qquad n \;\longleftrightarrow\; w.
+\]</span></p>
+<p>This is <strong>T-duality</strong>. A string propagating on a circle of radius <span class="math inline">\(R\)</span> sees exactly the same physics as a string on a circle of radius <span class="math inline">\(\alpha'/R\)</span>, provided we exchange momentum modes with winding modes. In particular, the self-dual radius <span class="math inline">\(R = \sqrt{\alpha'}\)</span> is a special point where the theory has enhanced <span class="math inline">\(SU(2)_L \times SU(2)_R\)</span> gauge symmetry.</p>
+<p>T-duality is not merely a classical statement: it is an exact equivalence of the full quantum string theory, order by order in the string coupling <span class="math inline">\(g_s\)</span>. It relates large and small geometries, demonstrating that string theory has a minimum meaningful length scale <span class="math inline">\(\sim \sqrt{\alpha'}\)</span>.</p>
+</section>
+<section id="detailed-example-free-boson-on-a-circle" class="level3">
+<h3 class="anchored" data-anchor-id="detailed-example-free-boson-on-a-circle">Detailed example: free boson on a circle</h3>
+<p>To see T-duality concretely, consider the worldsheet action for a single free boson <span class="math inline">\(X\)</span> compactified on a circle of radius <span class="math inline">\(R\)</span>, so that <span class="math inline">\(X \sim X + 2\pi R\)</span>. The mode expansion on a closed string worldsheet (with worldsheet coordinates <span class="math inline">\(\sigma \in [0, 2\pi)\)</span> and Euclidean time <span class="math inline">\(\tau\)</span>) is <span class="math display">\[
+X(\tau, \sigma) = x_0 + \frac{\alpha' p}{2}\tau + w R \sigma + \frac{i}{2}\sqrt{\frac{\alpha'}{2}} \sum_{n \neq 0} \left( \frac{\alpha_n}{n} e^{-in(\tau + \sigma)} + \frac{\tilde{\alpha}_n}{n} e^{-in(\tau - \sigma)} \right),
+\]</span> where <span class="math inline">\(x_0\)</span> is the center-of-mass position, <span class="math inline">\(p = n/R\)</span> is the quantized momentum (<span class="math inline">\(n \in \mathbb{Z}\)</span>), <span class="math inline">\(w \in \mathbb{Z}\)</span> is the winding number, and <span class="math inline">\(\alpha_n\)</span>, <span class="math inline">\(\tilde{\alpha}_n\)</span> are the left- and right-moving oscillator modes satisfying <span class="math inline">\([\alpha_m, \alpha_n] = m\,\delta_{m+n,0}\)</span> and similarly for <span class="math inline">\(\tilde{\alpha}_n\)</span>.</p>
+<p>It is illuminating to decompose <span class="math inline">\(X\)</span> into left- and right-moving parts, <span class="math inline">\(X = X_L(\tau + \sigma) + X_R(\tau - \sigma)\)</span>, with <span class="math display">\[
+X_L = \frac{x_0}{2} + \frac{\alpha'}{2} p_L (\tau + \sigma) + \text{oscillators}, \qquad X_R = \frac{x_0}{2} + \frac{\alpha'}{2} p_R (\tau - \sigma) + \text{oscillators},
+\]</span> where the left- and right-moving momenta are <span class="math display">\[
+p_L = \frac{n}{R} + \frac{wR}{\alpha'}, \qquad p_R = \frac{n}{R} - \frac{wR}{\alpha'}.
+\]</span> The mass-shell condition for the closed string then gives the spacetime mass <span class="math display">\[
+m^2 = p_L^2 + p_R^2 + \frac{2}{\alpha'}(N_L + N_R - 2) = \frac{n^2}{R^2} + \frac{w^2 R^2}{\alpha'^2} + \frac{2}{\alpha'}(N_L + N_R - 2),
+\]</span> together with the level-matching constraint <span class="math inline">\(N_L - N_R = nw\)</span>, which follows from the requirement that <span class="math inline">\(p_L^2 - p_R^2 = 4nw/\alpha'\)</span> be compensated by the oscillator contributions.</p>
+<p>The key observation is that the spectrum depends on <span class="math inline">\(n\)</span> and <span class="math inline">\(w\)</span> only through the combination <span class="math inline">\(n^2/R^2 + w^2 R^2/\alpha'^2\)</span>, which is manifestly invariant under the simultaneous exchange <span class="math display">\[
+R \to \frac{\alpha'}{R}, \qquad n \leftrightarrow w.
+\]</span> At the level of the left- and right-moving momenta, this acts as <span class="math inline">\(p_L \to p_L\)</span>, <span class="math inline">\(p_R \to -p_R\)</span>, or equivalently <span class="math inline">\(X_R \to -X_R\)</span> while leaving <span class="math inline">\(X_L\)</span> unchanged. This asymmetric action on the worldsheet is the hallmark of T-duality: it is a parity transformation on the right-movers only.</p>
+<p>The partition function on the torus (the one-loop vacuum amplitude) can be written as a sum over the Narain lattice <span class="math inline">\(\Gamma_{1,1}\)</span> of left- and right-moving momenta <span class="math inline">\((p_L, p_R)\)</span>, and T-duality is an <span class="math inline">\(O(1,1;\mathbb{Z})\)</span> automorphism of this lattice. For compactification on <span class="math inline">\(T^d\)</span>, this generalizes to <span class="math inline">\(O(d,d;\mathbb{Z})\)</span>, the T-duality group acting on the Narain lattice <span class="math inline">\(\Gamma_{d,d}\)</span>.</p>
+</section>
+<section id="t-duality-and-type-ii-strings" class="level3">
+<h3 class="anchored" data-anchor-id="t-duality-and-type-ii-strings">T-duality and type II strings</h3>
+<p>For superstrings, T-duality has an additional twist: it exchanges the two type II theories.</p>
+<ul>
+<li><strong>Type IIA</strong> on <span class="math inline">\(S^1\)</span> of radius <span class="math inline">\(R\)</span> <span class="math inline">\(\;\longleftrightarrow\;\)</span> <strong>Type IIB</strong> on <span class="math inline">\(S^1\)</span> of radius <span class="math inline">\(\alpha'/R\)</span>.</li>
+</ul>
+<p>The reason is that T-duality acts on the right-moving worldsheet fermions by a sign flip, which exchanges the GSO projections of IIA and IIB. This already hints at mirror symmetry: if T-duality along one circle exchanges IIA and IIB, what happens when we T-dualize along three circles simultaneously?</p>
+<hr>
+</section>
+</section>
+<section id="calabiyau-geometry-primer" class="level2">
+<h2 class="anchored" data-anchor-id="calabiyau-geometry-primer">Calabi–Yau Geometry Primer</h2>
+<p>Before discussing mirror symmetry, we collect the essential geometric background on Calabi–Yau manifolds.</p>
+<section id="definition-and-equivalent-characterizations" class="level3">
+<h3 class="anchored" data-anchor-id="definition-and-equivalent-characterizations">Definition and equivalent characterizations</h3>
+<p>A <strong>Calabi–Yau manifold</strong> of complex dimension <span class="math inline">\(n\)</span> is a compact Kahler manifold <span class="math inline">\((X, g, J, \omega)\)</span> satisfying any of the following equivalent conditions (by Yau’s theorem, proving the Calabi conjecture):</p>
+<ol type="1">
+<li><strong>Vanishing first Chern class:</strong> <span class="math inline">\(c_1(X) = 0\)</span> in <span class="math inline">\(H^2(X, \mathbb{R})\)</span>.</li>
+<li><strong>Ricci-flat Kahler metric:</strong> there exists a Kahler metric with <span class="math inline">\(\mathrm{Ric}(g) = 0\)</span>.</li>
+<li><strong><span class="math inline">\(SU(n)\)</span> holonomy:</strong> the holonomy group of <span class="math inline">\(g\)</span> is contained in <span class="math inline">\(SU(n)\)</span>.</li>
+<li><strong>Trivial canonical bundle:</strong> <span class="math inline">\(K_X = \Lambda^n T^*X \cong \mathcal{O}_X\)</span>, i.e., there exists a nowhere-vanishing holomorphic <span class="math inline">\(n\)</span>-form <span class="math inline">\(\Omega\)</span>.</li>
+</ol>
+<p>The existence of the Ricci-flat metric is guaranteed by Yau’s theorem (1978): given any Kahler class <span class="math inline">\([\omega]\)</span> on a compact Kahler manifold with <span class="math inline">\(c_1 = 0\)</span>, there exists a unique Ricci-flat Kahler metric in that class. This metric is not known explicitly in any non-trivial compact example, but its existence is sufficient for many applications.</p>
+<p>For string theory, we primarily care about Calabi–Yau <strong>threefolds</strong> (<span class="math inline">\(n = 3\)</span>), which provide the six extra dimensions needed to compactify ten-dimensional superstring theory to four dimensions while preserving <span class="math inline">\(\mathcal{N} = 2\)</span> supersymmetry.</p>
+</section>
+<section id="the-hodge-diamond" class="level3">
+<h3 class="anchored" data-anchor-id="the-hodge-diamond">The Hodge diamond</h3>
+<p>On a compact Kahler manifold of complex dimension <span class="math inline">\(n\)</span>, the Dolbeault cohomology groups <span class="math inline">\(H^{p,q}(X)\)</span> have dimensions <span class="math inline">\(h^{p,q} = \dim H^{p,q}(X)\)</span>, arranged in the <strong>Hodge diamond</strong>. For a Calabi–Yau threefold, the existence of <span class="math inline">\(\Omega\)</span> and the Kahler condition impose strong constraints. The Hodge diamond simplifies to: <span class="math display">\[
+\begin{array}{ccccccc}
+&amp; &amp; &amp; 1 &amp; &amp; &amp; \\
+&amp; &amp; 0 &amp; &amp; 0 &amp; &amp; \\
+&amp; 0 &amp; &amp; h^{1,1} &amp; &amp; 0 &amp; \\
+1 &amp; &amp; h^{2,1} &amp; &amp; h^{2,1} &amp; &amp; 1 \\
+&amp; 0 &amp; &amp; h^{1,1} &amp; &amp; 0 &amp; \\
+&amp; &amp; 0 &amp; &amp; 0 &amp; &amp; \\
+&amp; &amp; &amp; 1 &amp; &amp; &amp; \\
+\end{array}
+\]</span> Here we have used: <span class="math inline">\(h^{0,0} = h^{3,3} = 1\)</span> (connectedness), <span class="math inline">\(h^{1,0} = h^{0,1} = 0\)</span> (for strict <span class="math inline">\(SU(3)\)</span> holonomy), <span class="math inline">\(h^{3,0} = h^{0,3} = 1\)</span> (from <span class="math inline">\(\Omega\)</span>), <span class="math inline">\(h^{2,0} = h^{0,2} = 0\)</span>, and Serre duality <span class="math inline">\(h^{p,q} = h^{n-p, n-q}\)</span>. The only independent Hodge numbers are <span class="math inline">\(h^{1,1}\)</span> and <span class="math inline">\(h^{2,1}\)</span>.</p>
+</section>
+<section id="moduli-kahler-and-complex-structure" class="level3">
+<h3 class="anchored" data-anchor-id="moduli-kahler-and-complex-structure">Moduli: Kahler and complex structure</h3>
+<p>The two independent Hodge numbers have direct geometric and physical interpretations:</p>
+<p><strong>Kahler moduli</strong> (<span class="math inline">\(h^{1,1}\)</span>): The Kahler form <span class="math inline">\(\omega\)</span> is a closed real <span class="math inline">\((1,1)\)</span>-form, and <span class="math inline">\(H^{1,1}(X, \mathbb{R})\)</span> parametrizes the deformations of <span class="math inline">\(\omega\)</span> within the Kahler cone. Choosing a basis <span class="math inline">\(\{e_i\}\)</span> of <span class="math inline">\(H^{1,1}(X, \mathbb{Z})\)</span>, we write <span class="math inline">\(\omega = \sum_{i=1}^{h^{1,1}} t^i e_i\)</span> where <span class="math inline">\(t^i &gt; 0\)</span> are the Kahler parameters. Physically, these control the volumes of holomorphic 2-cycles (and hence 4-cycles by Poincare duality). In string theory, these are complexified by the <span class="math inline">\(B\)</span>-field: <span class="math inline">\(t^i_{\mathbb{C}} = \int_{C_i} (B + i\omega)\)</span>.</p>
+<p><strong>Complex structure moduli</strong> (<span class="math inline">\(h^{2,1}\)</span>): By the Kodaira–Spencer theory, infinitesimal deformations of the complex structure of <span class="math inline">\(X\)</span> are classified by <span class="math inline">\(H^1(X, TX) \cong H^{2,1}(X)\)</span> (using the contraction with <span class="math inline">\(\Omega\)</span> to identify <span class="math inline">\(TX \cong \Omega^2_X\)</span>). There are <span class="math inline">\(h^{2,1}\)</span> independent ways to deform the shape of <span class="math inline">\(X\)</span> while preserving the Calabi–Yau condition. These deformations change the periods <span class="math inline">\(\int_{\gamma} \Omega\)</span> of the holomorphic 3-form over 3-cycles <span class="math inline">\(\gamma \in H_3(X, \mathbb{Z})\)</span>.</p>
+<p>The total number of massless scalar fields in the four-dimensional <span class="math inline">\(\mathcal{N} = 2\)</span> theory is <span class="math inline">\(h^{1,1} + h^{2,1}\)</span> (plus the dilaton and the dual of the <span class="math inline">\(B\)</span>-field), organized into <span class="math inline">\(h^{1,1}\)</span> vector multiplets and <span class="math inline">\(h^{2,1}\)</span> hypermultiplets (or vice versa, depending on whether we compactify type IIA or type IIB).</p>
+<hr>
+</section>
+</section>
+<section id="mirror-symmetry" class="level2">
+<h2 class="anchored" data-anchor-id="mirror-symmetry">Mirror Symmetry</h2>
+<section id="calabiyau-compactification" class="level3">
+<h3 class="anchored" data-anchor-id="calabiyau-compactification">Calabi–Yau compactification</h3>
+<p>To obtain <span class="math inline">\(\mathcal{N} = 2\)</span> supersymmetry in four dimensions from type II strings in ten dimensions, we compactify on a <strong>Calabi–Yau threefold</strong> <span class="math inline">\(X\)</span> — a compact Kahler manifold of complex dimension 3 with vanishing first Chern class (equivalently, with <span class="math inline">\(SU(3)\)</span> holonomy). The topology of <span class="math inline">\(X\)</span> determines the low-energy spectrum, and the relevant topological data is captured by the <strong>Hodge numbers</strong> <span class="math inline">\(h^{p,q}(X)\)</span>.</p>
+<p>For a Calabi–Yau threefold, the independent Hodge numbers reduce to two: <span class="math inline">\(h^{1,1}\)</span> and <span class="math inline">\(h^{2,1}\)</span>. These count, respectively:</p>
+<ul>
+<li><span class="math inline">\(h^{1,1}\)</span>: the number of Kahler moduli (deformations of the size and shape of 2-cycles),</li>
+<li><span class="math inline">\(h^{2,1}\)</span>: the number of complex structure moduli (deformations of the shape of 3-cycles).</li>
+</ul>
+<p>The Euler characteristic is <span class="math inline">\(\chi = 2(h^{1,1} - h^{2,1})\)</span>.</p>
+</section>
+<section id="the-mirror-phenomenon" class="level3">
+<h3 class="anchored" data-anchor-id="the-mirror-phenomenon">The mirror phenomenon</h3>
+<p><strong>Mirror symmetry</strong> asserts that for every Calabi–Yau threefold <span class="math inline">\(X\)</span>, there exists a <strong>mirror</strong> Calabi–Yau <span class="math inline">\(\widetilde{X}\)</span> such that <span class="math display">\[
+h^{1,1}(X) = h^{2,1}(\widetilde{X}), \qquad h^{2,1}(X) = h^{1,1}(\widetilde{X}).
+\]</span></p>
+<p>The Hodge diamond is reflected, hence the name. Since the Euler characteristics satisfy <span class="math inline">\(\chi(\widetilde{X}) = -\chi(X)\)</span>, the mirror partners are topologically distinct.</p>
+<p>The physical content is deeper than a numerical coincidence: the full string theories are equivalent, <span class="math display">\[
+\text{Type IIA on } X \quad \longleftrightarrow \quad \text{Type IIB on } \widetilde{X}.
+\]</span></p>
+<p>Under this duality, the Kahler moduli space of <span class="math inline">\(X\)</span> is identified with the complex structure moduli space of <span class="math inline">\(\widetilde{X}\)</span>, and vice versa. Quantities that are difficult to compute on one side (because they receive quantum corrections) become classical computations on the mirror side.</p>
+</section>
+<section id="why-mirror-symmetry-matters-enumerative-geometry" class="level3">
+<h3 class="anchored" data-anchor-id="why-mirror-symmetry-matters-enumerative-geometry">Why mirror symmetry matters: enumerative geometry</h3>
+<p>The most celebrated early application was the computation of the number of rational curves on the quintic threefold. Consider the <strong>quintic</strong> <span class="math inline">\(X \subset \mathbb{CP}^4\)</span>, defined as the zero locus of a degree-5 polynomial. It has <span class="math inline">\(h^{1,1} = 1\)</span> and <span class="math inline">\(h^{2,1} = 101\)</span>.</p>
+<p>Candelas, de la Ossa, Green, and Parkes (1991) used mirror symmetry to compute the genus-zero prepotential on the Kahler moduli space of <span class="math inline">\(X\)</span>, which encodes the numbers <span class="math inline">\(n_d\)</span> of rational curves of degree <span class="math inline">\(d\)</span>: <span class="math display">\[
+\mathcal{F} = \frac{5}{6}t^3 + \sum_{d=1}^{\infty} n_d \, \mathrm{Li}_3(e^{-dt}),
+\]</span> where <span class="math inline">\(t\)</span> is the complexified Kahler parameter and <span class="math inline">\(\mathrm{Li}_3\)</span> is the trilogarithm. On the mirror side, <span class="math inline">\(\widetilde{X}\)</span> has <span class="math inline">\(h^{1,1} = 101\)</span> and <span class="math inline">\(h^{2,1} = 1\)</span>, and the prepotential is determined by the <strong>periods</strong> of the holomorphic 3-form <span class="math inline">\(\Omega\)</span> — a classical computation involving Picard–Fuchs differential equations.</p>
+<p>The result: <span class="math inline">\(n_1 = 2875\)</span>, <span class="math inline">\(n_2 = 609250\)</span>, <span class="math inline">\(n_3 = 317206375\)</span>, and so on. The degree-3 number had been recently computed by algebraic geometers (Ellingsrud and Stromme) and initially disagreed with the physics prediction. After a bug in the mathematicians’ code was found and fixed, the numbers agreed. This was a dramatic early confirmation of mirror symmetry.</p>
+<hr>
+</section>
+</section>
+<section id="the-syz-conjecture" class="level2">
+<h2 class="anchored" data-anchor-id="the-syz-conjecture">The SYZ Conjecture</h2>
+<section id="statement" class="level3">
+<h3 class="anchored" data-anchor-id="statement">Statement</h3>
+<p>Strominger, Yau, and Zaslow (1996) proposed a geometric explanation for mirror symmetry:</p>
+<p><strong>SYZ Conjecture.</strong> A Calabi–Yau threefold <span class="math inline">\(X\)</span> admitting a mirror partner <span class="math inline">\(\widetilde{X}\)</span> has a <strong>special Lagrangian <span class="math inline">\(T^3\)</span> fibration</strong> <span class="math display">\[
+T^3 \hookrightarrow X \xrightarrow{\pi} B,
+\]</span> where <span class="math inline">\(B\)</span> is a 3-dimensional base. The mirror <span class="math inline">\(\widetilde{X}\)</span> is obtained by <strong>T-dualizing</strong> the <span class="math inline">\(T^3\)</span> fibers.</p>
+<p>A <strong>special Lagrangian</strong> submanifold <span class="math inline">\(L\)</span> of a Calabi–Yau <span class="math inline">\(X\)</span> is a real 3-dimensional submanifold satisfying two conditions:</p>
+<ol type="1">
+<li><span class="math inline">\(\omega|_L = 0\)</span> (Lagrangian condition, where <span class="math inline">\(\omega\)</span> is the Kahler form),</li>
+<li><span class="math inline">\(\mathrm{Im}(e^{i\theta}\Omega)|_L = 0\)</span> for some phase <span class="math inline">\(\theta\)</span> (special condition, where <span class="math inline">\(\Omega\)</span> is the holomorphic 3-form).</li>
+</ol>
+</section>
+<section id="physical-reasoning" class="level3">
+<h3 class="anchored" data-anchor-id="physical-reasoning">Physical reasoning</h3>
+<p>The SYZ conjecture generalizes T-duality from a single circle to three circles simultaneously. On a torus <span class="math inline">\(T^3\)</span> of radii <span class="math inline">\(R_1, R_2, R_3\)</span>, performing T-duality on all three circles gives a dual torus with radii <span class="math inline">\(\alpha'/R_1, \alpha'/R_2, \alpha'/R_3\)</span>. Since T-duality along a single circle exchanges type IIA and IIB, T-duality along three circles (an odd number) again exchanges IIA and IIB — exactly what mirror symmetry does.</p>
+<p>The SYZ picture is most reliable in the <strong>large complex structure limit</strong> of <span class="math inline">\(X\)</span> (equivalently the large volume limit of <span class="math inline">\(\widetilde{X}\)</span>), where the <span class="math inline">\(T^3\)</span> fibers are large and the T-duality along each circle is well-defined. Away from this limit, quantum corrections modify the picture, and singular fibers (where the torus degenerates) play an important role.</p>
+</section>
+<section id="singular-fibers-and-quantum-corrections" class="level3">
+<h3 class="anchored" data-anchor-id="singular-fibers-and-quantum-corrections">Singular fibers and quantum corrections</h3>
+<p>In practice, the SYZ fibration always has singular fibers over a codimension-2 locus <span class="math inline">\(\Delta \subset B\)</span> (the <strong>discriminant locus</strong>). Near these singular fibers, the semiclassical T-duality picture breaks down, and one must account for contributions from holomorphic discs with boundary on the Lagrangian fibers. These <strong>disc instanton corrections</strong> are responsible for much of the richness of mirror symmetry.</p>
+<p>The discriminant locus <span class="math inline">\(\Delta\)</span> is generically a trivalent graph (in the case of a threefold), and the singular fibers above <span class="math inline">\(\Delta\)</span> are tori with collapsed cycles. The simplest degeneration is the <strong>Kodaira type <span class="math inline">\(I_1\)</span> fiber</strong>, where a single 1-cycle of <span class="math inline">\(T^3\)</span> pinches to zero size, producing a nodal torus. More complicated singularities occur at the vertices of the graph <span class="math inline">\(\Delta\)</span>, where multiple cycles degenerate simultaneously.</p>
+<p>The physical importance of singular fibers is as follows. A D-brane (say a D2-brane in type IIA) wrapping a holomorphic disc <span class="math inline">\(D\)</span> with boundary <span class="math inline">\(\partial D\)</span> on a Lagrangian fiber <span class="math inline">\(L_b\)</span> contributes a factor <span class="math inline">\(\exp(-\int_D \omega)\)</span> to the effective action. These disc instantons correct the naive T-duality transformation in a crucial way: without them, the dual torus fibers would glue together incorrectly, and the mirror <span class="math inline">\(\widetilde{X}\)</span> would not be a Kahler manifold.</p>
+<p>More precisely, consider the complexified symplectic area <span class="math inline">\(A = \int_D (B + i\omega)\)</span> of a holomorphic disc. The generating function of disc instanton contributions defines a <strong>superpotential</strong> on the moduli space of the Lagrangian fiber: <span class="math display">\[
+W(L_b) = \sum_{\beta \in \pi_2(X, L_b)} n_\beta \, e^{-A(\beta)},
+\]</span> where <span class="math inline">\(n_\beta\)</span> is an open Gromov–Witten invariant counting discs in the class <span class="math inline">\(\beta\)</span>. These corrections are localized near the discriminant locus: far from <span class="math inline">\(\Delta\)</span>, the fibers are smooth and have no holomorphic discs ending on them (by a monotonicity argument), so the naive T-duality is valid. The non-trivial corrections arise only as one approaches the singular fibers.</p>
+<p>The program of making the SYZ construction rigorous, incorporating these quantum corrections, has been carried out in detail for toric Calabi–Yau manifolds (by Gross and Siebert using tropical geometry, and by Auroux using symplectic techniques) and remains an active area of research for compact Calabi–Yaus. The key insight from this program is that the quantum-corrected SYZ mirror is constructed not by naive fiberwise T-duality, but by a wall-crossing procedure: as one crosses <strong>walls of marginal stability</strong> (real codimension-1 loci in <span class="math inline">\(B\)</span> emanating from <span class="math inline">\(\Delta\)</span>), the gluing of the dual torus fibers jumps by symplectomorphisms determined by the disc counts.</p>
+<hr>
+</section>
+</section>
+<section id="the-quintic-and-its-mirror" class="level2">
+<h2 class="anchored" data-anchor-id="the-quintic-and-its-mirror">The Quintic and Its Mirror</h2>
+<section id="the-quintic-threefold" class="level3">
+<h3 class="anchored" data-anchor-id="the-quintic-threefold">The quintic threefold</h3>
+<p>The <strong>quintic threefold</strong> is the hypersurface <span class="math display">\[
+X_5 = \left\{ [z_0 : z_1 : z_2 : z_3 : z_4] \in \mathbb{CP}^4 \;\middle|\; z_0^5 + z_1^5 + z_2^5 + z_3^5 + z_4^5 + \text{lower-order terms} = 0 \right\},
+\]</span> defined as the zero locus of a generic homogeneous polynomial of degree 5 in the five homogeneous coordinates of <span class="math inline">\(\mathbb{CP}^4\)</span>. By the Lefschetz hyperplane theorem and adjunction, <span class="math inline">\(X_5\)</span> is a smooth Calabi–Yau threefold: the canonical bundle is <span class="math inline">\(K_{X_5} = \mathcal{O}_{\mathbb{CP}^4}(-5)|_{X_5} \otimes \mathcal{O}_{\mathbb{CP}^4}(5)|_{X_5} = \mathcal{O}_{X_5}\)</span>, confirming <span class="math inline">\(c_1 = 0\)</span>.</p>
+<p>The Hodge numbers are computed from the Lefschetz theorem and residue calculus: <span class="math display">\[
+h^{1,1}(X_5) = 1, \qquad h^{2,1}(X_5) = 101.
+\]</span> The single Kahler modulus corresponds to the overall size of the quintic (inherited from the hyperplane class of <span class="math inline">\(\mathbb{CP}^4\)</span>). The 101 complex structure moduli parametrize the choice of degree-5 polynomial: the space of such polynomials has dimension <span class="math inline">\(\binom{5+4}{4} = 126\)</span>, modulo the <span class="math inline">\(\dim PGL(5) = 24\)</span> coordinate reparametrizations, giving <span class="math inline">\(126 - 24 - 1 = 101\)</span> independent deformations (the <span class="math inline">\(-1\)</span> accounts for overall rescaling). The Euler characteristic is <span class="math inline">\(\chi = 2(1 - 101) = -200\)</span>.</p>
+</section>
+<section id="the-greeneplesser-mirror-construction" class="level3">
+<h3 class="anchored" data-anchor-id="the-greeneplesser-mirror-construction">The Greene–Plesser mirror construction</h3>
+<p>The mirror of the quintic was constructed by Greene and Plesser (1990) using an orbifold procedure. Consider the special one-parameter subfamily (the <strong>Fermat pencil</strong>) <span class="math display">\[
+X_\psi: \quad z_0^5 + z_1^5 + z_2^5 + z_3^5 + z_4^5 - 5\psi \, z_0 z_1 z_2 z_3 z_4 = 0,
+\]</span> and define the group <span class="math inline">\(G = (\mathbb{Z}_5)^3\)</span>, realized as the subgroup of <span class="math inline">\((\mathbb{Z}_5)^4\)</span> acting by <span class="math display">\[
+(z_0, z_1, z_2, z_3, z_4) \mapsto (\omega^{a_1} z_0, \omega^{a_2} z_1, \omega^{a_3} z_2, \omega^{a_4} z_3, z_4), \qquad \omega = e^{2\pi i/5},
+\]</span> where <span class="math inline">\((a_1, a_2, a_3, a_4) \in (\mathbb{Z}_5)^4\)</span> with <span class="math inline">\(a_1 + a_2 + a_3 + a_4 \equiv 0 \pmod{5}\)</span> (this condition ensures the polynomial <span class="math inline">\(X_\psi\)</span> is invariant), modulo the overall diagonal action <span class="math inline">\((1,1,1,1,1)\)</span> which acts trivially on <span class="math inline">\(\mathbb{CP}^4\)</span>. The mirror quintic is obtained as the crepant resolution of the quotient: <span class="math display">\[
+\widetilde{X}_5 = \widehat{X_\psi / G}.
+\]</span> The orbifold action collapses most of the complex structure moduli but introduces new Kahler moduli from the resolution of singularities. The result has Hodge numbers <span class="math display">\[
+h^{1,1}(\widetilde{X}_5) = 101, \qquad h^{2,1}(\widetilde{X}_5) = 1,
+\]</span> confirming the mirror exchange <span class="math inline">\(h^{1,1} \leftrightarrow h^{2,1}\)</span>.</p>
+</section>
+<section id="periods-and-the-picardfuchs-equation" class="level3">
+<h3 class="anchored" data-anchor-id="periods-and-the-picardfuchs-equation">Periods and the Picard–Fuchs equation</h3>
+<p>The single complex structure parameter <span class="math inline">\(\psi\)</span> of <span class="math inline">\(\widetilde{X}_5\)</span> maps to the complexified Kahler parameter of <span class="math inline">\(X_5\)</span>. The holomorphic 3-form <span class="math inline">\(\Omega(\psi)\)</span> on <span class="math inline">\(\widetilde{X}_5\)</span> has periods <span class="math inline">\(\Pi_i(\psi) = \int_{\gamma_i} \Omega\)</span> over a symplectic basis <span class="math inline">\(\{\gamma_i\}\)</span> of <span class="math inline">\(H_3(\widetilde{X}_5, \mathbb{Z})\)</span>. These periods satisfy a fourth-order Picard–Fuchs differential equation in the variable <span class="math inline">\(z = (5\psi)^{-5}\)</span>: <span class="math display">\[
+\left[ \theta^4 - 5z(5\theta + 1)(5\theta + 2)(5\theta + 3)(5\theta + 4) \right] \Pi(z) = 0, \qquad \theta = z\frac{d}{dz}.
+\]</span> Near the <strong>large complex structure point</strong> <span class="math inline">\(z = 0\)</span> (equivalently <span class="math inline">\(\psi \to \infty\)</span>), the four independent solutions have the structure <span class="math inline">\(\Pi_0 = 1 + \mathcal{O}(z)\)</span>, <span class="math inline">\(\Pi_1 = \Pi_0 \log z + \mathcal{O}(z)\)</span>, and two further solutions involving <span class="math inline">\((\log z)^2\)</span> and <span class="math inline">\((\log z)^3\)</span>. The <strong>mirror map</strong> <span class="math inline">\(t(z) = \Pi_1/\Pi_0\)</span> identifies the flat coordinate <span class="math inline">\(t\)</span> on the Kahler moduli space of <span class="math inline">\(X_5\)</span>, and the prepotential <span class="math inline">\(\mathcal{F}(t)\)</span> is extracted from the ratios of periods.</p>
+<hr>
+</section>
+</section>
+<section id="mirror-symmetry-and-enumerative-geometry" class="level2">
+<h2 class="anchored" data-anchor-id="mirror-symmetry-and-enumerative-geometry">Mirror Symmetry and Enumerative Geometry</h2>
+<p>The deepest computational power of mirror symmetry lies in the relationship between the <strong>A-model</strong> on <span class="math inline">\(X\)</span> and the <strong>B-model</strong> on <span class="math inline">\(\widetilde{X}\)</span>. These are two topologically twisted versions of the <span class="math inline">\(\mathcal{N} = (2,2)\)</span> worldsheet sigma model, each capturing different geometric information.</p>
+<section id="the-a-model-gromovwitten-invariants" class="level3">
+<h3 class="anchored" data-anchor-id="the-a-model-gromovwitten-invariants">The A-model: Gromov–Witten invariants</h3>
+<p>The <strong>A-model</strong> on a Calabi–Yau <span class="math inline">\(X\)</span> depends only on the Kahler (symplectic) structure of <span class="math inline">\(X\)</span>, and its observables are the <strong>Gromov–Witten invariants</strong>. At genus zero, the relevant objects are holomorphic maps <span class="math inline">\(f: \mathbb{CP}^1 \to X\)</span> whose image represents a class <span class="math inline">\(\beta \in H_2(X, \mathbb{Z})\)</span>. The genus-zero Gromov–Witten invariant <span class="math inline">\(N_\beta\)</span> (roughly) counts the number of such maps, weighted by signs from the obstruction theory.</p>
+<p>For the quintic with <span class="math inline">\(h^{1,1} = 1\)</span>, the class <span class="math inline">\(\beta\)</span> is determined by the degree <span class="math inline">\(d = \int_\beta \omega\)</span>, and the A-model genus-zero free energy takes the form <span class="math display">\[
+\mathcal{F}_A(t) = \frac{5}{6}t^3 + \sum_{d=1}^{\infty} N_d \, q^d, \qquad q = e^{2\pi i t},
+\]</span> where <span class="math inline">\(t\)</span> is the complexified Kahler parameter and <span class="math inline">\(N_d\)</span> is the genus-zero Gromov–Witten invariant at degree <span class="math inline">\(d\)</span>. The cubic term <span class="math inline">\(\frac{5}{6}t^3\)</span> is the classical triple intersection number <span class="math inline">\(\int_X \omega^3 = 5\)</span> (divided by <span class="math inline">\(3! = 6\)</span>). The instanton sum <span class="math inline">\(\sum N_d q^d\)</span> encodes the quantum corrections from holomorphic curves.</p>
+<p>The relation between the Gromov–Witten invariants <span class="math inline">\(N_d\)</span> and the “BPS numbers” <span class="math inline">\(n_d\)</span> (the rational curve counts appearing in the prepotential formula with the trilogarithm) is given by the multi-cover formula: <span class="math display">\[
+N_d = \sum_{k | d} n_{d/k} \frac{1}{k^3}.
+\]</span> The integers <span class="math inline">\(n_d\)</span> are the genuinely enumerative quantities, counting (in an appropriate sense) the number of isolated rational curves of degree <span class="math inline">\(d\)</span>.</p>
+</section>
+<section id="the-b-model-periods-and-variation-of-hodge-structure" class="level3">
+<h3 class="anchored" data-anchor-id="the-b-model-periods-and-variation-of-hodge-structure">The B-model: periods and variation of Hodge structure</h3>
+<p>The <strong>B-model</strong> on a Calabi–Yau <span class="math inline">\(\widetilde{X}\)</span> depends only on the complex structure of <span class="math inline">\(\widetilde{X}\)</span>, and its observables are governed by the <strong>variation of Hodge structure</strong> (VHS) on the family of Calabi–Yau manifolds as the complex structure moduli vary. The central object is the holomorphic 3-form <span class="math inline">\(\Omega\)</span> and its periods <span class="math inline">\(\Pi_i = \int_{\gamma_i} \Omega\)</span>.</p>
+<p>As the complex structure moduli vary, <span class="math inline">\(\Omega\)</span> traces out a path in the Hodge filtration <span class="math inline">\(F^3 \subset F^2 \subset F^1 \subset H^3(\widetilde{X}, \mathbb{C})\)</span>, and the B-model free energy is determined by the <strong>special geometry</strong> relations among the periods. The crucial point is that B-model computations are <strong>exact at tree level</strong> — there are no worldsheet instanton corrections on the B-model side. This is because the B-model path integral localizes on constant maps, and the moduli space of constant maps is just <span class="math inline">\(\widetilde{X}\)</span> itself.</p>
+</section>
+<section id="the-mirror-map-and-computational-power" class="level3">
+<h3 class="anchored" data-anchor-id="the-mirror-map-and-computational-power">The mirror map and computational power</h3>
+<p>Mirror symmetry equates the A-model on <span class="math inline">\(X\)</span> with the B-model on <span class="math inline">\(\widetilde{X}\)</span>: <span class="math display">\[
+\mathcal{F}_A^{X}(t) = \mathcal{F}_B^{\widetilde{X}}(\psi(t)).
+\]</span> The left side involves an infinite sum over worldsheet instantons (holomorphic curves), each of which is extremely difficult to compute directly on <span class="math inline">\(X\)</span>. The right side is a classical period computation on <span class="math inline">\(\widetilde{X}\)</span>, involving only ordinary differential equations (the Picard–Fuchs system). The <strong>mirror map</strong> <span class="math inline">\(t(\psi)\)</span> relates the natural coordinates on the two sides.</p>
+<p>This is the computational miracle: an infinite series of enumerative invariants, each requiring sophisticated algebraic geometry or symplectic topology to compute individually, is encoded in the solution of an ODE. For the quintic, this yields <span class="math inline">\(n_1 = 2875\)</span> (the classical result of Schubert calculus), <span class="math inline">\(n_2 = 609{,}250\)</span>, <span class="math inline">\(n_3 = 317{,}206{,}375\)</span>, <span class="math inline">\(n_4 = 242{,}467{,}530{,}000\)</span>, and so on to arbitrarily high degree.</p>
+<hr>
+</section>
+</section>
+<section id="d-branes-and-mirror-symmetry" class="level2">
+<h2 class="anchored" data-anchor-id="d-branes-and-mirror-symmetry">D-Branes and Mirror Symmetry</h2>
+<section id="branes-wrapping-cycles" class="level3">
+<h3 class="anchored" data-anchor-id="branes-wrapping-cycles">Branes wrapping cycles</h3>
+<p>D-branes are extended objects on which open strings can end. A D<span class="math inline">\(p\)</span>-brane in type II string theory wraps a <span class="math inline">\((p+1)\)</span>-dimensional worldvolume. In a Calabi–Yau compactification:</p>
+<ul>
+<li><strong>Type IIA</strong> has D0, D2, D4, D6-branes wrapping <strong>even-dimensional</strong> cycles of <span class="math inline">\(X\)</span>.</li>
+<li><strong>Type IIB</strong> has D(-1), D1, D3, D5, D7-branes wrapping <strong>odd-dimensional</strong> cycles of <span class="math inline">\(X\)</span>.</li>
+</ul>
+<p>Mirror symmetry exchanges the even and odd cycles. More precisely, it exchanges the <strong>A-branes</strong> (Lagrangian submanifolds, natural for type IIA) with <strong>B-branes</strong> (holomorphic submanifolds, natural for type IIB). In the SYZ picture, a D0-brane (a point) on <span class="math inline">\(X\)</span> dualizes to a D3-brane wrapping the full <span class="math inline">\(T^3\)</span> fiber on <span class="math inline">\(\widetilde{X}\)</span>, which is a special Lagrangian 3-cycle.</p>
+</section>
+<section id="calibrated-geometry" class="level3">
+<h3 class="anchored" data-anchor-id="calibrated-geometry">Calibrated geometry</h3>
+<p>The conditions for a D-brane to preserve supersymmetry are captured by <strong>calibrated geometry</strong>. A <span class="math inline">\(p\)</span>-form <span class="math inline">\(\phi\)</span> on a Riemannian manifold is a <strong>calibration</strong> if <span class="math inline">\(d\phi = 0\)</span> and <span class="math inline">\(\phi|_{\Sigma} \leq \mathrm{vol}_\Sigma\)</span> for every oriented <span class="math inline">\(p\)</span>-dimensional submanifold <span class="math inline">\(\Sigma\)</span>. A submanifold saturating the bound is <strong>calibrated</strong> and minimizes volume in its homology class.</p>
+<p>On a Calabi–Yau threefold, the relevant calibrations are:</p>
+<ul>
+<li><span class="math inline">\(\omega\)</span> (the Kahler form) for holomorphic curves,</li>
+<li><span class="math inline">\(\frac{1}{2}\omega^2\)</span> for holomorphic surfaces,</li>
+<li><span class="math inline">\(\mathrm{Re}(\Omega)\)</span> for special Lagrangian 3-cycles.</li>
+</ul>
+<p>Mirror symmetry exchanges the Kahler calibration data with the complex structure calibration data.</p>
+<hr>
+</section>
+</section>
+<section id="connections-to-brane-tilings" class="level2">
+<h2 class="anchored" data-anchor-id="connections-to-brane-tilings">Connections to Brane Tilings</h2>
+<p>For <strong>toric Calabi–Yau geometries</strong> — non-compact Calabi–Yau threefolds described by toric diagrams — mirror symmetry has a particularly explicit realization. The mirror of a toric Calabi–Yau singularity <span class="math inline">\(X\)</span> can be written as a hypersurface <span class="math display">\[
+uv = W(x, y)
+\]</span> in <span class="math inline">\(\mathbb{C}^2 \times (\mathbb{C}^*)^2\)</span>, where the curve <span class="math inline">\(W(x,y) = 0\)</span> is the <strong>mirror curve</strong> (or spectral curve). The toric data of <span class="math inline">\(X\)</span> is encoded in the Newton polygon of <span class="math inline">\(W\)</span>.</p>
+<section id="from-toric-data-to-mirror-curves" class="level3">
+<h3 class="anchored" data-anchor-id="from-toric-data-to-mirror-curves">From toric data to mirror curves</h3>
+<p>A toric Calabi–Yau threefold singularity is specified by a convex lattice polygon <span class="math inline">\(\Delta \subset \mathbb{Z}^2\)</span> (the <strong>toric diagram</strong>). The mirror curve is a Riemann surface <span class="math inline">\(\Sigma\)</span> embedded in <span class="math inline">\((\mathbb{C}^*)^2\)</span>, defined by a Laurent polynomial <span class="math display">\[
+W(x,y) = \sum_{(m,n) \in \Delta \cap \mathbb{Z}^2} a_{m,n} \, x^m y^n = 0,
+\]</span> whose Newton polygon is precisely <span class="math inline">\(\Delta\)</span>. The coefficients <span class="math inline">\(a_{m,n}\)</span> encode the complex structure moduli of the mirror, which by mirror symmetry correspond to the Kahler moduli (resolution parameters and <span class="math inline">\(B\)</span>-field periods) of <span class="math inline">\(X\)</span>. The genus of the mirror curve <span class="math inline">\(\Sigma\)</span> equals the number of interior lattice points of <span class="math inline">\(\Delta\)</span>, which counts the number of compact 4-cycles in <span class="math inline">\(X\)</span>.</p>
+</section>
+<section id="brane-tilings-and-the-kasteleyn-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="brane-tilings-and-the-kasteleyn-matrix">Brane tilings and the Kasteleyn matrix</h3>
+<p><strong>Brane tilings</strong> (also called dimer models) provide a combinatorial bridge: a periodic bipartite graph <span class="math inline">\(\mathcal{G}\)</span> on <span class="math inline">\(T^2\)</span> encodes both the quiver gauge theory on D3-branes probing the toric singularity <span class="math inline">\(X\)</span>, and the geometry of the mirror. The faces of <span class="math inline">\(\mathcal{G}\)</span> correspond to gauge group factors (nodes of the quiver), edges to bifundamental fields, and the bipartite structure determines the superpotential.</p>
+<p>The connection to the mirror curve proceeds through the <strong>Kasteleyn matrix</strong> <span class="math inline">\(K(x,y)\)</span>. This is the weighted adjacency matrix of the bipartite graph, where each edge <span class="math inline">\(e\)</span> connecting a black vertex <span class="math inline">\(b\)</span> to a white vertex <span class="math inline">\(w\)</span> receives a weight that includes reference fugacities <span class="math inline">\(x^{n_1(e)} y^{n_2(e)}\)</span> tracking the homology class of the edge on <span class="math inline">\(T^2\)</span>. The <strong>characteristic polynomial</strong> of the Kasteleyn matrix, <span class="math display">\[
+P(x, y) = \det K(x, y),
+\]</span> is a Laurent polynomial in <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> whose zero locus <span class="math inline">\(P(x,y) = 0\)</span> defines the mirror curve <span class="math inline">\(\Sigma\)</span>. The Newton polygon of <span class="math inline">\(P\)</span> recovers the toric diagram <span class="math inline">\(\Delta\)</span> of <span class="math inline">\(X\)</span>.</p>
+<p>This gives a concrete and computational pipeline: starting from a brane tiling (which can be constructed systematically for any toric singularity), one reads off the Kasteleyn matrix, computes its determinant, and obtains the mirror curve together with its embedding in <span class="math inline">\((\mathbb{C}^*)^2\)</span>. The zig-zag paths of the tiling — oriented paths that turn maximally left at white vertices and maximally right at black vertices — are in bijection with the external legs of the toric diagram, providing a direct combinatorial map between the tiling and the toric geometry.</p>
+</section>
+<section id="example-the-conifold" class="level3">
+<h3 class="anchored" data-anchor-id="example-the-conifold">Example: the conifold</h3>
+<p>For the simplest non-trivial example, the <strong>conifold</strong> <span class="math inline">\(\mathcal{O}(-1) \oplus \mathcal{O}(-1) \to \mathbb{CP}^1\)</span>, the toric diagram is a line segment with two interior points, and the brane tiling is a square lattice on <span class="math inline">\(T^2\)</span> with two faces. The Kasteleyn matrix is <span class="math inline">\(2 \times 2\)</span>: <span class="math display">\[
+K(x,y) = \begin{pmatrix} 1 + x \\ 1 + y \end{pmatrix}^T,
+\]</span> giving the mirror curve <span class="math inline">\(P(x,y) = 1 + x + y + xy = (1+x)(1+y)\)</span>. After a deformation by a complex structure parameter <span class="math inline">\(z\)</span>, this becomes <span class="math inline">\(P(x,y) = 1 + x + y + z\,xy\)</span>, a genus-0 curve whose periods encode the resolved conifold geometry.</p>
+<hr>
+</section>
+</section>
+<section id="homological-mirror-symmetry" class="level2">
+<h2 class="anchored" data-anchor-id="homological-mirror-symmetry">Homological Mirror Symmetry</h2>
+<p>In 1994, Kontsevich proposed a far-reaching mathematical formulation of mirror symmetry:</p>
+<p><strong>Kontsevich’s Homological Mirror Symmetry (HMS) Conjecture.</strong> For a mirror pair <span class="math inline">\((X, \widetilde{X})\)</span> of Calabi–Yau manifolds, <span class="math display">\[
+D^b\mathrm{Coh}(X) \simeq D^\pi\mathrm{Fuk}(\widetilde{X}),
+\]</span> where <span class="math inline">\(D^b\mathrm{Coh}(X)\)</span> is the bounded derived category of coherent sheaves on <span class="math inline">\(X\)</span> (encoding B-branes), and <span class="math inline">\(D^\pi\mathrm{Fuk}(\widetilde{X})\)</span> is the derived Fukaya category of <span class="math inline">\(\widetilde{X}\)</span> (encoding A-branes, i.e., Lagrangian submanifolds with flat <span class="math inline">\(U(1)\)</span> connections).</p>
+<p>HMS elevates mirror symmetry from a statement about numbers (Hodge numbers, curve counts) to an equivalence of categorical structures. It has been proven in a number of cases, including elliptic curves (Polishchuk and Zaslow), the quartic K3 surface (Seidel), and toric varieties (various authors). The general case for compact Calabi–Yau threefolds remains open.</p>
+<p>From the physics perspective, HMS is the statement that the open string sectors (D-brane categories) of the two mirror theories are equivalent, which is a natural consequence of the underlying string duality.</p>
+<hr>
+</section>
+<section id="related-notes" class="level2">
+<h2 class="anchored" data-anchor-id="related-notes">Related Notes</h2>
+<ul>
+<li><a href="../notes/brane-tilings.html">Brane Tilings and Dimer Models</a> — combinatorial aspects of toric Calabi–Yau geometries, quiver gauge theories, and their connection to mirror curves</li>
+<li><a href="../notes/2d-cft-swampland.html">2D CFT, Orbifolding, and the Swampland</a> — worldsheet CFT, orbifold constructions used in mirror symmetry (Greene–Plesser), and swampland constraints on the landscape</li>
+</ul>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><p>K. Hori, S. Katz, A. Klemm, R. Pandharipande, R. Thomas, C. Vafa, R. Vakil, and E. Zaslow, <em>Mirror Symmetry</em> (Clay Mathematics Monographs, Vol. 1, AMS, 2003). The comprehensive reference.</p></li>
+<li><p>A. Strominger, S.-T. Yau, and E. Zaslow, “Mirror symmetry is T-duality,” <em>Nuclear Physics B</em> <strong>479</strong>, 243 (1996). [hep-th/9606040]</p></li>
+<li><p>M. Kontsevich, “Homological algebra of mirror symmetry,” Proceedings of the International Congress of Mathematicians (Zurich, 1994), 120–139.</p></li>
+<li><p>P. Candelas, X. C. de la Ossa, P. S. Green, and L. Parkes, “A pair of Calabi–Yau manifolds as an exactly soluble superconformal theory,” <em>Nuclear Physics B</em> <strong>359</strong>, 21 (1991).</p></li>
+<li><p>B. R. Greene and M. R. Plesser, “Duality in Calabi–Yau moduli space,” <em>Nuclear Physics B</em> <strong>338</strong>, 15 (1990).</p></li>
+<li><p>A. Hanany and K. D. Kennaway, “Dimer models and toric diagrams,” [hep-th/0503149].</p></li>
+<li><p>J. Polchinski, <em>String Theory</em>, Vols. 1 and 2 (Cambridge University Press, 1998).</p></li>
+<li><p>P. S. Aspinwall, “D-branes on Calabi–Yau manifolds,” in <em>Progress in String Theory: TASI 2003</em>, [hep-th/0403166].</p></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ajitkumar1991\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Ajit Kumar Sorout</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:ajitkumar@umass.edu">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

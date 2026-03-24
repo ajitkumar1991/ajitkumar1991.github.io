@@ -1,0 +1,221 @@
+/* ============================================
+   Layout & Width Fixes
+   ============================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove the overly restrictive content width.
+   Quarto's default container + the TOC already handle width well.
+   We use targeted widths per context instead. */
+
+/* Let Quarto's grid system handle content width via _quarto.yml grid settings.
+   Do NOT set max-width on .content — that overrides the grid. */
+#quarto-content {
+  max-width: 100%;
+}
+
+/* ============================================
+   Spacing & Lists
+   ============================================ */
+
+.content ul, .content ol {
+  margin-bottom: 1.25rem;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================
+   Code Blocks
+   ============================================ */
+
+.code-fold-btn {
+  font-size: 0.8rem;
+}
+
+.MathJax_Display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ============================================
+   Homepage & Research Grid Improvements
+   ============================================ */
+
+/* Research project cards on homepage */
+.column-page .grid .g-col-md-6 {
+  padding: 1rem 1.25rem;
+}
+
+.column-page .grid .g-col-md-6 h3 {
+  font-size: 1.15rem;
+  margin-top: 0.25rem;
+}
+
+/* Visual card effect for research grid items */
+.column-page .grid .g-col-md-6 {
+  border-left: 3px solid transparent;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  border-radius: 4px;
+}
+
+.column-page .grid .g-col-md-6:hover {
+  border-left-color: #2c5282;
+  background-color: rgba(44, 82, 130, 0.02);
+}
+
+/* ============================================
+   Section Separators & Visual Hierarchy
+   ============================================ */
+
+/* Subtle background for alternating sections on research page */
+.level2 {
+  padding: 1.5rem 0;
+}
+
+/* Research page section headers: decorative line */
+#high-energy, #condensed-matter, #future-directions {
+  padding-top: 1rem;
+}
+
+/* ============================================
+   Featured Notes Table
+   ============================================ */
+
+.column-page table {
+  width: 100%;
+}
+
+.column-page table td:first-child {
+  white-space: nowrap;
+}
+
+/* ============================================
+   Callout Boxes — More Visual Weight
+   ============================================ */
+
+.callout {
+  margin: 1.5rem 0;
+  border-radius: 6px;
+}
+
+.callout-note.callout-style-simple {
+  border-left-width: 4px;
+}
+
+/* Problem statement callouts */
+.callout-note.callout-style-simple .callout-body {
+  font-size: 1rem;
+}
+
+/* ============================================
+   ASCII Diagram Styling
+   ============================================ */
+
+/* Make code blocks containing diagrams more prominent */
+pre {
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+
+/* ============================================
+   Listing & Blog
+   ============================================ */
+
+.quarto-listing-default .listing-item:hover {
+  background-color: rgba(44, 82, 130, 0.03);
+  border-radius: 4px;
+}
+
+/* ============================================
+   TOC — Better Positioning
+   ============================================ */
+
+/* On wide screens, give the TOC more breathing room */
+@media (min-width: 1200px) {
+  #TOC {
+    padding-left: 1rem;
+  }
+}
+
+/* ============================================
+   Back to Top
+   ============================================ */
+
+#quarto-back-to-top {
+  background-color: #2c5282;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  .navbar, .sidebar, .nav-footer {
+    display: none;
+  }
+  body {
+    font-size: 11pt;
+  }
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}
+
+/* ============================================
+   Responsive Fixes
+   ============================================ */
+
+@media (max-width: 768px) {
+  .column-page .grid .g-col-md-6 {
+    padding: 0.75rem;
+  }
+}
+
+/* ============================================
+   Visual Polish
+   ============================================ */
+
+/* Subtle top accent on the page */
+body {
+  border-top: 3px solid #2c5282;
+}
+
+/* Section heading decoration for research page */
+.content h2 {
+  position: relative;
+}
+
+/* Improve the HR dividers */
+hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #cbd5e0, transparent);
+  margin: 2.5rem 0;
+}
+
+/* Profile image on homepage: subtle shadow */
+.column-page img.rounded {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border: 2px solid #e2e8f0;
+}
+
+/* Navbar: ensure full-width feel */
+.navbar {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer: cleaner separation */
+.nav-footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+}

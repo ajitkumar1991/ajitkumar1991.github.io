@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ajit Kumar Sorout">
+<meta name="dcterms.date" content="2026-03-23">
+<meta name="description" content="Core results in quantum information theory: the no-cloning and no-deleting theorems, quantum state discrimination, entanglement and teleportation, quantum error correction, and connections to tensor networks.">
+
+<title>Quantum Information and Computation – Ajit Kumar Sorout</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-7bf7ec51a0ae41cf919e5f30745009cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bfcea955b98ba2cb061c1bafd60eaa82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Ajit Kumar Sorout</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-writing" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Writing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-writing">    
+        <li>
+    <a class="dropdown-item" href="../notes/index.html">
+ <span class="dropdown-text">Notes &amp; Expositions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../blog/index.html">
+ <span class="dropdown-text">Blog</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../tools/index.html"> 
+<span class="menu-text">Computational Tools</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">More</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-more">    
+        <li>
+    <a class="dropdown-item" href="../about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../contact.html">
+ <span class="dropdown-text">Contact &amp; CV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../photos.html">
+ <span class="dropdown-text">Photos</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=mjxdcyMAAAAJ&amp;hl=en"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../assets/cv.pdf"> <i class="bi bi-file-earmark-pdf" role="img" aria-label="CV">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/tensor-networks.html">Many-Body &amp; Computation</a></li><li class="breadcrumb-item"><a href="../notes/quantum-information.html">Quantum Information and Computation</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notes &amp; Expositions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">String Theory &amp; Geometry</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/brane-tilings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Brane Tilings and 4D Supersymmetric Field Theory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/mirror-symmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mirror Symmetry and T-Duality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/2d-cft-swampland.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2D CFT, Orbifolding, and the Swampland</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Many-Body &amp; Computation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/tensor-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tensor Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/monte-carlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monte Carlo and Computational Statistical Physics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/quantum-information.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Quantum Information and Computation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/machine-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning and Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/group-theory-qm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Theory in Quantum Mechanics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-no-cloning-theorem" id="toc-the-no-cloning-theorem" class="nav-link" data-scroll-target="#the-no-cloning-theorem">The No-Cloning Theorem</a>
+  <ul class="collapse">
+  <li><a href="#statement" id="toc-statement" class="nav-link" data-scroll-target="#statement">Statement</a></li>
+  <li><a href="#proof" id="toc-proof" class="nav-link" data-scroll-target="#proof">Proof</a></li>
+  <li><a href="#physical-implications" id="toc-physical-implications" class="nav-link" data-scroll-target="#physical-implications">Physical implications</a></li>
+  <li><a href="#approximate-cloning" id="toc-approximate-cloning" class="nav-link" data-scroll-target="#approximate-cloning">Approximate cloning</a></li>
+  <li><a href="#the-no-deleting-theorem" id="toc-the-no-deleting-theorem" class="nav-link" data-scroll-target="#the-no-deleting-theorem">The no-deleting theorem</a></li>
+  </ul></li>
+  <li><a href="#quantum-state-discrimination" id="toc-quantum-state-discrimination" class="nav-link" data-scroll-target="#quantum-state-discrimination">Quantum State Discrimination</a>
+  <ul class="collapse">
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link" data-scroll-target="#the-problem">The problem</a></li>
+  <li><a href="#minimum-error-discrimination-the-helstrom-bound" id="toc-minimum-error-discrimination-the-helstrom-bound" class="nav-link" data-scroll-target="#minimum-error-discrimination-the-helstrom-bound">Minimum error discrimination: the Helstrom bound</a></li>
+  <li><a href="#unambiguous-discrimination" id="toc-unambiguous-discrimination" class="nav-link" data-scroll-target="#unambiguous-discrimination">Unambiguous discrimination</a></li>
+  <li><a href="#relation-to-no-cloning" id="toc-relation-to-no-cloning" class="nav-link" data-scroll-target="#relation-to-no-cloning">Relation to no-cloning</a></li>
+  <li><a href="#worked-example-discriminating-0rangle-and-a-rotated-state" id="toc-worked-example-discriminating-0rangle-and-a-rotated-state" class="nav-link" data-scroll-target="#worked-example-discriminating-0rangle-and-a-rotated-state">Worked example: discriminating <span class="math inline">\(|0\rangle\)</span> and a rotated state</a></li>
+  </ul></li>
+  <li><a href="#entanglement" id="toc-entanglement" class="nav-link" data-scroll-target="#entanglement">Entanglement</a>
+  <ul class="collapse">
+  <li><a href="#bell-states" id="toc-bell-states" class="nav-link" data-scroll-target="#bell-states">Bell states</a></li>
+  <li><a href="#schmidt-decomposition" id="toc-schmidt-decomposition" class="nav-link" data-scroll-target="#schmidt-decomposition">Schmidt decomposition</a></li>
+  <li><a href="#von-neumann-entropy-as-an-entanglement-measure" id="toc-von-neumann-entropy-as-an-entanglement-measure" class="nav-link" data-scroll-target="#von-neumann-entropy-as-an-entanglement-measure">Von Neumann entropy as an entanglement measure</a></li>
+  <li><a href="#entanglement-of-formation" id="toc-entanglement-of-formation" class="nav-link" data-scroll-target="#entanglement-of-formation">Entanglement of formation</a></li>
+  <li><a href="#monogamy-of-entanglement" id="toc-monogamy-of-entanglement" class="nav-link" data-scroll-target="#monogamy-of-entanglement">Monogamy of entanglement</a></li>
+  <li><a href="#quantum-teleportation" id="toc-quantum-teleportation" class="nav-link" data-scroll-target="#quantum-teleportation">Quantum teleportation</a></li>
+  </ul></li>
+  <li><a href="#quantum-channels" id="toc-quantum-channels" class="nav-link" data-scroll-target="#quantum-channels">Quantum Channels</a>
+  <ul class="collapse">
+  <li><a href="#completely-positive-trace-preserving-maps" id="toc-completely-positive-trace-preserving-maps" class="nav-link" data-scroll-target="#completely-positive-trace-preserving-maps">Completely positive trace-preserving maps</a></li>
+  <li><a href="#kraus-representation" id="toc-kraus-representation" class="nav-link" data-scroll-target="#kraus-representation">Kraus representation</a></li>
+  <li><a href="#example-the-depolarizing-channel" id="toc-example-the-depolarizing-channel" class="nav-link" data-scroll-target="#example-the-depolarizing-channel">Example: the depolarizing channel</a></li>
+  </ul></li>
+  <li><a href="#quantum-error-correction" id="toc-quantum-error-correction" class="nav-link" data-scroll-target="#quantum-error-correction">Quantum Error Correction</a>
+  <ul class="collapse">
+  <li><a href="#the-basic-idea" id="toc-the-basic-idea" class="nav-link" data-scroll-target="#the-basic-idea">The basic idea</a></li>
+  <li><a href="#the-3-qubit-bit-flip-code" id="toc-the-3-qubit-bit-flip-code" class="nav-link" data-scroll-target="#the-3-qubit-bit-flip-code">The 3-qubit bit-flip code</a></li>
+  <li><a href="#the-quantum-error-correction-conditions" id="toc-the-quantum-error-correction-conditions" class="nav-link" data-scroll-target="#the-quantum-error-correction-conditions">The quantum error correction conditions</a></li>
+  <li><a href="#the-steane-code" id="toc-the-steane-code" class="nav-link" data-scroll-target="#the-steane-code">The Steane code</a></li>
+  <li><a href="#stabilizer-formalism" id="toc-stabilizer-formalism" class="nav-link" data-scroll-target="#stabilizer-formalism">Stabilizer formalism</a></li>
+  <li><a href="#connection-to-tensor-networks" id="toc-connection-to-tensor-networks" class="nav-link" data-scroll-target="#connection-to-tensor-networks">Connection to tensor networks</a></li>
+  </ul></li>
+  <li><a href="#connections-to-tensor-networks" id="toc-connections-to-tensor-networks" class="nav-link" data-scroll-target="#connections-to-tensor-networks">Connections to Tensor Networks</a>
+  <ul class="collapse">
+  <li><a href="#mps-as-efficiently-describable-states" id="toc-mps-as-efficiently-describable-states" class="nav-link" data-scroll-target="#mps-as-efficiently-describable-states">MPS as efficiently describable states</a></li>
+  <li><a href="#area-law-from-information-theory" id="toc-area-law-from-information-theory" class="nav-link" data-scroll-target="#area-law-from-information-theory">Area law from information theory</a></li>
+  <li><a href="#quantum-error-correction-and-holography" id="toc-quantum-error-correction-and-holography" class="nav-link" data-scroll-target="#quantum-error-correction-and-holography">Quantum error correction and holography</a></li>
+  </ul></li>
+  <li><a href="#related-notes" id="toc-related-notes" class="nav-link" data-scroll-target="#related-notes">Related Notes</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/tensor-networks.html">Many-Body &amp; Computation</a></li><li class="breadcrumb-item"><a href="../notes/quantum-information.html">Quantum Information and Computation</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Quantum Information and Computation</h1>
+<p class="subtitle lead">No-cloning, state discrimination, entanglement, teleportation, and error correction</p>
+</div>
+
+<div>
+  <div class="description">
+    Core results in quantum information theory: the no-cloning and no-deleting theorems, quantum state discrimination, entanglement and teleportation, quantum error correction, and connections to tensor networks.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ajit Kumar Sorout </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 23, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 24, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Quantum information theory asks a deceptively simple question: what can you do with quantum states that you cannot do with classical bits? The answer turns out to reshape our understanding of computation, communication, and even the structure of spacetime. These notes collect the core results that any working physicist should have at their fingertips — the no-cloning theorem, the limits of state discrimination, the structure of entanglement, and the formalism of quantum channels — before sketching how these ideas connect to tensor network methods and holography.</p>
+<p>Throughout, we work with finite-dimensional Hilbert spaces <span class="math inline">\(\mathcal{H} \cong \mathbb{C}^d\)</span> unless otherwise stated, and we set <span class="math inline">\(\hbar = 1\)</span>.</p>
+<hr>
+</section>
+<section id="the-no-cloning-theorem" class="level2">
+<h2 class="anchored" data-anchor-id="the-no-cloning-theorem">The No-Cloning Theorem</h2>
+<section id="statement" class="level3">
+<h3 class="anchored" data-anchor-id="statement">Statement</h3>
+<p>The no-cloning theorem is one of the earliest and most consequential results in quantum information. It asserts that there is no physical process that can duplicate an arbitrary unknown quantum state.</p>
+<p><strong>Theorem (Wootters–Zurek, Dieks, 1982).</strong> There exists no unitary operator <span class="math inline">\(U\)</span> acting on <span class="math inline">\(\mathcal{H} \otimes \mathcal{H}\)</span> such that, for every state <span class="math inline">\(|\psi\rangle \in \mathcal{H}\)</span>, <span class="math display">\[
+U \bigl(|\psi\rangle \otimes |0\rangle\bigr) = |\psi\rangle \otimes |\psi\rangle,
+\]</span> where <span class="math inline">\(|0\rangle\)</span> is some fixed blank state.</p>
+</section>
+<section id="proof" class="level3">
+<h3 class="anchored" data-anchor-id="proof">Proof</h3>
+<p>The proof is short and uses only two properties of quantum mechanics: linearity and the preservation of inner products by unitary evolution.</p>
+<p>Suppose such a <span class="math inline">\(U\)</span> exists. Take two states <span class="math inline">\(|\psi\rangle\)</span> and <span class="math inline">\(|\phi\rangle\)</span>, and assume the cloning relation holds for both: <span class="math display">\[
+U(|\psi\rangle \otimes |0\rangle) = |\psi\rangle \otimes |\psi\rangle, \qquad U(|\phi\rangle \otimes |0\rangle) = |\phi\rangle \otimes |\phi\rangle.
+\]</span></p>
+<p>Since <span class="math inline">\(U\)</span> is unitary, it preserves inner products. Compute the overlap of the left-hand sides: <span class="math display">\[
+\bigl(\langle\psi| \otimes \langle 0|\bigr)\bigl(|\phi\rangle \otimes |0\rangle\bigr) = \langle\psi|\phi\rangle \cdot \langle 0|0\rangle = \langle\psi|\phi\rangle.
+\]</span></p>
+<p>Now compute the overlap of the right-hand sides: <span class="math display">\[
+\bigl(\langle\psi| \otimes \langle\psi|\bigr)\bigl(|\phi\rangle \otimes |\phi\rangle\bigr) = \langle\psi|\phi\rangle^2.
+\]</span></p>
+<p>Equating, we need <span class="math display">\[
+\langle\psi|\phi\rangle = \langle\psi|\phi\rangle^2,
+\]</span> which forces <span class="math inline">\(\langle\psi|\phi\rangle \in \{0, 1\}\)</span>. So the cloning machine can only work if the two states are either identical or orthogonal — it cannot clone a pair of non-orthogonal states. Since a universal cloner must handle arbitrary states, no such <span class="math inline">\(U\)</span> exists. <span class="math inline">\(\blacksquare\)</span></p>
+</section>
+<section id="physical-implications" class="level3">
+<h3 class="anchored" data-anchor-id="physical-implications">Physical implications</h3>
+<p>The no-cloning theorem is not merely a mathematical curiosity. It has profound physical consequences:</p>
+<ol type="1">
+<li><p><strong>Quantum key distribution.</strong> The security of protocols like BB84 rests on no-cloning: an eavesdropper cannot copy the transmitted quantum states without disturbing them, and this disturbance is detectable.</p></li>
+<li><p><strong>Quantum error correction.</strong> Since we cannot copy quantum states, error correction in the quantum setting requires a fundamentally different approach from classical repetition codes. The trick is to encode information in entangled states across multiple qubits without ever learning (and thus collapsing) the logical state.</p></li>
+<li><p><strong>No superluminal signalling.</strong> If cloning were possible, one could use it together with entanglement to send information faster than light. The no-cloning theorem is thus intimately connected to relativistic causality.</p></li>
+</ol>
+</section>
+<section id="approximate-cloning" class="level3">
+<h3 class="anchored" data-anchor-id="approximate-cloning">Approximate cloning</h3>
+<p>While perfect cloning is impossible, one can ask: how well can we clone? The optimal approximate cloner for qubits was found by Buzek and Hillery (1996). For a <span class="math inline">\(1 \to 2\)</span> symmetric cloner acting on qubits, the optimal single-copy fidelity is <span class="math display">\[
+F = \frac{5}{6} \approx 0.833.
+\]</span></p>
+<p>More generally, for a <span class="math inline">\(1 \to M\)</span> cloner in dimension <span class="math inline">\(d\)</span>, the optimal fidelity is <span class="math display">\[
+F = \frac{M(d-1) + d + M}{M(d+1)}.
+\]</span></p>
+<p>These bounds are tight and can be achieved by specific quantum circuits. The existence of a gap between the cloning fidelity and unity is another way of quantifying the “quantumness” of information.</p>
+</section>
+<section id="the-no-deleting-theorem" class="level3">
+<h3 class="anchored" data-anchor-id="the-no-deleting-theorem">The no-deleting theorem</h3>
+<p>The no-cloning theorem has a natural complement: the <strong>no-deleting theorem</strong> (Pati and Braunstein, 2000). While no-cloning says you cannot create a copy of an unknown quantum state, no-deleting says you cannot destroy one of two copies of an unknown state against a blank ancilla while keeping the other intact.</p>
+<p><strong>Theorem.</strong> There exists no linear operator <span class="math inline">\(U\)</span> acting on <span class="math inline">\(\mathcal{H} \otimes \mathcal{H} \otimes \mathcal{H}_A\)</span> such that, for every <span class="math inline">\(|\psi\rangle\)</span>, <span class="math display">\[
+U\bigl(|\psi\rangle \otimes |\psi\rangle \otimes |A\rangle\bigr) = |\psi\rangle \otimes |0\rangle \otimes |A'\rangle,
+\]</span> where <span class="math inline">\(|0\rangle\)</span> is a fixed state and <span class="math inline">\(|A'\rangle\)</span> may depend on <span class="math inline">\(|\psi\rangle\)</span>.</p>
+<p>The proof strategy mirrors that of no-cloning. If such a <span class="math inline">\(U\)</span> existed, taking two input states <span class="math inline">\(|\psi\rangle\)</span> and <span class="math inline">\(|\phi\rangle\)</span> and computing inner products of both sides yields <span class="math display">\[
+\langle\psi|\phi\rangle^2 \langle A|A\rangle = \langle\psi|\phi\rangle \langle 0|0\rangle \langle A'_\psi|A'_\phi\rangle,
+\]</span> which simplifies to <span class="math inline">\(\langle\psi|\phi\rangle = \langle A'_\psi|A'_\phi\rangle\)</span>. This means the “deleted” information has been transferred entirely into the ancilla, not destroyed — quantum information is never lost, only moved. This is a direct manifestation of unitarity: since quantum time evolution is reversible, information can be scrambled or redistributed but never erased.</p>
+<p>Together, no-cloning and no-deleting express a deep principle: <strong>quantum information is conserved</strong>. You can move it, encode it, spread it across entangled subsystems, but you can neither duplicate it nor annihilate it. This conservation law is closely related to the unitarity of quantum mechanics and has direct implications for the black hole information paradox, where the question is precisely whether information thrown into a black hole is truly destroyed or eventually recovered.</p>
+<hr>
+</section>
+</section>
+<section id="quantum-state-discrimination" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-state-discrimination">Quantum State Discrimination</h2>
+<section id="the-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem">The problem</h3>
+<p>Suppose Alice prepares one of two quantum states <span class="math inline">\(\rho_1\)</span> or <span class="math inline">\(\rho_2\)</span> with prior probabilities <span class="math inline">\(p_1\)</span> and <span class="math inline">\(p_2 = 1 - p_1\)</span>, and sends it to Bob. Bob must perform a measurement and guess which state was sent. If <span class="math inline">\(\rho_1\)</span> and <span class="math inline">\(\rho_2\)</span> are orthogonal, Bob can distinguish them perfectly. But if they are non-orthogonal, errors are unavoidable. The question is: what is the minimum probability of error?</p>
+</section>
+<section id="minimum-error-discrimination-the-helstrom-bound" class="level3">
+<h3 class="anchored" data-anchor-id="minimum-error-discrimination-the-helstrom-bound">Minimum error discrimination: the Helstrom bound</h3>
+<p>The optimal strategy is described by a two-outcome POVM <span class="math inline">\(\{E_1, E_2\}\)</span> with <span class="math inline">\(E_1 + E_2 = \mathbb{I}\)</span>, <span class="math inline">\(E_i \geq 0\)</span>. The probability of error is <span class="math display">\[
+P_{\rm err} = p_1 \, \mathrm{Tr}(\rho_1 E_2) + p_2 \, \mathrm{Tr}(\rho_2 E_1).
+\]</span></p>
+<p><strong>Theorem (Helstrom, 1976).</strong> The minimum error probability for discriminating between <span class="math inline">\(\rho_1\)</span> and <span class="math inline">\(\rho_2\)</span> with priors <span class="math inline">\(p_1, p_2\)</span> is <span class="math display">\[
+P_{\rm err} = \frac{1}{2}\bigl(1 - \|p_1 \rho_1 - p_2 \rho_2\|_1\bigr),
+\]</span> where <span class="math inline">\(\|A\|_1 = \mathrm{Tr}\sqrt{A^\dagger A}\)</span> is the trace norm.</p>
+<p>The optimal POVM is obtained by diagonalizing <span class="math inline">\(\Lambda = p_1 \rho_1 - p_2 \rho_2\)</span> and assigning <span class="math inline">\(E_1\)</span> to the positive eigenspace and <span class="math inline">\(E_2\)</span> to the negative eigenspace.</p>
+<p><strong>Example: two pure qubit states.</strong> For <span class="math inline">\(|\psi_1\rangle\)</span> and <span class="math inline">\(|\psi_2\rangle\)</span> with equal priors (<span class="math inline">\(p_1 = p_2 = 1/2\)</span>) and overlap <span class="math inline">\(|\langle\psi_1|\psi_2\rangle| = \cos\theta\)</span>, the Helstrom bound gives <span class="math display">\[
+P_{\rm err} = \frac{1}{2}(1 - \sin\theta).
+\]</span></p>
+<p>When <span class="math inline">\(\theta = \pi/2\)</span> (orthogonal states), we get <span class="math inline">\(P_{\rm err} = 0\)</span>. When <span class="math inline">\(\theta = 0\)</span> (identical states), <span class="math inline">\(P_{\rm err} = 1/2\)</span> — pure guessing. Everything in between interpolates smoothly.</p>
+</section>
+<section id="unambiguous-discrimination" class="level3">
+<h3 class="anchored" data-anchor-id="unambiguous-discrimination">Unambiguous discrimination</h3>
+<p>An alternative strategy is <strong>unambiguous state discrimination</strong> (USD): Bob is allowed to sometimes output “I don’t know,” but when he does give an answer, it must be correct with certainty. For two pure states with equal priors, the optimal failure probability (the probability of the inconclusive outcome) is <span class="math display">\[
+P_{\rm fail} = |\langle\psi_1|\psi_2\rangle|.
+\]</span></p>
+<p>This was first derived by Ivanovic (1987), Dieks (1988), and Peres (1988). USD is only possible when the states have linearly independent support; for two states with overlapping support (mixed states whose supports are not orthogonal), unambiguous discrimination may be impossible.</p>
+</section>
+<section id="relation-to-no-cloning" class="level3">
+<h3 class="anchored" data-anchor-id="relation-to-no-cloning">Relation to no-cloning</h3>
+<p>State discrimination and no-cloning are deeply connected. If we could clone, we could make many copies of the unknown state and perform tomography, distinguishing any two states with arbitrarily small error. The Helstrom bound is thus a quantitative expression of the same physics that forbids cloning.</p>
+</section>
+<section id="worked-example-discriminating-0rangle-and-a-rotated-state" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example-discriminating-0rangle-and-a-rotated-state">Worked example: discriminating <span class="math inline">\(|0\rangle\)</span> and a rotated state</h3>
+<p>Consider the concrete problem of discriminating <span class="math inline">\(|\psi_1\rangle = |0\rangle\)</span> and <span class="math inline">\(|\psi_2\rangle = \cos\theta\,|0\rangle + \sin\theta\,|1\rangle\)</span> with equal priors <span class="math inline">\(p_1 = p_2 = 1/2\)</span>. We compute the Helstrom bound and the optimal measurement explicitly.</p>
+<p><strong>Step 1: form the Helstrom operator.</strong> Define <span class="math inline">\(\Lambda = p_1|\psi_1\rangle\langle\psi_1| - p_2|\psi_2\rangle\langle\psi_2|\)</span>. In the <span class="math inline">\(\{|0\rangle, |1\rangle\}\)</span> basis: <span class="math display">\[
+\Lambda = \frac{1}{2}\begin{pmatrix} 1 \\ 0 \end{pmatrix}\begin{pmatrix} 1 &amp; 0 \end{pmatrix} - \frac{1}{2}\begin{pmatrix} \cos\theta \\ \sin\theta \end{pmatrix}\begin{pmatrix} \cos\theta &amp; \sin\theta \end{pmatrix} = \frac{1}{2}\begin{pmatrix} 1 - \cos^2\theta &amp; -\cos\theta\sin\theta \\ -\cos\theta\sin\theta &amp; -\sin^2\theta \end{pmatrix}.
+\]</span> Using <span class="math inline">\(1 - \cos^2\theta = \sin^2\theta\)</span>, this simplifies to <span class="math display">\[
+\Lambda = \frac{\sin\theta}{2}\begin{pmatrix} \sin\theta &amp; -\cos\theta \\ -\cos\theta &amp; -\sin\theta \end{pmatrix}.
+\]</span></p>
+<p><strong>Step 2: diagonalize <span class="math inline">\(\Lambda\)</span>.</strong> The matrix in parentheses has eigenvalues <span class="math inline">\(\pm 1\)</span> (it is traceless with determinant <span class="math inline">\(-\sin^2\theta - \cos^2\theta = -1\)</span>), so the eigenvalues of <span class="math inline">\(\Lambda\)</span> are <span class="math inline">\(\pm \frac{\sin\theta}{2}\)</span>. The trace norm is therefore <span class="math display">\[
+\|\Lambda\|_1 = \frac{\sin\theta}{2} + \frac{\sin\theta}{2} = \sin\theta.
+\]</span></p>
+<p><strong>Step 3: the Helstrom bound.</strong> The minimum error probability is <span class="math display">\[
+P_{\rm err} = \frac{1}{2}(1 - \sin\theta),
+\]</span> matching the general formula for two pure states with overlap <span class="math inline">\(|\langle\psi_1|\psi_2\rangle| = \cos\theta\)</span>.</p>
+<p><strong>Step 4: the optimal POVM.</strong> The eigenvector of <span class="math inline">\(\Lambda\)</span> with positive eigenvalue <span class="math inline">\(+\frac{\sin\theta}{2}\)</span> is <span class="math display">\[
+|v_+\rangle = \cos\frac{\theta}{2}\,|0\rangle - \sin\frac{\theta}{2}\,|1\rangle,
+\]</span> and the eigenvector with negative eigenvalue is <span class="math display">\[
+|v_-\rangle = \sin\frac{\theta}{2}\,|0\rangle + \cos\frac{\theta}{2}\,|1\rangle.
+\]</span> The optimal POVM is the projective measurement in this basis: <span class="math inline">\(E_1 = |v_+\rangle\langle v_+|\)</span> (guess <span class="math inline">\(\psi_1\)</span>) and <span class="math inline">\(E_2 = |v_-\rangle\langle v_-|\)</span> (guess <span class="math inline">\(\psi_2\)</span>). Note that the measurement basis lies along the angle bisector of the two states on the Bloch sphere — this is geometrically intuitive, as the optimal discriminator should be oriented to maximally separate the two signal states.</p>
+<p>As a check: when <span class="math inline">\(\theta = \pi/4\)</span>, the states <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(\frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)\)</span> give <span class="math inline">\(P_{\rm err} = \frac{1}{2}(1 - \frac{1}{\sqrt{2}}) \approx 0.146\)</span>, and the measurement is performed in the basis tilted at <span class="math inline">\(\pi/8\)</span> from the computational basis.</p>
+<hr>
+</section>
+</section>
+<section id="entanglement" class="level2">
+<h2 class="anchored" data-anchor-id="entanglement">Entanglement</h2>
+<section id="bell-states" class="level3">
+<h3 class="anchored" data-anchor-id="bell-states">Bell states</h3>
+<p>The maximally entangled states of two qubits are the <strong>Bell states</strong>: <span class="math display">\[
+|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle), \qquad |\Phi^-\rangle = \frac{1}{\sqrt{2}}(|00\rangle - |11\rangle),
+\]</span> <span class="math display">\[
+|\Psi^+\rangle = \frac{1}{\sqrt{2}}(|01\rangle + |10\rangle), \qquad |\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle).
+\]</span></p>
+<p>These form an orthonormal basis for <span class="math inline">\(\mathbb{C}^2 \otimes \mathbb{C}^2\)</span>. Any of the four can be obtained from any other by a local unitary on one qubit. The reduced density matrix of each Bell state is <span class="math inline">\(\rho_A = \frac{1}{2}\mathbb{I}\)</span> — maximally mixed.</p>
+</section>
+<section id="schmidt-decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="schmidt-decomposition">Schmidt decomposition</h3>
+<p>Any bipartite pure state <span class="math inline">\(|\psi\rangle \in \mathcal{H}_A \otimes \mathcal{H}_B\)</span> can be written as <span class="math display">\[
+|\psi\rangle = \sum_{i=1}^{r} \lambda_i \, |a_i\rangle \otimes |b_i\rangle,
+\]</span> where <span class="math inline">\(\{|a_i\rangle\}\)</span> and <span class="math inline">\(\{|b_i\rangle\}\)</span> are orthonormal sets in <span class="math inline">\(\mathcal{H}_A\)</span> and <span class="math inline">\(\mathcal{H}_B\)</span> respectively, <span class="math inline">\(\lambda_i &gt; 0\)</span>, and <span class="math inline">\(\sum_i \lambda_i^2 = 1\)</span>. The number <span class="math inline">\(r\)</span> is the <strong>Schmidt rank</strong>, and the <span class="math inline">\(\lambda_i\)</span> are the <strong>Schmidt coefficients</strong>.</p>
+<p>The Schmidt decomposition is simply the singular value decomposition (SVD) applied to the coefficient matrix <span class="math inline">\(C_{ij}\)</span> in any product basis expansion <span class="math inline">\(|\psi\rangle = \sum_{ij} C_{ij} |i\rangle|j\rangle\)</span>. A state is entangled if and only if its Schmidt rank is greater than 1.</p>
+</section>
+<section id="von-neumann-entropy-as-an-entanglement-measure" class="level3">
+<h3 class="anchored" data-anchor-id="von-neumann-entropy-as-an-entanglement-measure">Von Neumann entropy as an entanglement measure</h3>
+<p>For a bipartite pure state <span class="math inline">\(|\psi\rangle_{AB}\)</span> with reduced density matrix <span class="math inline">\(\rho_A = \mathrm{Tr}_B(|\psi\rangle\langle\psi|)\)</span>, the <strong>entanglement entropy</strong> is the von Neumann entropy of the reduced state: <span class="math display">\[
+S(\rho_A) = -\mathrm{Tr}(\rho_A \log \rho_A) = -\sum_i \lambda_i^2 \log \lambda_i^2,
+\]</span> where <span class="math inline">\(\lambda_i\)</span> are the Schmidt coefficients. This is the unique measure of bipartite pure-state entanglement (up to normalization) satisfying natural axioms: it vanishes for product states, is maximized for maximally entangled states, and does not increase under local operations and classical communication (LOCC).</p>
+<p>For a maximally entangled state of two <span class="math inline">\(d\)</span>-dimensional systems, <span class="math inline">\(S = \log d\)</span>.</p>
+</section>
+<section id="entanglement-of-formation" class="level3">
+<h3 class="anchored" data-anchor-id="entanglement-of-formation">Entanglement of formation</h3>
+<p>For mixed states, quantifying entanglement is harder. The <strong>entanglement of formation</strong> <span class="math inline">\(E_F(\rho)\)</span> is defined as the minimum average entanglement over all pure-state decompositions: <span class="math display">\[
+E_F(\rho) = \min_{\{p_i, |\psi_i\rangle\}} \sum_i p_i \, S(\mathrm{Tr}_B |\psi_i\rangle\langle\psi_i|),
+\]</span> where the minimum is over all ensembles <span class="math inline">\(\{p_i, |\psi_i\rangle\}\)</span> such that <span class="math inline">\(\rho = \sum_i p_i |\psi_i\rangle\langle\psi_i|\)</span>.</p>
+<p>For two qubits, Wootters (1998) found an elegant closed-form expression for <span class="math inline">\(E_F\)</span> in terms of the <strong>concurrence</strong> <span class="math inline">\(C(\rho)\)</span>: <span class="math display">\[
+E_F = h\!\left(\frac{1 + \sqrt{1-C^2}}{2}\right),
+\]</span> where <span class="math inline">\(h(x) = -x\log x - (1-x)\log(1-x)\)</span> is the binary entropy. The concurrence can be computed from the eigenvalues of <span class="math inline">\(\rho(\sigma_y \otimes \sigma_y)\rho^*(\sigma_y \otimes \sigma_y)\)</span>.</p>
+</section>
+<section id="monogamy-of-entanglement" class="level3">
+<h3 class="anchored" data-anchor-id="monogamy-of-entanglement">Monogamy of entanglement</h3>
+<p>Entanglement is <strong>monogamous</strong>: if qubit <span class="math inline">\(A\)</span> is maximally entangled with qubit <span class="math inline">\(B\)</span>, it cannot be entangled with a third qubit <span class="math inline">\(C\)</span> at all. Quantitatively, the <strong>Coffman–Kundu–Wootters (CKW) inequality</strong> states that for three qubits, <span class="math display">\[
+C^2_{A|BC} \geq C^2_{AB} + C^2_{AC},
+\]</span> where <span class="math inline">\(C_{AB}\)</span> is the concurrence of the reduced state <span class="math inline">\(\rho_{AB}\)</span>, and <span class="math inline">\(C_{A|BC}\)</span> is the concurrence between <span class="math inline">\(A\)</span> and the joint system <span class="math inline">\(BC\)</span>.</p>
+<p>Monogamy is a distinctly quantum phenomenon with no classical analogue — classical correlations can be freely shared. It plays a central role in the security proofs of quantum key distribution and, remarkably, also appears in black hole physics through the “monogamy vs.&nbsp;ER=EPR” discussion.</p>
+</section>
+<section id="quantum-teleportation" class="level3">
+<h3 class="anchored" data-anchor-id="quantum-teleportation">Quantum teleportation</h3>
+<p>Quantum teleportation (Bennett <em>et al.</em>, 1993) is the protocol that most vividly demonstrates the power of entanglement as a resource. It allows Alice to transmit an unknown qubit state <span class="math inline">\(|\psi\rangle = \alpha|0\rangle + \beta|1\rangle\)</span> to Bob using one shared Bell pair and two classical bits — without any quantum channel between them at the time of transmission.</p>
+<p><strong>Setup.</strong> Alice and Bob share the Bell state <span class="math inline">\(|\Phi^+\rangle_{AB} = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)_{AB}\)</span>. Alice also holds the state <span class="math inline">\(|\psi\rangle_Q\)</span> she wishes to teleport. The total initial state of the three qubits <span class="math inline">\(Q\)</span>, <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> is <span class="math display">\[
+|\Psi_0\rangle = |\psi\rangle_Q \otimes |\Phi^+\rangle_{AB} = (\alpha|0\rangle + \beta|1\rangle)_Q \otimes \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)_{AB}.
+\]</span></p>
+<p><strong>Step 1: rewrite in the Bell basis.</strong> The key algebraic identity is the expansion of a product basis in terms of Bell states. For any two qubits <span class="math inline">\(Q\)</span> and <span class="math inline">\(A\)</span>: <span class="math display">\[
+|0\rangle_Q|0\rangle_A = \frac{1}{\sqrt{2}}(|\Phi^+\rangle + |\Phi^-\rangle), \qquad |0\rangle_Q|1\rangle_A = \frac{1}{\sqrt{2}}(|\Psi^+\rangle + |\Psi^-\rangle),
+\]</span> <span class="math display">\[
+|1\rangle_Q|0\rangle_A = \frac{1}{\sqrt{2}}(|\Psi^+\rangle - |\Psi^-\rangle), \qquad |1\rangle_Q|1\rangle_A = \frac{1}{\sqrt{2}}(|\Phi^+\rangle - |\Phi^-\rangle).
+\]</span> Substituting and collecting terms, the full three-qubit state becomes <span class="math display">\[
+|\Psi_0\rangle = \frac{1}{2}\Bigl[|\Phi^+\rangle_{QA}(\alpha|0\rangle + \beta|1\rangle)_B + |\Phi^-\rangle_{QA}(\alpha|0\rangle - \beta|1\rangle)_B
+\]</span> <span class="math display">\[
+\quad + |\Psi^+\rangle_{QA}(\alpha|1\rangle + \beta|0\rangle)_B + |\Psi^-\rangle_{QA}(\alpha|1\rangle - \beta|0\rangle)_B\Bigr].
+\]</span></p>
+<p><strong>Step 2: Bell measurement.</strong> Alice performs a joint measurement on qubits <span class="math inline">\(Q\)</span> and <span class="math inline">\(A\)</span> in the Bell basis, obtaining one of four equally likely outcomes. Each outcome leaves Bob’s qubit in one of four states related to <span class="math inline">\(|\psi\rangle\)</span> by a known Pauli:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Alice’s outcome</th>
+<th style="text-align: center;">Bob’s state</th>
+<th style="text-align: center;">Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(|\Phi^+\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\alpha|0\rangle + \beta|1\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathbb{I}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(|\Phi^-\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\alpha|0\rangle - \beta|1\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sigma_z\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(|\Psi^+\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\alpha|1\rangle + \beta|0\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sigma_x\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(|\Psi^-\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\alpha|1\rangle - \beta|0\rangle\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(i\sigma_y\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 3: classical communication and correction.</strong> Alice sends her two-bit measurement outcome to Bob over a classical channel. Bob applies the corresponding Pauli correction to recover <span class="math inline">\(|\psi\rangle\)</span> exactly.</p>
+<p>Several features deserve emphasis. First, the protocol does not violate no-cloning: Alice’s original state is destroyed by the Bell measurement, so at no point do two copies coexist. Second, it does not allow faster-than-light communication: Bob’s qubit is in the maximally mixed state <span class="math inline">\(\frac{1}{2}\mathbb{I}\)</span> until he receives Alice’s classical bits, so no information is available to him before the classical message arrives. Third, the protocol consumes the shared entanglement — after teleportation, the Bell pair is gone. Entanglement is thus a fungible resource: one ebit plus two classical bits equals one qubit of quantum communication.</p>
+<hr>
+</section>
+</section>
+<section id="quantum-channels" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-channels">Quantum Channels</h2>
+<section id="completely-positive-trace-preserving-maps" class="level3">
+<h3 class="anchored" data-anchor-id="completely-positive-trace-preserving-maps">Completely positive trace-preserving maps</h3>
+<p>A <strong>quantum channel</strong> is a physically realizable transformation of quantum states. Mathematically, it is a linear map <span class="math inline">\(\mathcal{E}: \mathcal{B}(\mathcal{H}_A) \to \mathcal{B}(\mathcal{H}_B)\)</span> that is:</p>
+<ol type="1">
+<li><strong>Trace-preserving:</strong> <span class="math inline">\(\mathrm{Tr}[\mathcal{E}(\rho)] = \mathrm{Tr}(\rho)\)</span> for all <span class="math inline">\(\rho\)</span>.</li>
+<li><strong>Completely positive:</strong> <span class="math inline">\(\mathcal{E} \otimes \mathrm{id}_R\)</span> maps positive operators to positive operators, for any reference system <span class="math inline">\(R\)</span>.</li>
+</ol>
+<p>Complete positivity is stronger than positivity and is physically necessary: if Alice applies <span class="math inline">\(\mathcal{E}\)</span> to her part of an entangled state, the joint state must remain a valid density matrix. The transpose map <span class="math inline">\(T(\rho) = \rho^T\)</span> is positive but not completely positive — this is the basis of the Peres–Horodecki (PPT) entanglement criterion.</p>
+</section>
+<section id="kraus-representation" class="level3">
+<h3 class="anchored" data-anchor-id="kraus-representation">Kraus representation</h3>
+<p><strong>Theorem (Stinespring, Kraus).</strong> A map <span class="math inline">\(\mathcal{E}\)</span> is a quantum channel if and only if it admits a <strong>Kraus decomposition</strong>: <span class="math display">\[
+\mathcal{E}(\rho) = \sum_{k} K_k \rho K_k^\dagger, \qquad \sum_k K_k^\dagger K_k = \mathbb{I}.
+\]</span></p>
+<p>The operators <span class="math inline">\(\{K_k\}\)</span> are called <strong>Kraus operators</strong>. They are not unique: any set <span class="math inline">\(\{K_k'\} = \{U_{kl} K_l\}\)</span> related by a unitary matrix gives the same channel.</p>
+<p>Physically, the Kraus representation arises from coupling the system to an environment initially in a pure state <span class="math inline">\(|0\rangle_E\)</span>, applying a joint unitary <span class="math inline">\(U_{SE}\)</span>, and tracing out the environment: <span class="math display">\[
+\mathcal{E}(\rho) = \mathrm{Tr}_E\bigl[U(\rho \otimes |0\rangle\langle 0|)U^\dagger\bigr].
+\]</span></p>
+<p>The Kraus operators are <span class="math inline">\(K_k = \langle k|_E U |0\rangle_E\)</span> for an orthonormal basis <span class="math inline">\(\{|k\rangle_E\}\)</span>.</p>
+</section>
+<section id="example-the-depolarizing-channel" class="level3">
+<h3 class="anchored" data-anchor-id="example-the-depolarizing-channel">Example: the depolarizing channel</h3>
+<p>The <strong>depolarizing channel</strong> replaces the input state with the maximally mixed state with probability <span class="math inline">\(p\)</span>: <span class="math display">\[
+\mathcal{E}_p(\rho) = (1-p)\rho + p \cdot \frac{\mathbb{I}}{d}.
+\]</span></p>
+<p>For qubits (<span class="math inline">\(d = 2\)</span>), this can be written in Kraus form using the Pauli matrices: <span class="math display">\[
+\mathcal{E}_p(\rho) = \left(1 - \frac{3p}{4}\right)\rho + \frac{p}{4}\bigl(\sigma_x \rho \sigma_x + \sigma_y \rho \sigma_y + \sigma_z \rho \sigma_z\bigr).
+\]</span></p>
+<p>The depolarizing channel is a useful benchmark: it represents the “worst-case” noise model in the sense that it shrinks the Bloch sphere uniformly. It has quantum capacity zero for <span class="math inline">\(p \geq 1/2\)</span> (for qubits), reflecting a threshold beyond which no quantum information can be reliably transmitted.</p>
+<hr>
+</section>
+</section>
+<section id="quantum-error-correction" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-error-correction">Quantum Error Correction</h2>
+<section id="the-basic-idea" class="level3">
+<h3 class="anchored" data-anchor-id="the-basic-idea">The basic idea</h3>
+<p>Classical information can be protected from noise by redundancy: encode a bit as <span class="math inline">\(0 \to 000\)</span>, <span class="math inline">\(1 \to 111\)</span>, and take a majority vote after transmission. For quantum information, this naive strategy fails — the no-cloning theorem forbids copying an unknown state <span class="math inline">\(|\psi\rangle\)</span> into <span class="math inline">\(|\psi\rangle|\psi\rangle|\psi\rangle\)</span>. The key insight of quantum error correction (QEC) is that one can instead encode <span class="math inline">\(k\)</span> <strong>logical qubits</strong> into <span class="math inline">\(n\)</span> <strong>physical qubits</strong> by spreading the quantum information across entangled states, without ever learning or copying the logical state. The resulting <strong><span class="math inline">\([[n,k,d]]\)</span> code</strong> can correct any error affecting up to <span class="math inline">\(\lfloor(d-1)/2\rfloor\)</span> physical qubits, where <span class="math inline">\(d\)</span> is the code distance.</p>
+</section>
+<section id="the-3-qubit-bit-flip-code" class="level3">
+<h3 class="anchored" data-anchor-id="the-3-qubit-bit-flip-code">The 3-qubit bit-flip code</h3>
+<p>The simplest quantum code corrects a single bit-flip (<span class="math inline">\(\sigma_x\)</span>) error. We encode one logical qubit into three physical qubits via <span class="math display">\[
+|0\rangle_L = |000\rangle, \qquad |1\rangle_L = |111\rangle,
+\]</span> so an arbitrary state <span class="math inline">\(|\psi\rangle = \alpha|0\rangle + \beta|1\rangle\)</span> is encoded as <span class="math display">\[
+|\psi\rangle_L = \alpha|000\rangle + \beta|111\rangle.
+\]</span> Note that this is an <em>entangled</em> state of three qubits, not three copies of <span class="math inline">\(|\psi\rangle\)</span> — no-cloning is respected.</p>
+<p>Suppose a bit-flip occurs on the first qubit: <span class="math inline">\(\alpha|000\rangle + \beta|111\rangle \to \alpha|100\rangle + \beta|011\rangle\)</span>. To detect which qubit was flipped without disturbing the encoded information, we measure two <strong>syndrome operators</strong>: <span class="math display">\[
+Z_1 Z_2 \quad \text{and} \quad Z_2 Z_3.
+\]</span> These operators check whether adjacent pairs of qubits agree, without revealing the values themselves. The syndrome outcomes are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Error</th>
+<th style="text-align: center;"><span class="math inline">\(Z_1 Z_2\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Z_2 Z_3\)</span></th>
+<th style="text-align: center;">Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">None</td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathbb{I}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(X_1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sigma_x^{(1)}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(X_2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sigma_x^{(2)}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(X_3\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sigma_x^{(3)}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The syndrome uniquely identifies the error, and a corrective <span class="math inline">\(\sigma_x\)</span> on the affected qubit restores the encoded state. Crucially, the syndrome measurement projects onto a subspace without revealing <span class="math inline">\(\alpha\)</span> or <span class="math inline">\(\beta\)</span> — it extracts information about the error while preserving the logical state.</p>
+</section>
+<section id="the-quantum-error-correction-conditions" class="level3">
+<h3 class="anchored" data-anchor-id="the-quantum-error-correction-conditions">The quantum error correction conditions</h3>
+<p>The 3-qubit code corrects only bit-flip errors. A general <span class="math inline">\([[n,k,d]]\)</span> code must handle arbitrary errors. The fundamental result is:</p>
+<p><strong>Theorem (Knill–Laflamme, 1997).</strong> A code with codespace <span class="math inline">\(\mathcal{C}\)</span> spanned by orthonormal codewords <span class="math inline">\(\{|\bar{i}\rangle\}\)</span> can correct a set of errors <span class="math inline">\(\{E_a\}\)</span> if and only if <span class="math display">\[
+\langle \bar{i}| E_a^\dagger E_b |\bar{j}\rangle = C_{ab}\,\delta_{ij}
+\]</span> for some Hermitian matrix <span class="math inline">\(C_{ab}\)</span> that depends on the errors but not on the codewords <span class="math inline">\(i, j\)</span>.</p>
+<p>The <span class="math inline">\(\delta_{ij}\)</span> condition ensures that errors do not mix different codewords (so that syndrome measurement does not disturb the logical information). The matrix <span class="math inline">\(C_{ab}\)</span> captures the “overlap” between different errors projected onto the code space; it must be independent of which codeword was encoded.</p>
+</section>
+<section id="the-steane-code" class="level3">
+<h3 class="anchored" data-anchor-id="the-steane-code">The Steane code</h3>
+<p>A practical code must correct both bit-flip (<span class="math inline">\(\sigma_x\)</span>) and phase-flip (<span class="math inline">\(\sigma_z\)</span>) errors. The <strong><span class="math inline">\([[7,1,3]]\)</span> Steane code</strong> is the smallest code that does this. It encodes one logical qubit into seven physical qubits and has distance <span class="math inline">\(d = 3\)</span>, so it can correct any single-qubit error (including arbitrary combinations of <span class="math inline">\(\sigma_x\)</span>, <span class="math inline">\(\sigma_y\)</span>, and <span class="math inline">\(\sigma_z\)</span>). The Steane code is a <strong>CSS code</strong> (Calderbank–Shor–Steane), meaning it is constructed from two classical codes: one correcting bit-flips and one correcting phase-flips. This modular structure makes CSS codes particularly elegant and amenable to fault-tolerant implementation.</p>
+</section>
+<section id="stabilizer-formalism" class="level3">
+<h3 class="anchored" data-anchor-id="stabilizer-formalism">Stabilizer formalism</h3>
+<p>The most powerful framework for describing quantum codes is the <strong>stabilizer formalism</strong> (Gottesman, 1997). A stabilizer code is defined by an abelian subgroup <span class="math inline">\(\mathcal{S}\)</span> of the <span class="math inline">\(n\)</span>-qubit Pauli group <span class="math inline">\(\mathcal{P}_n = \{I, X, Y, Z\}^{\otimes n}\)</span> (up to phases) satisfying <span class="math inline">\(-\mathbb{I} \notin \mathcal{S}\)</span>. The <strong>codespace</strong> is the joint <span class="math inline">\(+1\)</span> eigenspace of all elements of <span class="math inline">\(\mathcal{S}\)</span>: <span class="math display">\[
+\mathcal{C} = \{|\psi\rangle \in (\mathbb{C}^2)^{\otimes n} : S|\psi\rangle = +|\psi\rangle \;\; \forall \, S \in \mathcal{S}\}.
+\]</span></p>
+<p>If <span class="math inline">\(\mathcal{S}\)</span> is generated by <span class="math inline">\(n - k\)</span> independent generators <span class="math inline">\(g_1, \ldots, g_{n-k}\)</span>, the codespace encodes <span class="math inline">\(k\)</span> logical qubits. Error detection works by measuring the generators: each generator gives a <span class="math inline">\(\pm 1\)</span> outcome, and the string of outcomes (the syndrome) identifies which error occurred without collapsing the logical state.</p>
+<p>For the 3-qubit bit-flip code, the stabilizer group is <span class="math inline">\(\mathcal{S} = \langle Z_1Z_2,\, Z_2Z_3 \rangle\)</span>, with <span class="math inline">\(n - k = 3 - 1 = 2\)</span> generators — precisely the syndrome operators we encountered above. For the Steane code, <span class="math inline">\(\mathcal{S}\)</span> has <span class="math inline">\(7 - 1 = 6\)</span> generators, three detecting <span class="math inline">\(X\)</span> errors and three detecting <span class="math inline">\(Z\)</span> errors.</p>
+</section>
+<section id="connection-to-tensor-networks" class="level3">
+<h3 class="anchored" data-anchor-id="connection-to-tensor-networks">Connection to tensor networks</h3>
+<p>The stabilizer structure of quantum codes maps naturally to tensor network representations. A stabilizer state (a state stabilized by <span class="math inline">\(2^n\)</span> independent Pauli operators, i.e., a code with <span class="math inline">\(k = 0\)</span>) can be represented as a tensor network whose individual tensors encode the stabilizer constraints. More generally, the encoding isometry of a quantum error-correcting code is a tensor that maps <span class="math inline">\(k\)</span> logical indices to <span class="math inline">\(n\)</span> physical indices — precisely the structure of a tensor network with one “bulk” layer and one “boundary” layer. This is the foundation of the holographic quantum error-correcting codes discussed in the tensor networks section below, where the bulk-to-boundary map of AdS/CFT is modeled as an isometric tensor network satisfying the quantum error correction conditions.</p>
+<hr>
+</section>
+</section>
+<section id="connections-to-tensor-networks" class="level2">
+<h2 class="anchored" data-anchor-id="connections-to-tensor-networks">Connections to Tensor Networks</h2>
+<section id="mps-as-efficiently-describable-states" class="level3">
+<h3 class="anchored" data-anchor-id="mps-as-efficiently-describable-states">MPS as efficiently describable states</h3>
+<p>A generic state of <span class="math inline">\(N\)</span> qubits lives in a <span class="math inline">\(2^N\)</span>-dimensional Hilbert space — exponentially large, and thus intractable to describe classically. However, many physically relevant states (especially ground states of gapped local Hamiltonians in 1D) have limited entanglement and can be efficiently parameterized as <strong>matrix product states</strong> (MPS): <span class="math display">\[
+|\psi\rangle = \sum_{i_1, \ldots, i_N} \mathrm{Tr}(A^{i_1} A^{i_2} \cdots A^{i_N}) \, |i_1 i_2 \cdots i_N\rangle,
+\]</span> where each <span class="math inline">\(A^{i_k}\)</span> is a <span class="math inline">\(\chi \times \chi\)</span> matrix. The parameter <span class="math inline">\(\chi\)</span>, the <strong>bond dimension</strong>, controls the amount of entanglement the state can carry: the entanglement entropy across any cut is bounded by <span class="math inline">\(S \leq \log \chi\)</span>.</p>
+<p>From an information-theoretic standpoint, MPS are the natural class of states that saturate the <strong>area law</strong> for entanglement entropy in 1D: the entanglement of a contiguous block scales as the size of its boundary (which is a constant in 1D), not the volume of the block.</p>
+</section>
+<section id="area-law-from-information-theory" class="level3">
+<h3 class="anchored" data-anchor-id="area-law-from-information-theory">Area law from information theory</h3>
+<p>The area law for entanglement entropy is one of the deepest connections between quantum information and many-body physics. For ground states of gapped local Hamiltonians in <span class="math inline">\(D\)</span> spatial dimensions, one expects <span class="math display">\[
+S(\rho_A) \sim |\partial A|,
+\]</span> where <span class="math inline">\(|\partial A|\)</span> is the area of the boundary of region <span class="math inline">\(A\)</span>. In 1D, this was rigorously proven by Hastings (2007): gapped ground states satisfy <span class="math inline">\(S \leq \text{const}\)</span>, independent of system size.</p>
+<p>The area law explains why tensor network methods work: states with area-law entanglement occupy a tiny corner of the full Hilbert space, and tensor networks are precisely the variational class that parameterizes this corner efficiently.</p>
+</section>
+<section id="quantum-error-correction-and-holography" class="level3">
+<h3 class="anchored" data-anchor-id="quantum-error-correction-and-holography">Quantum error correction and holography</h3>
+<p>One of the most striking recent developments is the connection between quantum error correction, tensor networks, and holographic duality (AdS/CFT). The <strong>Ryu–Takayanagi formula</strong> relates the entanglement entropy of a boundary region <span class="math inline">\(A\)</span> in a holographic CFT to the area of the minimal surface <span class="math inline">\(\gamma_A\)</span> in the bulk: <span class="math display">\[
+S(\rho_A) = \frac{\mathrm{Area}(\gamma_A)}{4 G_N}.
+\]</span></p>
+<p>This is precisely an area law, and it can be modeled by tensor networks such as the <strong>MERA</strong> (multiscale entanglement renormalization ansatz) or <strong>HaPPY code</strong> (Pastawski, Yoshida, Harlow, Preskill, 2015). In the HaPPY model, the bulk-to-boundary map is a quantum error-correcting code: bulk operators in the “entanglement wedge” of a boundary region can be reconstructed from the boundary data, even if part of the boundary is erased.</p>
+<p>This perspective suggests that the emergence of spacetime geometry from entanglement is deeply tied to quantum error correction — a beautiful synthesis of quantum information and quantum gravity.</p>
+<hr>
+</section>
+</section>
+<section id="related-notes" class="level2">
+<h2 class="anchored" data-anchor-id="related-notes">Related Notes</h2>
+<ul>
+<li><a href="../notes/tensor-networks.html">Tensor Networks and Many-Body Physics</a> — detailed treatment of MPS, PEPS, MERA, and numerical algorithms (DMRG, TEBD)</li>
+<li><a href="../notes/group-theory-qm.html">Group Theory in Quantum Mechanics</a> — representation theory, symmetry-enforced degeneracies, and the role of symmetry in quantum information</li>
+</ul>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><p>M. A. Nielsen and I. L. Chuang, <em>Quantum Computation and Quantum Information</em> (Cambridge University Press, 2000). The standard reference for the field.</p></li>
+<li><p>W. K. Wootters and W. H. Zurek, “A single quantum cannot be cloned,” <em>Nature</em> <strong>299</strong>, 802 (1982).</p></li>
+<li><p>D. Dieks, “Communication by EPR devices,” <em>Physics Letters A</em> <strong>92</strong>, 271 (1982).</p></li>
+<li><p>C. W. Helstrom, <em>Quantum Detection and Estimation Theory</em> (Academic Press, 1976).</p></li>
+<li><p>A. S. Holevo, “Bounds for the quantity of information transmitted by a quantum communication channel,” <em>Problems of Information Transmission</em> <strong>9</strong>, 177 (1973).</p></li>
+<li><p>W. K. Wootters, “Entanglement of formation of an arbitrary state of two qubits,” <em>Physical Review Letters</em> <strong>80</strong>, 2245 (1998).</p></li>
+<li><p>V. Coffman, J. Kundu, and W. K. Wootters, “Distributed entanglement,” <em>Physical Review A</em> <strong>61</strong>, 052306 (2000).</p></li>
+<li><p>V. Buzek and M. Hillery, “Quantum copying: Beyond the no-cloning theorem,” <em>Physical Review A</em> <strong>54</strong>, 1844 (1996).</p></li>
+<li><p>M. B. Hastings, “An area law for one-dimensional quantum systems,” <em>Journal of Statistical Mechanics</em> P08024 (2007).</p></li>
+<li><p>F. Pastawski, B. Yoshida, D. Harlow, and J. Preskill, “Holographic quantum error-correcting codes: Toy models for the bulk/boundary correspondence,” <em>Journal of High Energy Physics</em> <strong>2015</strong>, 149 (2015).</p></li>
+<li><p>S. Ryu and T. Takayanagi, “Holographic derivation of entanglement entropy from the anti-de Sitter space/conformal field theory correspondence,” <em>Physical Review Letters</em> <strong>96</strong>, 181602 (2006).</p></li>
+<li><p>C. H. Bennett, G. Brassard, C. Crépeau, R. Jozsa, A. Peres, and W. K. Wootters, “Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels,” <em>Physical Review Letters</em> <strong>70</strong>, 1895 (1993).</p></li>
+<li><p>A. K. Pati and S. L. Braunstein, “Impossibility of deleting an unknown quantum state,” <em>Nature</em> <strong>404</strong>, 164 (2000).</p></li>
+<li><p>E. Knill and R. Laflamme, “Theory of quantum error-correcting codes,” <em>Physical Review A</em> <strong>55</strong>, 900 (1997).</p></li>
+<li><p>D. Gottesman, “Stabilizer codes and quantum error correction,” PhD thesis, Caltech (1997). arXiv:quant-ph/9705052.</p></li>
+<li><p>A. M. Steane, “Error correcting codes in quantum theory,” <em>Physical Review Letters</em> <strong>77</strong>, 793 (1996).</p></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ajitkumar1991\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Ajit Kumar Sorout</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:ajitkumar@umass.edu">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

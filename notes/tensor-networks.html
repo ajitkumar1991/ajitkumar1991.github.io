@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ajit Kumar Sorout">
+<meta name="dcterms.date" content="2025-01-01">
+<meta name="description" content="A comprehensive introduction to tensor network methods for quantum many-body physics, including MPS, DMRG, entanglement entropy, TCI, quantics methods, and connections to holography.">
+
+<title>Tensor Networks – Ajit Kumar Sorout</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-7bf7ec51a0ae41cf919e5f30745009cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bfcea955b98ba2cb061c1bafd60eaa82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Ajit Kumar Sorout</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-writing" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Writing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-writing">    
+        <li>
+    <a class="dropdown-item" href="../notes/index.html">
+ <span class="dropdown-text">Notes &amp; Expositions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../blog/index.html">
+ <span class="dropdown-text">Blog</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../tools/index.html"> 
+<span class="menu-text">Computational Tools</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">More</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-more">    
+        <li>
+    <a class="dropdown-item" href="../about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../contact.html">
+ <span class="dropdown-text">Contact &amp; CV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../photos.html">
+ <span class="dropdown-text">Photos</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=mjxdcyMAAAAJ&amp;hl=en"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../assets/cv.pdf"> <i class="bi bi-file-earmark-pdf" role="img" aria-label="CV">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/tensor-networks.html">Many-Body &amp; Computation</a></li><li class="breadcrumb-item"><a href="../notes/tensor-networks.html">Tensor Networks</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notes &amp; Expositions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">String Theory &amp; Geometry</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/brane-tilings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Brane Tilings and 4D Supersymmetric Field Theory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/mirror-symmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mirror Symmetry and T-Duality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/2d-cft-swampland.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2D CFT, Orbifolding, and the Swampland</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Many-Body &amp; Computation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/tensor-networks.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Tensor Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/monte-carlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monte Carlo and Computational Statistical Physics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/quantum-information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quantum Information and Computation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/machine-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning and Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/group-theory-qm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Theory in Quantum Mechanics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#tensors-and-tensor-diagrams" id="toc-tensors-and-tensor-diagrams" class="nav-link active" data-scroll-target="#tensors-and-tensor-diagrams">Tensors and Tensor Diagrams</a></li>
+  <li><a href="#the-entanglement-problem" id="toc-the-entanglement-problem" class="nav-link" data-scroll-target="#the-entanglement-problem">The Entanglement Problem</a>
+  <ul class="collapse">
+  <li><a href="#the-area-law" id="toc-the-area-law" class="nav-link" data-scroll-target="#the-area-law">The Area Law</a></li>
+  </ul></li>
+  <li><a href="#matrix-product-states" id="toc-matrix-product-states" class="nav-link" data-scroll-target="#matrix-product-states">Matrix Product States</a>
+  <ul class="collapse">
+  <li><a href="#parameter-count" id="toc-parameter-count" class="nav-link" data-scroll-target="#parameter-count">Parameter Count</a></li>
+  <li><a href="#bond-dimension-and-entanglement" id="toc-bond-dimension-and-entanglement" class="nav-link" data-scroll-target="#bond-dimension-and-entanglement">Bond Dimension and Entanglement</a></li>
+  <li><a href="#canonical-forms" id="toc-canonical-forms" class="nav-link" data-scroll-target="#canonical-forms">Canonical Forms</a></li>
+  </ul></li>
+  <li><a href="#dmrg-the-density-matrix-renormalization-group" id="toc-dmrg-the-density-matrix-renormalization-group" class="nav-link" data-scroll-target="#dmrg-the-density-matrix-renormalization-group">DMRG: The Density Matrix Renormalization Group</a>
+  <ul class="collapse">
+  <li><a href="#the-algorithm" id="toc-the-algorithm" class="nav-link" data-scroll-target="#the-algorithm">The Algorithm</a></li>
+  <li><a href="#key-parameters" id="toc-key-parameters" class="nav-link" data-scroll-target="#key-parameters">Key Parameters</a></li>
+  <li><a href="#when-dmrg-works-well" id="toc-when-dmrg-works-well" class="nav-link" data-scroll-target="#when-dmrg-works-well">When DMRG Works Well</a></li>
+  </ul></li>
+  <li><a href="#entanglement-entropy" id="toc-entanglement-entropy" class="nav-link" data-scroll-target="#entanglement-entropy">Entanglement Entropy</a>
+  <ul class="collapse">
+  <li><a href="#von-neumann-entropy" id="toc-von-neumann-entropy" class="nav-link" data-scroll-target="#von-neumann-entropy">Von Neumann Entropy</a></li>
+  <li><a href="#rényi-entropies" id="toc-rényi-entropies" class="nav-link" data-scroll-target="#rényi-entropies">Rényi Entropies</a></li>
+  <li><a href="#computing-entanglement-from-mps" id="toc-computing-entanglement-from-mps" class="nav-link" data-scroll-target="#computing-entanglement-from-mps">Computing Entanglement from MPS</a></li>
+  </ul></li>
+  <li><a href="#correlation-functions" id="toc-correlation-functions" class="nav-link" data-scroll-target="#correlation-functions">Correlation Functions</a>
+  <ul class="collapse">
+  <li><a href="#two-point-functions-from-mps" id="toc-two-point-functions-from-mps" class="nav-link" data-scroll-target="#two-point-functions-from-mps">Two-Point Functions from MPS</a></li>
+  <li><a href="#connected-vs.-disconnected-correlators" id="toc-connected-vs.-disconnected-correlators" class="nav-link" data-scroll-target="#connected-vs.-disconnected-correlators">Connected vs.&nbsp;Disconnected Correlators</a></li>
+  </ul></li>
+  <li><a href="#extracting-cft-data" id="toc-extracting-cft-data" class="nav-link" data-scroll-target="#extracting-cft-data">Extracting CFT Data</a>
+  <ul class="collapse">
+  <li><a href="#central-charge-from-entanglement" id="toc-central-charge-from-entanglement" class="nav-link" data-scroll-target="#central-charge-from-entanglement">Central Charge from Entanglement</a></li>
+  <li><a href="#scaling-dimensions-from-the-spectrum" id="toc-scaling-dimensions-from-the-spectrum" class="nav-link" data-scroll-target="#scaling-dimensions-from-the-spectrum">Scaling Dimensions from the Spectrum</a></li>
+  <li><a href="#operator-content-and-ope" id="toc-operator-content-and-ope" class="nav-link" data-scroll-target="#operator-content-and-ope">Operator Content and OPE</a></li>
+  </ul></li>
+  <li><a href="#boundary-cft" id="toc-boundary-cft" class="nav-link" data-scroll-target="#boundary-cft">Boundary CFT</a>
+  <ul class="collapse">
+  <li><a href="#boundary-entropy" id="toc-boundary-entropy" class="nav-link" data-scroll-target="#boundary-entropy">Boundary Entropy</a></li>
+  <li><a href="#boundary-rg-flows" id="toc-boundary-rg-flows" class="nav-link" data-scroll-target="#boundary-rg-flows">Boundary RG Flows</a></li>
+  </ul></li>
+  <li><a href="#tensor-cross-interpolation-tci" id="toc-tensor-cross-interpolation-tci" class="nav-link" data-scroll-target="#tensor-cross-interpolation-tci">Tensor Cross Interpolation (TCI)</a>
+  <ul class="collapse">
+  <li><a href="#from-matrix-cross-approximation-to-tensors" id="toc-from-matrix-cross-approximation-to-tensors" class="nav-link" data-scroll-target="#from-matrix-cross-approximation-to-tensors">From Matrix Cross Approximation to Tensors</a></li>
+  <li><a href="#the-tci-algorithm" id="toc-the-tci-algorithm" class="nav-link" data-scroll-target="#the-tci-algorithm">The TCI Algorithm</a></li>
+  <li><a href="#when-to-use-tci" id="toc-when-to-use-tci" class="nav-link" data-scroll-target="#when-to-use-tci">When to Use TCI</a></li>
+  <li><a href="#practical-considerations" id="toc-practical-considerations" class="nav-link" data-scroll-target="#practical-considerations">Practical Considerations</a></li>
+  </ul></li>
+  <li><a href="#quantics-tensor-methods" id="toc-quantics-tensor-methods" class="nav-link" data-scroll-target="#quantics-tensor-methods">Quantics Tensor Methods</a>
+  <ul class="collapse">
+  <li><a href="#why-this-works" id="toc-why-this-works" class="nav-link" data-scroll-target="#why-this-works">Why This Works</a></li>
+  <li><a href="#quantics-tci" id="toc-quantics-tci" class="nav-link" data-scroll-target="#quantics-tci">Quantics + TCI</a></li>
+  </ul></li>
+  <li><a href="#connections-to-holography" id="toc-connections-to-holography" class="nav-link" data-scroll-target="#connections-to-holography">Connections to Holography</a>
+  <ul class="collapse">
+  <li><a href="#ryu-takayanagi-formula" id="toc-ryu-takayanagi-formula" class="nav-link" data-scroll-target="#ryu-takayanagi-formula">Ryu-Takayanagi Formula</a></li>
+  <li><a href="#mera-and-holographic-geometry" id="toc-mera-and-holographic-geometry" class="nav-link" data-scroll-target="#mera-and-holographic-geometry">MERA and Holographic Geometry</a></li>
+  <li><a href="#holographic-quantum-error-correction" id="toc-holographic-quantum-error-correction" class="nav-link" data-scroll-target="#holographic-quantum-error-correction">Holographic Quantum Error Correction</a></li>
+  </ul></li>
+  <li><a href="#limitations-and-where-methods-break-down" id="toc-limitations-and-where-methods-break-down" class="nav-link" data-scroll-target="#limitations-and-where-methods-break-down">Limitations and Where Methods Break Down</a></li>
+  <li><a href="#practical-tips" id="toc-practical-tips" class="nav-link" data-scroll-target="#practical-tips">Practical Tips</a></li>
+  <li><a href="#related-notes" id="toc-related-notes" class="nav-link" data-scroll-target="#related-notes">Related Notes</a></li>
+  <li><a href="#computational-tools" id="toc-computational-tools" class="nav-link" data-scroll-target="#computational-tools">Computational Tools</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/tensor-networks.html">Many-Body &amp; Computation</a></li><li class="breadcrumb-item"><a href="../notes/tensor-networks.html">Tensor Networks</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Tensor Networks</h1>
+<p class="subtitle lead">From area laws to DMRG to holography</p>
+</div>
+
+<div>
+  <div class="description">
+    A comprehensive introduction to tensor network methods for quantum many-body physics, including MPS, DMRG, entanglement entropy, TCI, quantics methods, and connections to holography.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ajit Kumar Sorout </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 1, 2025</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 24, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Tensor networks have become indispensable in quantum many-body physics. They provide a language for describing quantum states that respects the entanglement structure of nature — and in doing so, they compress the exponential complexity of quantum mechanics into something tractable. These notes cover the conceptual foundations, the main algorithms, and several modern extensions.</p>
+<section id="tensors-and-tensor-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="tensors-and-tensor-diagrams">Tensors and Tensor Diagrams</h2>
+<p>A tensor is a multi-dimensional array of numbers. A scalar is a rank-0 tensor, a vector is rank-1, a matrix is rank-2, and so on. In tensor network language, we draw each tensor as a shape (node) with legs (edges) — one leg per index:</p>
+<ul>
+<li>A vector <span class="math inline">\(v_i\)</span>: one leg.</li>
+<li>A matrix <span class="math inline">\(M_{ij}\)</span>: two legs.</li>
+<li>A rank-3 tensor <span class="math inline">\(T_{ijk}\)</span>: three legs.</li>
+</ul>
+<p>In diagrams:</p>
+<pre><code>  Vector:     Matrix:      Rank-3:
+    |           |            |
+   [v]        [M]          [T]
+               |           / \</code></pre>
+<p><strong>Contraction</strong> means summing over a shared index. In diagrammatic notation, we connect the legs being summed over. Matrix multiplication <span class="math inline">\(C_{ik} = \sum_j A_{ij} B_{jk}\)</span> becomes:</p>
+<pre><code>  i─[A]─j─[B]─k    =    i─[C]─k</code></pre>
+<p>The connected <span class="math inline">\(j\)</span>-leg is summed over; the free legs <span class="math inline">\(i\)</span> and <span class="math inline">\(k\)</span> remain. A <strong>trace</strong> is a self-contraction (connecting two legs of the same tensor):</p>
+<pre><code>     ┌───┐
+  ───┤ M ├───    =    Tr(M)    (a scalar, no free legs)
+     └───┘</code></pre>
+<p>An <strong>MPS</strong> (Matrix Product State) for <span class="math inline">\(N\)</span> sites looks like:</p>
+<pre><code>  s₁   s₂   s₃         sₙ
+  |    |    |           |
+ [A]──[A]──[A]── ··· ──[A]
+      α₁   α₂         αₙ₋₁</code></pre>
+<p>Each vertical leg <span class="math inline">\(s_k\)</span> is a <strong>physical index</strong> (local Hilbert space dimension <span class="math inline">\(d\)</span>), and each horizontal leg <span class="math inline">\(\alpha_k\)</span> is a <strong>bond index</strong> (bond dimension <span class="math inline">\(\chi\)</span>). The full state is obtained by contracting all bond indices.</p>
+<p>This notation is more than cosmetic. For complicated networks of contractions, diagrams make the structure transparent in a way that index notation obscures. The computational cost of contracting a tensor network depends on the <em>order</em> of contractions, and finding the optimal contraction order is itself a rich algorithmic problem.</p>
+</section>
+<section id="the-entanglement-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-entanglement-problem">The Entanglement Problem</h2>
+<p>The Hilbert space of <span class="math inline">\(N\)</span> qubits has dimension <span class="math inline">\(2^N\)</span>. A general quantum state requires exponentially many coefficients: <span class="math display">\[
+|\psi\rangle = \sum_{s_1, \ldots, s_N} c_{s_1 \ldots s_N} |s_1, \ldots, s_N\rangle
+\]</span></p>
+<p>This exponential wall seems to doom exact simulation. But ground states of local Hamiltonians are not generic — they obey the <strong>area law</strong>.</p>
+<section id="the-area-law" class="level3">
+<h3 class="anchored" data-anchor-id="the-area-law">The Area Law</h3>
+<p>For a gapped local Hamiltonian in one spatial dimension, the entanglement entropy of a contiguous subsystem <span class="math inline">\(A\)</span> satisfies: <span class="math display">\[
+S_A \equiv -\mathrm{Tr}(\rho_A \log \rho_A) = O(1)
+\]</span></p>
+<p>That is, the entanglement entropy is bounded by a constant independent of the size of <span class="math inline">\(A\)</span>. This was proven rigorously by Hastings (2007) for 1D systems with a spectral gap.</p>
+<p>For gapless (critical) systems described by a conformal field theory, there is a logarithmic violation: <span class="math display">\[
+S_A = \frac{c}{3} \log \ell + \text{const}
+\]</span> where <span class="math inline">\(c\)</span> is the central charge and <span class="math inline">\(\ell\)</span> is the subsystem size. This result, due to Calabrese and Cardy (2004), connects entanglement to conformal invariance.</p>
+<p>In higher dimensions, the area law states that <span class="math inline">\(S_A\)</span> scales as the boundary area of <span class="math inline">\(A\)</span>, not its volume — hence the name. Ground states live in a tiny corner of the full Hilbert space, and tensor networks are designed to parametrize exactly that corner.</p>
+</section>
+</section>
+<section id="matrix-product-states" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-product-states">Matrix Product States</h2>
+<p>The simplest tensor network for one-dimensional systems is the <strong>Matrix Product State</strong> (MPS). Instead of one giant coefficient tensor <span class="math inline">\(c_{s_1 \cdots s_N}\)</span>, we decompose: <span class="math display">\[
+c_{s_1 s_2 \cdots s_N} = \sum_{\alpha_1, \ldots, \alpha_{N-1}} A^{[1] s_1}_{\phantom{[1]}\alpha_1} \, A^{[2] s_2}_{\phantom{[2]}\alpha_1 \alpha_2} \cdots A^{[N] s_N}_{\phantom{[N]}\alpha_{N-1}}
+\]</span></p>
+<p>Each <span class="math inline">\(A^{[k] s_k}\)</span> is a <span class="math inline">\(\chi_{k-1} \times \chi_k\)</span> matrix (with the boundary convention <span class="math inline">\(\chi_0 = \chi_N = 1\)</span> for open boundary conditions). The indices <span class="math inline">\(\alpha_k\)</span> are called <strong>bond indices</strong> and the dimensions <span class="math inline">\(\chi_k\)</span> are the <strong>bond dimensions</strong>.</p>
+<section id="parameter-count" class="level3">
+<h3 class="anchored" data-anchor-id="parameter-count">Parameter Count</h3>
+<p>The total number of parameters in an MPS with uniform bond dimension <span class="math inline">\(\chi\)</span> and local Hilbert space dimension <span class="math inline">\(d\)</span> is <span class="math inline">\(O(N d \chi^2)\)</span>. This is <em>linear</em> in system size. Compare with <span class="math inline">\(d^N\)</span> for a general state. For <span class="math inline">\(N = 50\)</span> qubits, a general state needs <span class="math inline">\(2^{50} \approx 10^{15}\)</span> complex numbers. An MPS with <span class="math inline">\(\chi = 100\)</span> needs about <span class="math inline">\(50 \times 2 \times 10^4 = 10^6\)</span>.</p>
+</section>
+<section id="bond-dimension-and-entanglement" class="level3">
+<h3 class="anchored" data-anchor-id="bond-dimension-and-entanglement">Bond Dimension and Entanglement</h3>
+<p>The bond dimension <span class="math inline">\(\chi\)</span> controls the maximum entanglement the MPS can represent. For a bipartition at bond <span class="math inline">\(k\)</span>, the Schmidt decomposition of the MPS has at most <span class="math inline">\(\chi_k\)</span> terms, so: <span class="math display">\[
+S_A \leq \log \chi_k
+\]</span></p>
+<p>For area-law states (gapped 1D systems), a constant <span class="math inline">\(\chi\)</span> suffices for a faithful approximation. For critical states with <span class="math inline">\(S_A \sim \frac{c}{3} \log \ell\)</span>, the required bond dimension grows as a power law with system size: <span class="math inline">\(\chi \sim \ell^{c/6}\)</span> (more precisely, <span class="math inline">\(\chi\)</span> grows polynomially for fixed accuracy). This is still tractable.</p>
+</section>
+<section id="canonical-forms" class="level3">
+<h3 class="anchored" data-anchor-id="canonical-forms">Canonical Forms</h3>
+<p>An MPS can be brought into <strong>canonical form</strong> by performing QR or SVD decompositions. In left-canonical form, each tensor satisfies <span class="math inline">\(\sum_{s} A^{[k]s\dagger} A^{[k]s} = I\)</span>. In mixed-canonical form, there is an <strong>orthogonality center</strong> at one site, and all tensors to the left are left-canonical and all to the right are right-canonical. This is essential for efficient computation: expectation values of local operators reduce to contractions involving only the tensors near the operator’s support.</p>
+</section>
+</section>
+<section id="dmrg-the-density-matrix-renormalization-group" class="level2">
+<h2 class="anchored" data-anchor-id="dmrg-the-density-matrix-renormalization-group">DMRG: The Density Matrix Renormalization Group</h2>
+<p>The <strong>DMRG algorithm</strong>, introduced by White (1992), is the standard method for finding ground states of 1D quantum systems. In modern language, it is a variational optimization over MPS.</p>
+<section id="the-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="the-algorithm">The Algorithm</h3>
+<p>Given a Hamiltonian <span class="math inline">\(H\)</span> (represented as a Matrix Product Operator, or MPO), DMRG finds the MPS <span class="math inline">\(|\psi\rangle\)</span> minimizing <span class="math inline">\(\langle \psi | H | \psi \rangle\)</span>.</p>
+<p>The strategy is to optimize one tensor at a time while holding all others fixed:</p>
+<ol type="1">
+<li>Place the orthogonality center at site <span class="math inline">\(k\)</span>.</li>
+<li>Contract the environment — all tensors except the one at site <span class="math inline">\(k\)</span> — with the MPO to form an <strong>effective Hamiltonian</strong> <span class="math inline">\(H_{\mathrm{eff}}\)</span> acting on the local tensor.</li>
+<li>Solve the local eigenvalue problem <span class="math inline">\(H_{\mathrm{eff}} |v\rangle = E |v\rangle\)</span> using an iterative solver (Lanczos or Davidson).</li>
+<li>Replace the tensor at site <span class="math inline">\(k\)</span> with the ground state eigenvector.</li>
+<li>Move the orthogonality center to site <span class="math inline">\(k+1\)</span> (or <span class="math inline">\(k-1\)</span>) and repeat.</li>
+</ol>
+<p>Diagrammatically, the effective Hamiltonian at site <span class="math inline">\(k\)</span> is formed by contracting everything except the tensor being optimized:</p>
+<pre><code>         s₁  s₂       sₖ       sₙ
+         |   |        |        |
+ ⟨ψ| :  [A*]─[A*]─···─[?]─···─[A*]
+                       |
+  H  :  [W]──[W]──···─[W]─···──[W]
+                       |
+ |ψ⟩ :  [A]──[A]──···─[?]─···──[A]
+         |   |        |        |
+         s₁  s₂       sₖ       sₙ
+
+  = Left environment ─── H_eff(sₖ,sₖ') ─── Right environment</code></pre>
+<p>The left and right environments are built incrementally as the sweep progresses, making each local optimization step efficient (<span class="math inline">\(O(\chi^3 d)\)</span> per site).</p>
+<p>One <strong>sweep</strong> consists of moving right from site 1 to <span class="math inline">\(N\)</span>, then left from <span class="math inline">\(N\)</span> to 1. Multiple sweeps are performed until the energy converges.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">ITensors</span>, <span class="bu">ITensorMPS</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Heisenberg spin-1/2 chain</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">100</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>sites <span class="op">=</span> <span class="fu">siteinds</span>(<span class="st">"S=1/2"</span>, N)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>os <span class="op">=</span> <span class="fu">OpSum</span>()</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N<span class="op">-</span><span class="fl">1</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    os <span class="op">+=</span> <span class="st">"Sz"</span>, j, <span class="st">"Sz"</span>, j<span class="op">+</span><span class="fl">1</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    os <span class="op">+=</span> <span class="fl">0.5</span>, <span class="st">"S+"</span>, j, <span class="st">"S-"</span>, j<span class="op">+</span><span class="fl">1</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    os <span class="op">+=</span> <span class="fl">0.5</span>, <span class="st">"S-"</span>, j, <span class="st">"S+"</span>, j<span class="op">+</span><span class="fl">1</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>H <span class="op">=</span> <span class="fu">MPO</span>(os, sites)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial MPS (random product state)</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>psi0 <span class="op">=</span> <span class="fu">random_mps</span>(sites; linkdims<span class="op">=</span><span class="fl">10</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Run DMRG</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>sweeps <span class="op">=</span> <span class="fu">Sweeps</span>(<span class="fl">10</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="fu">setmaxdim!</span>(sweeps, <span class="fl">20</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">200</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">setcutoff!</span>(sweeps, <span class="fl">1e-10</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>energy, psi <span class="op">=</span> <span class="fu">dmrg</span>(H, psi0, sweeps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="key-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="key-parameters">Key Parameters</h3>
+<ul>
+<li><strong>Bond dimension <span class="math inline">\(\chi\)</span></strong>: Controls accuracy. Increase until observables converge.</li>
+<li><strong>Truncation cutoff</strong>: Singular values below this threshold are discarded.</li>
+<li><strong>Number of sweeps</strong>: Usually 5–20 suffice for gapped systems; critical systems need more.</li>
+<li><strong>Subspace expansion / noise</strong>: Helps escape local minima, especially important in the first few sweeps.</li>
+</ul>
+</section>
+<section id="when-dmrg-works-well" class="level3">
+<h3 class="anchored" data-anchor-id="when-dmrg-works-well">When DMRG Works Well</h3>
+<p>DMRG is extremely effective for:</p>
+<ul>
+<li>1D gapped systems (exponentially fast convergence in <span class="math inline">\(\chi\)</span>)</li>
+<li>1D critical systems (polynomial convergence in <span class="math inline">\(\chi\)</span>, still practical)</li>
+<li>Quasi-1D systems (ladders, cylinders) with moderate width</li>
+</ul>
+<p>It struggles with:</p>
+<ul>
+<li>Truly 2D systems (entanglement grows with system width, requiring very large <span class="math inline">\(\chi\)</span>)</li>
+<li>Highly excited states (variational principle finds ground state; targeting excited states requires modifications)</li>
+<li>Systems with long-range entanglement (topological order, volume-law states)</li>
+</ul>
+</section>
+</section>
+<section id="entanglement-entropy" class="level2">
+<h2 class="anchored" data-anchor-id="entanglement-entropy">Entanglement Entropy</h2>
+<p>Entanglement entropy is both a physical observable and a diagnostic for tensor network calculations.</p>
+<section id="von-neumann-entropy" class="level3">
+<h3 class="anchored" data-anchor-id="von-neumann-entropy">Von Neumann Entropy</h3>
+<p>For a bipartition of the system into <span class="math inline">\(A\)</span> and <span class="math inline">\(\bar{A}\)</span>, the reduced density matrix <span class="math inline">\(\rho_A = \mathrm{Tr}_{\bar{A}} |\psi\rangle\langle\psi|\)</span> has eigenvalues <span class="math inline">\(\lambda_i\)</span> (the <strong>entanglement spectrum</strong>). The von Neumann entropy is: <span class="math display">\[
+S_A = -\sum_i \lambda_i \log \lambda_i
+\]</span></p>
+<p>In an MPS with the orthogonality center at the bipartition point, the singular values of the center tensor directly give <span class="math inline">\(\sqrt{\lambda_i}\)</span>.</p>
+</section>
+<section id="rényi-entropies" class="level3">
+<h3 class="anchored" data-anchor-id="rényi-entropies">Rényi Entropies</h3>
+<p>The <span class="math inline">\(n\)</span>-th Rényi entropy is: <span class="math display">\[
+S_A^{(n)} = \frac{1}{1-n} \log \mathrm{Tr}(\rho_A^n)
+\]</span></p>
+<p>The von Neumann entropy is the limit <span class="math inline">\(n \to 1\)</span>. Rényi entropies with integer <span class="math inline">\(n \geq 2\)</span> are often easier to measure in both numerics and experiments (via the replica trick or randomized measurements). For conformal systems: <span class="math display">\[
+S_A^{(n)} = \frac{c}{6}\left(1 + \frac{1}{n}\right) \log \ell + \text{const}
+\]</span></p>
+</section>
+<section id="computing-entanglement-from-mps" class="level3">
+<h3 class="anchored" data-anchor-id="computing-entanglement-from-mps">Computing Entanglement from MPS</h3>
+<p>In an MPS in mixed-canonical form with the orthogonality center at the bipartition bond, the entanglement spectrum is read off directly from the singular values. This makes entanglement entropy essentially free to compute once you have a converged MPS.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute entanglement entropy across bond at site N/2</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">entanglement_entropy</span>(psi<span class="op">::</span><span class="dt">MPS</span>, bond<span class="op">::</span><span class="dt">Int</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">orthogonalize!</span>(psi, bond)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    _, S, _ <span class="op">=</span> <span class="fu">svd</span>(psi[bond], (<span class="fu">linkind</span>(psi, bond<span class="op">-</span><span class="fl">1</span>), <span class="fu">siteind</span>(psi, bond)))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    SvN <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu">dim</span>(S, <span class="fl">1</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> S[n, n]<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> p <span class="op">&gt;</span> <span class="fl">1e-15</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            SvN <span class="op">-=</span> p <span class="op">*</span> <span class="fu">log</span>(p)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> SvN</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="correlation-functions" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-functions">Correlation Functions</h2>
+<section id="two-point-functions-from-mps" class="level3">
+<h3 class="anchored" data-anchor-id="two-point-functions-from-mps">Two-Point Functions from MPS</h3>
+<p>Given a converged MPS <span class="math inline">\(|\psi\rangle\)</span>, the two-point correlation function <span class="math inline">\(\langle O_i O_j \rangle\)</span> for operators <span class="math inline">\(O_i\)</span> at site <span class="math inline">\(i\)</span> and <span class="math inline">\(O_j\)</span> at site <span class="math inline">\(j &gt; i\)</span> is computed by:</p>
+<ol type="1">
+<li>Place the orthogonality center between sites <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>.</li>
+<li>Contract the local tensors at sites <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> with the operators.</li>
+<li>Contract the chain of tensors between <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> (the “transfer matrices”).</li>
+</ol>
+<p>The computational cost is <span class="math inline">\(O(|i - j| \chi^3)\)</span> for a single correlator. For a critical system, the two-point function of a primary operator <span class="math inline">\(\phi\)</span> with scaling dimension <span class="math inline">\(\Delta\)</span> decays as: <span class="math display">\[
+\langle \phi(x) \phi(0) \rangle \sim |x|^{-2\Delta}
+\]</span></p>
+<p>Fitting this power law from DMRG data is a standard way to extract scaling dimensions.</p>
+</section>
+<section id="connected-vs.-disconnected-correlators" class="level3">
+<h3 class="anchored" data-anchor-id="connected-vs.-disconnected-correlators">Connected vs.&nbsp;Disconnected Correlators</h3>
+<p>The connected correlator <span class="math inline">\(\langle O_i O_j \rangle_c = \langle O_i O_j \rangle - \langle O_i \rangle \langle O_j \rangle\)</span> isolates genuine correlations. For symmetry-broken states, the disconnected part can dominate, making the subtraction numerically delicate. Using symmetry sectors (quantum numbers) in the MPS avoids this issue by working in definite symmetry sectors from the start.</p>
+</section>
+</section>
+<section id="extracting-cft-data" class="level2">
+<h2 class="anchored" data-anchor-id="extracting-cft-data">Extracting CFT Data</h2>
+<p>At critical points, DMRG becomes a tool for extracting conformal field theory data — effectively a numerical bootstrap.</p>
+<section id="central-charge-from-entanglement" class="level3">
+<h3 class="anchored" data-anchor-id="central-charge-from-entanglement">Central Charge from Entanglement</h3>
+<p>For a critical system of length <span class="math inline">\(L\)</span> with periodic boundary conditions, the entanglement entropy across a cut at position <span class="math inline">\(\ell\)</span> is: <span class="math display">\[
+S(\ell) = \frac{c}{3} \log\left(\frac{L}{\pi} \sin\frac{\pi \ell}{L}\right) + s_0
+\]</span></p>
+<p>For open boundary conditions: <span class="math display">\[
+S(\ell) = \frac{c}{6} \log\left(\frac{2L}{\pi} \sin\frac{\pi \ell}{L}\right) + s_0'
+\]</span></p>
+<p>Fitting <span class="math inline">\(S(\ell)\)</span> to these functional forms extracts the central charge <span class="math inline">\(c\)</span> with high precision (typically 3–4 significant digits with <span class="math inline">\(\chi \sim 200\)</span>).</p>
+</section>
+<section id="scaling-dimensions-from-the-spectrum" class="level3">
+<h3 class="anchored" data-anchor-id="scaling-dimensions-from-the-spectrum">Scaling Dimensions from the Spectrum</h3>
+<p>The energy spectrum of a critical chain of length <span class="math inline">\(L\)</span> with periodic boundary conditions organizes into conformal towers: <span class="math display">\[
+E_n - E_0 = \frac{2\pi v}{L}\left(\Delta_n + \bar{\Delta}_n - \frac{c}{12}\right)
+\]</span></p>
+<p>where <span class="math inline">\(v\)</span> is the velocity, <span class="math inline">\(\Delta_n\)</span> and <span class="math inline">\(\bar{\Delta}_n\)</span> are the holomorphic and anti-holomorphic scaling dimensions, and <span class="math inline">\(c\)</span> is the central charge. Computing the low-lying spectrum at several system sizes and fitting the <span class="math inline">\(1/L\)</span> scaling yields the scaling dimensions.</p>
+</section>
+<section id="operator-content-and-ope" class="level3">
+<h3 class="anchored" data-anchor-id="operator-content-and-ope">Operator Content and OPE</h3>
+<p>By computing three-point functions <span class="math inline">\(\langle O_i(x_1) O_j(x_2) O_k(x_3) \rangle\)</span> and matching to the CFT prediction: <span class="math display">\[
+\langle O_i(x_1) O_j(x_2) O_k(x_3) \rangle = \frac{C_{ijk}}{|x_{12}|^{\Delta_i + \Delta_j - \Delta_k} |x_{13}|^{\Delta_i + \Delta_k - \Delta_j} |x_{23}|^{\Delta_j + \Delta_k - \Delta_i}}
+\]</span> one can extract OPE coefficients <span class="math inline">\(C_{ijk}\)</span>. This is numerically challenging but has been demonstrated for several CFTs.</p>
+</section>
+</section>
+<section id="boundary-cft" class="level2">
+<h2 class="anchored" data-anchor-id="boundary-cft">Boundary CFT</h2>
+<p>When a 1D critical system has boundaries, the boundary conditions must be specified — and they are classified by boundary conformal field theory (BCFT). This is directly relevant to my research on boundary RG flows in interacting Majorana chains.</p>
+<section id="boundary-entropy" class="level3">
+<h3 class="anchored" data-anchor-id="boundary-entropy">Boundary Entropy</h3>
+<p>The boundary entropy, or <span class="math inline">\(g\)</span>-factor (Affleck-Ludwig), quantifies the boundary degree of freedom: <span class="math display">\[
+\ln g = S_{\mathrm{open}} - \frac{1}{2} S_{\mathrm{periodic}}
+\]</span></p>
+<p>Under renormalization group flow, <span class="math inline">\(g\)</span> decreases monotonically — this is the <span class="math inline">\(g\)</span>-theorem (Friedan-Konechny). The <span class="math inline">\(g\)</span>-factor labels the conformally invariant boundary condition.</p>
+</section>
+<section id="boundary-rg-flows" class="level3">
+<h3 class="anchored" data-anchor-id="boundary-rg-flows">Boundary RG Flows</h3>
+<p>By tuning boundary parameters in the Hamiltonian, one can drive RG flows between different conformally invariant boundary conditions. DMRG is ideal for this: we can compute <span class="math inline">\(g\)</span> as a function of boundary coupling and map out the phase diagram. The tricritical Ising model (<span class="math inline">\(c = 7/10\)</span>) has a particularly rich boundary structure, with multiple relevant boundary operators and flows between distinct boundary conditions.</p>
+</section>
+</section>
+<section id="tensor-cross-interpolation-tci" class="level2">
+<h2 class="anchored" data-anchor-id="tensor-cross-interpolation-tci">Tensor Cross Interpolation (TCI)</h2>
+<p>Tensor Cross Interpolation (TCI) is a more recent development that extends the reach of tensor network methods beyond quantum states. The idea: given a function <span class="math inline">\(f(x_1, \ldots, x_N)\)</span> that is not known analytically but can be evaluated pointwise, TCI constructs a tensor train (TT) approximation by adaptively selecting which entries to evaluate.</p>
+<section id="from-matrix-cross-approximation-to-tensors" class="level3">
+<h3 class="anchored" data-anchor-id="from-matrix-cross-approximation-to-tensors">From Matrix Cross Approximation to Tensors</h3>
+<p>The starting point is <strong>cross approximation</strong> (or skeleton decomposition) for matrices. Given an <span class="math inline">\(m \times n\)</span> matrix <span class="math inline">\(M\)</span>, choose a subset of row indices <span class="math inline">\(I = \{i_1, \ldots, i_r\}\)</span> and column indices <span class="math inline">\(J = \{j_1, \ldots, j_r\}\)</span> (with <span class="math inline">\(r \ll \min(m, n)\)</span>). Then: <span class="math display">\[
+M \approx M(:, J) \, M(I, J)^{-1} \, M(I, :)
+\]</span></p>
+<p>This is exact if <span class="math inline">\(M\)</span> has rank <span class="math inline">\(r\)</span> and <span class="math inline">\(M(I, J)\)</span> is non-singular. The key insight is that this approximation only requires evaluating:</p>
+<ul>
+<li><span class="math inline">\(m \cdot r\)</span> entries (the columns <span class="math inline">\(M(:, J)\)</span>)</li>
+<li><span class="math inline">\(r \cdot n\)</span> entries (the rows <span class="math inline">\(M(I, :)\)</span>)</li>
+<li><span class="math inline">\(r^2\)</span> entries (the pivot submatrix <span class="math inline">\(M(I, J)\)</span>)</li>
+</ul>
+<p>for a total of <span class="math inline">\((m + n)r + r^2\)</span> entries, far less than the <span class="math inline">\(mn\)</span> entries of the full matrix.</p>
+<p>For a rank-<span class="math inline">\(N\)</span> tensor <span class="math inline">\(T_{i_1 i_2 \cdots i_N}\)</span> with each index of dimension <span class="math inline">\(d\)</span>, TCI performs a sequence of matrix cross approximations along each bond of the tensor train decomposition: <span class="math display">\[
+T_{i_1 i_2 \cdots i_N} \approx \sum_{\alpha_1, \ldots, \alpha_{N-1}} A^{[1]}_{i_1, \alpha_1} \, A^{[2]}_{\alpha_1, i_2, \alpha_2} \cdots A^{[N]}_{\alpha_{N-1}, i_N}
+\]</span></p>
+<p>The algorithm proceeds by <strong>sweeping</strong> through the bonds, at each bond choosing pivot indices that maximize the accuracy of the decomposition. The pivots are multi-indices: <span class="math inline">\(I_k = \{(i_1^{(1)}, \ldots, i_k^{(1)}), \ldots\}\)</span> that specify which “rows” of the unfolded tensor to sample.</p>
+</section>
+<section id="the-tci-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="the-tci-algorithm">The TCI Algorithm</h3>
+<p>The two main variants are:</p>
+<ol type="1">
+<li><p><strong>TCI1</strong> (one-site update): Sweep through bonds, at each bond select the best pivot by maximizing the absolute value of the residual. Simple but can get stuck in local optima.</p></li>
+<li><p><strong>TCI2</strong> (two-site update): At each step, consider a pair of adjacent bonds and perform a cross approximation on the combined two-site tensor. This is more robust and is the recommended default.</p></li>
+</ol>
+<p>At each bond, the algorithm:</p>
+<ol type="1">
+<li>Unfolds the tensor into a matrix <span class="math inline">\(M\)</span> of size <span class="math inline">\((d^k \chi) \times (d^{N-k} \chi)\)</span> (conceptually — it never forms this matrix explicitly).</li>
+<li>Selects pivots by evaluating <span class="math inline">\(M\)</span> at specific entries and updating the row/column index sets.</li>
+<li>Performs the cross decomposition to update the local tensor train cores.</li>
+</ol>
+<p>The total number of function evaluations scales as <span class="math inline">\(O(N d \chi^2)\)</span> per sweep, and typically a few sweeps suffice for convergence. Compare this to <span class="math inline">\(d^N\)</span> for brute-force evaluation — the compression is exponential when the tensor has low TT-rank.</p>
+</section>
+<section id="when-to-use-tci" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-tci">When to Use TCI</h3>
+<p>TCI is the right tool when:</p>
+<ul>
+<li>The function <span class="math inline">\(f\)</span> is <strong>expensive to evaluate</strong> (e.g., a quantum chemistry calculation, a Feynman diagram, or any computation that takes seconds or more per point)</li>
+<li>The tensor has <strong>low-rank structure</strong> but is too large to store explicitly — even <span class="math inline">\(d = 2\)</span> with <span class="math inline">\(N = 50\)</span> gives <span class="math inline">\(2^{50} \approx 10^{15}\)</span> entries</li>
+<li>You need to <strong>integrate</strong> over the function: once in TT form, high-dimensional integrals reduce to contracting the network, which costs <span class="math inline">\(O(N \chi^2)\)</span></li>
+<li>You want to <strong>compress</strong> simulation data or kernel functions for reuse</li>
+</ul>
+<p>The cost scales as <span class="math inline">\(O(N d \chi^3 r)\)</span> where <span class="math inline">\(r\)</span> is the number of pivot updates per sweep, far less than the <span class="math inline">\(d^N\)</span> cost of evaluating all entries.</p>
+</section>
+<section id="practical-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="practical-considerations">Practical Considerations</h3>
+<p>TCI is implemented in several libraries:</p>
+<ul>
+<li><strong><code>TensorCrossInterpolation.jl</code></strong> (Julia): The most actively developed library, with good documentation</li>
+<li><strong><code>xfac</code></strong> (C++/Python): High-performance implementation</li>
+</ul>
+<p>The main tuning parameters are:</p>
+<ul>
+<li><strong>Tolerance <span class="math inline">\(\epsilon\)</span></strong>: Controls the accuracy of the decomposition. The algorithm stops adding pivots when the estimated error drops below <span class="math inline">\(\epsilon\)</span>.</li>
+<li><strong>Maximum bond dimension <span class="math inline">\(\chi_{\max}\)</span></strong>: Limits the rank of each bond. If the true rank exceeds <span class="math inline">\(\chi_{\max}\)</span>, the result is a controlled approximation.</li>
+<li><strong>Pivot selection strategy</strong>: Full pivoting (maximizing over all candidates) is optimal but expensive; partial or randomized pivoting is faster and usually sufficient.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">TensorCrossInterpolation</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: compress a 2D function on a 2^20 × 2^20 grid</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (over 10^12 grid points, but only ~10^4 evaluations needed)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">expensive_function</span>(indices)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># indices is a vector of N binary digits</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">sum</span>(indices[k] <span class="op">*</span> <span class="fl">2.0</span><span class="op">^</span>(<span class="op">-</span>k) <span class="cf">for</span> k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu">length</span>(indices))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">exp</span>(<span class="op">-</span><span class="fl">10</span> <span class="op">*</span> (x <span class="op">-</span> <span class="fl">0.5</span>)<span class="op">^</span><span class="fl">2</span>) <span class="op">*</span> <span class="fu">cos</span>(<span class="fl">20</span>π <span class="op">*</span> x)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">20</span>  <span class="co"># 2^20 grid points</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>localdims <span class="op">=</span> <span class="fu">fill</span>(<span class="fl">2</span>, N)  <span class="co"># Each index is binary</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>tci, ranks, errors <span class="op">=</span> <span class="fu">crossinterpolate</span>(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Float64</span>, expensive_function, localdims;</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    tolerance<span class="op">=</span><span class="fl">1e-8</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Result: a tensor train with bond dimensions typically O(10),</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># built from O(N * chi^2) ≈ O(2000) function evaluations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="quantics-tensor-methods" class="level2">
+<h2 class="anchored" data-anchor-id="quantics-tensor-methods">Quantics Tensor Methods</h2>
+<p><strong>Quantics</strong> (also called quantized tensor trains or QTT) is a technique for representing functions on fine grids by re-interpreting the grid points in a binary (or higher base) representation. A function <span class="math inline">\(f(x)\)</span> on a grid of <span class="math inline">\(2^N\)</span> points is reshaped into a rank-<span class="math inline">\(N\)</span> tensor with each index taking values in <span class="math inline">\(\{0, 1\}\)</span>: <span class="math display">\[
+f(x_{b_1 b_2 \cdots b_N}) \to T_{b_1 b_2 \cdots b_N}
+\]</span></p>
+<p>where <span class="math inline">\(x = \sum_{k=1}^N b_k 2^{-k}\)</span> in the binary expansion.</p>
+<section id="why-this-works" class="level3">
+<h3 class="anchored" data-anchor-id="why-this-works">Why This Works</h3>
+<p>Many smooth functions and oscillatory functions have low-rank quantics representations. For example:</p>
+<ul>
+<li>A Gaussian <span class="math inline">\(e^{-ax^2}\)</span> has QTT rank bounded by a constant independent of grid size</li>
+<li>Trigonometric functions <span class="math inline">\(\sin(kx)\)</span> have QTT rank 2</li>
+<li>Solutions to differential equations often have low QTT rank</li>
+</ul>
+<p>This means you can represent a function on a grid of <span class="math inline">\(10^{15}\)</span> points with <span class="math inline">\(O(N)\)</span> parameters — an exponential compression.</p>
+</section>
+<section id="quantics-tci" class="level3">
+<h3 class="anchored" data-anchor-id="quantics-tci">Quantics + TCI</h3>
+<p>The combination of quantics representation with TCI is particularly powerful: given a function that can be evaluated pointwise, quantics+TCI builds a compact tensor representation by evaluating only <span class="math inline">\(O(N \chi^2)\)</span> function values out of <span class="math inline">\(2^N\)</span> total grid points.</p>
+<p>Applications include:</p>
+<ul>
+<li>Solving integral equations in high dimensions</li>
+<li>Representing Green’s functions in quantum field theory</li>
+<li>Compressing data for many-body calculations</li>
+<li>Evaluating Feynman diagrams</li>
+</ul>
+<p>This is an active area of research with connections to my work on efficient numerical methods for condensed matter systems.</p>
+</section>
+</section>
+<section id="connections-to-holography" class="level2">
+<h2 class="anchored" data-anchor-id="connections-to-holography">Connections to Holography</h2>
+<p>The connection between tensor networks and holography (AdS/CFT) is one of the most stimulating ideas in recent theoretical physics.</p>
+<section id="ryu-takayanagi-formula" class="level3">
+<h3 class="anchored" data-anchor-id="ryu-takayanagi-formula">Ryu-Takayanagi Formula</h3>
+<p>The Ryu-Takayanagi formula relates entanglement entropy in a CFT to geometry in the dual AdS space: <span class="math display">\[
+S_A = \frac{\mathrm{Area}(\gamma_A)}{4 G_N}
+\]</span> where <span class="math inline">\(\gamma_A\)</span> is the minimal surface in AdS homologous to the boundary region <span class="math inline">\(A\)</span>.</p>
+</section>
+<section id="mera-and-holographic-geometry" class="level3">
+<h3 class="anchored" data-anchor-id="mera-and-holographic-geometry">MERA and Holographic Geometry</h3>
+<p>The Multi-scale Entanglement Renormalization Ansatz (MERA) is a tensor network with a hierarchical structure of <strong>disentanglers</strong> (<span class="math inline">\(u\)</span>) and <strong>isometries</strong> (<span class="math inline">\(w\)</span>) that implements real-space renormalization:</p>
+<pre><code>  Physical sites (boundary):
+  |   |   |   |   |   |   |   |
+  [u] [u] [u] [u]               ← disentanglers
+  |\ /|   |\ /|   |\ /|   |\ /|
+   [w]     [w]     [w]     [w]  ← isometries (coarse-grain)
+    |       |       |       |
+    [u]     [u]                  ← disentanglers (next scale)
+    |\ /|   |\ /|
+     [w]     [w]                 ← isometries
+      |       |
+      [u]                       ← top level
+      |\ /|
+       [w]
+        |
+     (bulk / IR)</code></pre>
+<p>Each layer removes short-range entanglement (disentanglers) and then coarse-grains (isometries), building a hierarchy from UV (physical sites at the bottom) to IR (top). Swingle (2012) observed that the MERA geometry — a hyperbolic tree — resembles a discretization of an AdS time slice. In this picture:</p>
+<ul>
+<li>Tensors deeper in the MERA correspond to bulk points farther from the boundary</li>
+<li>The entanglement entropy of a boundary region <span class="math inline">\(A\)</span> is bounded by the number of bonds cut by the minimal surface through the network — mimicking Ryu-Takayanagi</li>
+<li>Renormalization scale maps to the radial (holographic) direction</li>
+</ul>
+</section>
+<section id="holographic-quantum-error-correction" class="level3">
+<h3 class="anchored" data-anchor-id="holographic-quantum-error-correction">Holographic Quantum Error Correction</h3>
+<p>Pastawski, Yoshida, Harlow, and Preskill (2015) showed that certain tensor networks built from <strong>perfect tensors</strong> (tensors that are isometric from any bipartition of their indices to the complement) realize holographic quantum error correction. The boundary state can reconstruct bulk operators within the <strong>entanglement wedge</strong>, precisely as predicted by the AdS/CFT entanglement wedge reconstruction conjecture.</p>
+<p>These results suggest that spacetime geometry may emerge from entanglement patterns in a deeper quantum theory — and tensor networks provide a concrete mathematical language for this emergence.</p>
+</section>
+</section>
+<section id="limitations-and-where-methods-break-down" class="level2">
+<h2 class="anchored" data-anchor-id="limitations-and-where-methods-break-down">Limitations and Where Methods Break Down</h2>
+<p>No method is universal. Tensor networks have characteristic limitations:</p>
+<ol type="1">
+<li><p><strong>Two dimensions</strong>: For 2D systems, the entanglement of a region scales as its perimeter. DMRG on cylinders requires <span class="math inline">\(\chi\)</span> that grows exponentially with cylinder width. PEPS (Projected Entangled Pair States) are the 2D analogue of MPS, but their contraction is <span class="math inline">\(\#P\)</span>-hard in general.</p></li>
+<li><p><strong>Volume-law entanglement</strong>: Highly excited states and thermal states at high temperature have volume-law entanglement, making MPS representations exponentially expensive.</p></li>
+<li><p><strong>Fermion sign structure</strong>: While tensor networks handle 1D fermions well (via Jordan-Wigner), higher-dimensional fermionic systems face challenges similar to the sign problem in Monte Carlo.</p></li>
+<li><p><strong>Dynamical properties</strong>: Real-time evolution generates entanglement linearly in time, so MPS simulations of quench dynamics are limited to short-to-moderate times.</p></li>
+<li><p><strong>Finite-entanglement effects</strong>: At criticality, finite <span class="math inline">\(\chi\)</span> introduces an effective correlation length <span class="math inline">\(\xi_\chi \sim \chi^\kappa\)</span> where the exponent <span class="math inline">\(\kappa\)</span> depends on the universality class. Extrapolation to <span class="math inline">\(\chi \to \infty\)</span> is necessary for quantitative results.</p></li>
+</ol>
+</section>
+<section id="practical-tips" class="level2">
+<h2 class="anchored" data-anchor-id="practical-tips">Practical Tips</h2>
+<p>If you are starting with tensor networks:</p>
+<ol type="1">
+<li><p><strong>Use ITensor (Julia) or TeNPy (Python).</strong> These are mature, well-documented libraries. Do not rewrite DMRG from scratch unless you are studying the algorithm itself.</p></li>
+<li><p><strong>Bond dimension convergence is essential.</strong> Always plot observables as a function of <span class="math inline">\(\chi\)</span> (or <span class="math inline">\(1/\chi\)</span>) and check that results are converged or can be reliably extrapolated.</p></li>
+<li><p><strong>Open boundaries are cheaper.</strong> Periodic boundary conditions require significantly larger <span class="math inline">\(\chi\)</span> for the same accuracy. Use open boundaries and account for boundary effects analytically when possible.</p></li>
+<li><p><strong>Exploit symmetries.</strong> Implementing <span class="math inline">\(U(1)\)</span> or <span class="math inline">\(SU(2)\)</span> quantum number conservation in the MPS reduces the effective bond dimension and makes calculations faster and more stable.</p></li>
+<li><p><strong>For critical systems, use finite-entanglement scaling.</strong> The effective correlation length <span class="math inline">\(\xi_\chi \sim \chi^\kappa\)</span> allows systematic extrapolation of critical exponents and scaling dimensions.</p></li>
+<li><p><strong>Validate against exact results.</strong> Free-fermion systems, Bethe ansatz solutions, and small systems (exact diagonalization) provide essential benchmarks.</p></li>
+</ol>
+<hr>
+</section>
+<section id="related-notes" class="level2">
+<h2 class="anchored" data-anchor-id="related-notes">Related Notes</h2>
+<ul>
+<li><a href="../notes/monte-carlo.html">Monte Carlo and Computational Statistical Physics</a> — Alternative numerical methods for many-body physics</li>
+<li><a href="../notes/quantum-information.html">Quantum Information and Computation</a> — Entanglement theory and connections to tensor networks</li>
+<li><a href="../notes/2d-cft-swampland.html">2D CFT, Orbifolding, and the Swampland</a> — The CFT formalism underlying scaling analysis</li>
+</ul>
+</section>
+<section id="computational-tools" class="level2">
+<h2 class="anchored" data-anchor-id="computational-tools">Computational Tools</h2>
+<ul>
+<li><a href="../tools/julia-tensor-networks.html">Julia Tensor Network Workflows</a> — Practical ITensor.jl guide</li>
+</ul>
+<hr>
+<p><em>References:</em></p>
+<ul>
+<li>S. R. White, “Density matrix formulation for quantum renormalization groups,” Phys. Rev.&nbsp;Lett. <strong>69</strong>, 2863 (1992)</li>
+<li>U. Schollwöck, “The density-matrix renormalization group in the age of matrix product states,” Ann. Phys. <strong>326</strong>, 96 (2011)</li>
+<li>P. Calabrese and J. Cardy, “Entanglement entropy and quantum field theory,” J. Stat. Mech. (2004) P06002</li>
+<li>B. Swingle, “Entanglement renormalization and holography,” Phys. Rev.&nbsp;D <strong>86</strong>, 065007 (2012)</li>
+<li>D. Perez-Garcia, F. Verstraete, M. M. Wolf, J. I. Cirac, “Matrix product state representations,” Quant. Inf. Comp. <strong>7</strong>, 401 (2007)</li>
+<li>M. B. Hastings, “An area law for one-dimensional quantum systems,” J. Stat. Mech. (2007) P08024</li>
+<li>I. Affleck and A. W. W. Ludwig, “Universal noninteger ‘ground-state degeneracy’ in critical quantum systems,” Phys. Rev.&nbsp;Lett. <strong>67</strong>, 161 (1991)</li>
+<li>F. Pastawski, B. Yoshida, D. Harlow, J. Preskill, “Holographic quantum error-correcting codes,” JHEP <strong>2015</strong>, 149 (2015)</li>
+<li>Y. Núñez Fernández et al., “Learning tensor networks with tensor cross interpolation,” arXiv:2407.02454</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ajitkumar1991\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Ajit Kumar Sorout</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:ajitkumar@umass.edu">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ajit Kumar Sorout">
+<meta name="dcterms.date" content="2026-03-23">
+<meta name="description" content="A pedagogical introduction to group representation theory in quantum mechanics: irreducible representations, Schur’s lemma, symmetry-enforced degeneracies, and worked examples.">
+
+<title>Group Theory in Quantum Mechanics – Ajit Kumar Sorout</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-7bf7ec51a0ae41cf919e5f30745009cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0bb0b530e54782cf39a30b39ef8a2d6c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bfcea955b98ba2cb061c1bafd60eaa82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-be198823ee10ad91fd46b2ad9499de1d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Ajit Kumar Sorout</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-writing" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Writing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-writing">    
+        <li>
+    <a class="dropdown-item" href="../notes/index.html">
+ <span class="dropdown-text">Notes &amp; Expositions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../blog/index.html">
+ <span class="dropdown-text">Blog</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../tools/index.html"> 
+<span class="menu-text">Computational Tools</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">More</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-more">    
+        <li>
+    <a class="dropdown-item" href="../about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../contact.html">
+ <span class="dropdown-text">Contact &amp; CV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../photos.html">
+ <span class="dropdown-text">Photos</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=mjxdcyMAAAAJ&amp;hl=en"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../assets/cv.pdf"> <i class="bi bi-file-earmark-pdf" role="img" aria-label="CV">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/machine-learning.html">Methods &amp; Foundations</a></li><li class="breadcrumb-item"><a href="../notes/group-theory-qm.html">Group Theory in Quantum Mechanics</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notes &amp; Expositions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">String Theory &amp; Geometry</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/brane-tilings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Brane Tilings and 4D Supersymmetric Field Theory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/mirror-symmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mirror Symmetry and T-Duality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/2d-cft-swampland.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2D CFT, Orbifolding, and the Swampland</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Many-Body &amp; Computation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/tensor-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tensor Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/monte-carlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monte Carlo and Computational Statistical Physics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/quantum-information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quantum Information and Computation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/machine-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning and Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notes/group-theory-qm.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Group Theory in Quantum Mechanics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#groups-definitions-and-examples" id="toc-groups-definitions-and-examples" class="nav-link" data-scroll-target="#groups-definitions-and-examples">Groups: Definitions and Examples</a>
+  <ul class="collapse">
+  <li><a href="#homomorphisms" id="toc-homomorphisms" class="nav-link" data-scroll-target="#homomorphisms">Homomorphisms</a></li>
+  </ul></li>
+  <li><a href="#representations" id="toc-representations" class="nav-link" data-scroll-target="#representations">Representations</a>
+  <ul class="collapse">
+  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
+  <li><a href="#reducible-and-irreducible-representations" id="toc-reducible-and-irreducible-representations" class="nav-link" data-scroll-target="#reducible-and-irreducible-representations">Reducible and irreducible representations</a></li>
+  </ul></li>
+  <li><a href="#schurs-lemma" id="toc-schurs-lemma" class="nav-link" data-scroll-target="#schurs-lemma">Schur’s Lemma</a>
+  <ul class="collapse">
+  <li><a href="#statement" id="toc-statement" class="nav-link" data-scroll-target="#statement">Statement</a></li>
+  <li><a href="#proof-sketch" id="toc-proof-sketch" class="nav-link" data-scroll-target="#proof-sketch">Proof sketch</a></li>
+  <li><a href="#physical-consequence-why-symmetry-implies-degeneracy" id="toc-physical-consequence-why-symmetry-implies-degeneracy" class="nav-link" data-scroll-target="#physical-consequence-why-symmetry-implies-degeneracy">Physical consequence: why symmetry implies degeneracy</a></li>
+  </ul></li>
+  <li><a href="#su2-and-angular-momentum" id="toc-su2-and-angular-momentum" class="nav-link" data-scroll-target="#su2-and-angular-momentum">SU(2) and Angular Momentum</a>
+  <ul class="collapse">
+  <li><a href="#the-algebra" id="toc-the-algebra" class="nav-link" data-scroll-target="#the-algebra">The algebra</a></li>
+  <li><a href="#irreducible-representations" id="toc-irreducible-representations" class="nav-link" data-scroll-target="#irreducible-representations">Irreducible representations</a></li>
+  <li><a href="#angular-momentum-addition" id="toc-angular-momentum-addition" class="nav-link" data-scroll-target="#angular-momentum-addition">Angular momentum addition</a></li>
+  </ul></li>
+  <li><a href="#the-wigner-eckart-theorem" id="toc-the-wigner-eckart-theorem" class="nav-link" data-scroll-target="#the-wigner-eckart-theorem">The Wigner-Eckart Theorem</a>
+  <ul class="collapse">
+  <li><a href="#spherical-tensor-operators" id="toc-spherical-tensor-operators" class="nav-link" data-scroll-target="#spherical-tensor-operators">Spherical tensor operators</a></li>
+  <li><a href="#statement-of-the-theorem" id="toc-statement-of-the-theorem" class="nav-link" data-scroll-target="#statement-of-the-theorem">Statement of the theorem</a></li>
+  <li><a href="#physical-consequences" id="toc-physical-consequences" class="nav-link" data-scroll-target="#physical-consequences">Physical consequences</a></li>
+  <li><a href="#example-electric-dipole-transitions-in-hydrogen" id="toc-example-electric-dipole-transitions-in-hydrogen" class="nav-link" data-scroll-target="#example-electric-dipole-transitions-in-hydrogen">Example: electric dipole transitions in hydrogen</a></li>
+  </ul></li>
+  <li><a href="#selection-rules-from-symmetry" id="toc-selection-rules-from-symmetry" class="nav-link" data-scroll-target="#selection-rules-from-symmetry">Selection Rules from Symmetry</a>
+  <ul class="collapse">
+  <li><a href="#the-general-principle" id="toc-the-general-principle" class="nav-link" data-scroll-target="#the-general-principle">The general principle</a></li>
+  <li><a href="#parity-selection-rules" id="toc-parity-selection-rules" class="nav-link" data-scroll-target="#parity-selection-rules">Parity selection rules</a></li>
+  <li><a href="#combining-selection-rules" id="toc-combining-selection-rules" class="nav-link" data-scroll-target="#combining-selection-rules">Combining selection rules</a></li>
+  </ul></li>
+  <li><a href="#character-theory" id="toc-character-theory" class="nav-link" data-scroll-target="#character-theory">Character Theory</a>
+  <ul class="collapse">
+  <li><a href="#characters-as-class-functions" id="toc-characters-as-class-functions" class="nav-link" data-scroll-target="#characters-as-class-functions">Characters as class functions</a></li>
+  <li><a href="#orthogonality-relations" id="toc-orthogonality-relations" class="nav-link" data-scroll-target="#orthogonality-relations">Orthogonality relations</a></li>
+  <li><a href="#character-table-for-s_3" id="toc-character-table-for-s_3" class="nav-link" data-scroll-target="#character-table-for-s_3">Character table for <span class="math inline">\(S_3\)</span></a></li>
+  </ul></li>
+  <li><a href="#worked-examples" id="toc-worked-examples" class="nav-link" data-scroll-target="#worked-examples">Worked Examples</a>
+  <ul class="collapse">
+  <li><a href="#the-hydrogen-atom-so3-and-accidental-so4-symmetry" id="toc-the-hydrogen-atom-so3-and-accidental-so4-symmetry" class="nav-link" data-scroll-target="#the-hydrogen-atom-so3-and-accidental-so4-symmetry">The hydrogen atom: SO(3) and accidental SO(4) symmetry</a></li>
+  <li><a href="#the-harmonic-oscillator-sun-symmetry" id="toc-the-harmonic-oscillator-sun-symmetry" class="nav-link" data-scroll-target="#the-harmonic-oscillator-sun-symmetry">The harmonic oscillator: SU(N) symmetry</a></li>
+  <li><a href="#crystal-field-splitting-branching-rules-from-so3-to-o_h" id="toc-crystal-field-splitting-branching-rules-from-so3-to-o_h" class="nav-link" data-scroll-target="#crystal-field-splitting-branching-rules-from-so3-to-o_h">Crystal field splitting: branching rules from <span class="math inline">\(SO(3)\)</span> to <span class="math inline">\(O_h\)</span></a></li>
+  </ul></li>
+  <li><a href="#point-groups-and-space-groups" id="toc-point-groups-and-space-groups" class="nav-link" data-scroll-target="#point-groups-and-space-groups">Point Groups and Space Groups</a>
+  <ul class="collapse">
+  <li><a href="#point-groups" id="toc-point-groups" class="nav-link" data-scroll-target="#point-groups">Point groups</a></li>
+  <li><a href="#beyond-point-groups-space-groups-and-band-theory" id="toc-beyond-point-groups-space-groups-and-band-theory" class="nav-link" data-scroll-target="#beyond-point-groups-space-groups-and-band-theory">Beyond point groups: space groups and band theory</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#related-notes" id="toc-related-notes" class="nav-link" data-scroll-target="#related-notes">Related Notes</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/machine-learning.html">Methods &amp; Foundations</a></li><li class="breadcrumb-item"><a href="../notes/group-theory-qm.html">Group Theory in Quantum Mechanics</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Group Theory in Quantum Mechanics</h1>
+<p class="subtitle lead">Symmetry, representations, and degeneracy</p>
+</div>
+
+<div>
+  <div class="description">
+    A pedagogical introduction to group representation theory in quantum mechanics: irreducible representations, Schur’s lemma, symmetry-enforced degeneracies, and worked examples.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ajit Kumar Sorout </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 23, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 24, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>The connection between symmetry and quantum mechanics is one of the deepest ideas in physics. When a system possesses a symmetry — rotational, translational, or something more exotic — the consequences are immediate and powerful: conserved quantities, selection rules, and (most strikingly) exact degeneracies in the energy spectrum that persist even when we cannot solve the Schrodinger equation analytically.</p>
+<p>The mathematical language for symmetry is <strong>group theory</strong>, and the specific tool we need is <strong>representation theory</strong>: the study of how abstract groups act on vector spaces. These notes develop the key ideas from the ground up, with an emphasis on physical applications. We assume familiarity with linear algebra and basic quantum mechanics, but not with abstract algebra.</p>
+<hr>
+</section>
+<section id="groups-definitions-and-examples" class="level2">
+<h2 class="anchored" data-anchor-id="groups-definitions-and-examples">Groups: Definitions and Examples</h2>
+<p>A <strong>group</strong> <span class="math inline">\(G\)</span> is a set equipped with a binary operation <span class="math inline">\(\cdot : G \times G \to G\)</span> satisfying:</p>
+<ol type="1">
+<li><strong>Associativity:</strong> <span class="math inline">\((g_1 \cdot g_2) \cdot g_3 = g_1 \cdot (g_2 \cdot g_3)\)</span> for all <span class="math inline">\(g_1, g_2, g_3 \in G\)</span>.</li>
+<li><strong>Identity:</strong> There exists <span class="math inline">\(e \in G\)</span> such that <span class="math inline">\(e \cdot g = g \cdot e = g\)</span> for all <span class="math inline">\(g\)</span>.</li>
+<li><strong>Inverses:</strong> For every <span class="math inline">\(g \in G\)</span>, there exists <span class="math inline">\(g^{-1} \in G\)</span> with <span class="math inline">\(g \cdot g^{-1} = g^{-1} \cdot g = e\)</span>.</li>
+</ol>
+<p>If additionally <span class="math inline">\(g_1 \cdot g_2 = g_2 \cdot g_1\)</span> for all elements, the group is <strong>abelian</strong>.</p>
+<p><strong>Examples in physics:</strong></p>
+<ul>
+<li><span class="math inline">\(\mathbb{Z}_n\)</span>: cyclic group of order <span class="math inline">\(n\)</span>; discrete rotational symmetry of a regular polygon.</li>
+<li><span class="math inline">\(S_n\)</span>: the symmetric group on <span class="math inline">\(n\)</span> objects; permutation symmetry of identical particles.</li>
+<li><span class="math inline">\(SO(3)\)</span>: the rotation group in three dimensions; symmetry of rotationally invariant Hamiltonians.</li>
+<li><span class="math inline">\(SU(2)\)</span>: the double cover of <span class="math inline">\(SO(3)\)</span>; the natural symmetry group for spin.</li>
+<li><span class="math inline">\(SU(3)\)</span>: the gauge group of QCD; its representation theory organizes the hadron spectrum.</li>
+</ul>
+<section id="homomorphisms" class="level3">
+<h3 class="anchored" data-anchor-id="homomorphisms">Homomorphisms</h3>
+<p>A <strong>group homomorphism</strong> <span class="math inline">\(\phi: G \to H\)</span> is a map respecting the group structure: <span class="math inline">\(\phi(g_1 \cdot g_2) = \phi(g_1) \cdot \phi(g_2)\)</span>. An <strong>isomorphism</strong> is a bijective homomorphism. The kernel <span class="math inline">\(\ker(\phi) = \{g \in G : \phi(g) = e_H\}\)</span> is always a normal subgroup of <span class="math inline">\(G\)</span>.</p>
+<hr>
+</section>
+</section>
+<section id="representations" class="level2">
+<h2 class="anchored" data-anchor-id="representations">Representations</h2>
+<section id="definition" class="level3">
+<h3 class="anchored" data-anchor-id="definition">Definition</h3>
+<p>A <strong>representation</strong> of a group <span class="math inline">\(G\)</span> on a vector space <span class="math inline">\(V\)</span> is a homomorphism <span class="math display">\[
+D: G \to GL(V),
+\]</span> where <span class="math inline">\(GL(V)\)</span> is the group of invertible linear maps on <span class="math inline">\(V\)</span>. That is, to each group element <span class="math inline">\(g\)</span> we assign an invertible matrix <span class="math inline">\(D(g)\)</span> such that <span class="math display">\[
+D(g_1) D(g_2) = D(g_1 g_2), \qquad D(e) = \mathbb{I}.
+\]</span></p>
+<p>The <strong>dimension</strong> of the representation is <span class="math inline">\(\dim V\)</span>.</p>
+<p><strong>Unitary representations.</strong> In quantum mechanics, we want the symmetry transformations to preserve inner products, so we require <span class="math inline">\(D(g)\)</span> to be unitary: <span class="math inline">\(D(g)^\dagger D(g) = \mathbb{I}\)</span>. For compact groups and finite groups, every representation is equivalent to a unitary one (by averaging over the group).</p>
+</section>
+<section id="reducible-and-irreducible-representations" class="level3">
+<h3 class="anchored" data-anchor-id="reducible-and-irreducible-representations">Reducible and irreducible representations</h3>
+<p>A representation <span class="math inline">\(D\)</span> on <span class="math inline">\(V\)</span> is <strong>reducible</strong> if there exists a proper subspace <span class="math inline">\(W \subset V\)</span> that is invariant under all <span class="math inline">\(D(g)\)</span>: <span class="math inline">\(D(g)W \subseteq W\)</span> for all <span class="math inline">\(g \in G\)</span>. If no such subspace exists, the representation is <strong>irreducible</strong> (an <strong>irrep</strong>).</p>
+<p>For unitary representations, reducibility implies <strong>complete reducibility</strong>: if <span class="math inline">\(W\)</span> is invariant, then so is <span class="math inline">\(W^\perp\)</span>, and the representation decomposes as <span class="math inline">\(V = W \oplus W^\perp\)</span>. Iterating, any unitary representation of a finite or compact group decomposes into a direct sum of irreps: <span class="math display">\[
+V = \bigoplus_{\alpha} n_\alpha \, V_\alpha,
+\]</span> where <span class="math inline">\(V_\alpha\)</span> ranges over the distinct irreps and <span class="math inline">\(n_\alpha\)</span> is the multiplicity of <span class="math inline">\(V_\alpha\)</span>.</p>
+<hr>
+</section>
+</section>
+<section id="schurs-lemma" class="level2">
+<h2 class="anchored" data-anchor-id="schurs-lemma">Schur’s Lemma</h2>
+<p>Schur’s lemma is the single most important result in representation theory. It comes in two parts.</p>
+<section id="statement" class="level3">
+<h3 class="anchored" data-anchor-id="statement">Statement</h3>
+<p><strong>Part 1.</strong> Let <span class="math inline">\(D_1: G \to GL(V_1)\)</span> and <span class="math inline">\(D_2: G \to GL(V_2)\)</span> be irreducible representations, and let <span class="math inline">\(A: V_1 \to V_2\)</span> be a linear map satisfying <span class="math display">\[
+A \, D_1(g) = D_2(g) \, A \qquad \text{for all } g \in G.
+\]</span> Then either <span class="math inline">\(A = 0\)</span> or <span class="math inline">\(A\)</span> is an isomorphism (and in particular <span class="math inline">\(\dim V_1 = \dim V_2\)</span>).</p>
+<p><strong>Part 2.</strong> If <span class="math inline">\(D: G \to GL(V)\)</span> is an irreducible representation over <span class="math inline">\(\mathbb{C}\)</span>, and <span class="math inline">\(A: V \to V\)</span> satisfies <span class="math inline">\(A \, D(g) = D(g) \, A\)</span> for all <span class="math inline">\(g\)</span>, then <span class="math inline">\(A = \lambda \mathbb{I}\)</span> for some <span class="math inline">\(\lambda \in \mathbb{C}\)</span>.</p>
+</section>
+<section id="proof-sketch" class="level3">
+<h3 class="anchored" data-anchor-id="proof-sketch">Proof sketch</h3>
+<p><strong>Part 1.</strong> Consider <span class="math inline">\(\ker(A) \subseteq V_1\)</span>. For any <span class="math inline">\(v \in \ker(A)\)</span> and any <span class="math inline">\(g \in G\)</span>: <span class="math display">\[
+A(D_1(g)v) = D_2(g)(Av) = D_2(g) \cdot 0 = 0,
+\]</span> so <span class="math inline">\(D_1(g)v \in \ker(A)\)</span>. Thus <span class="math inline">\(\ker(A)\)</span> is a <span class="math inline">\(G\)</span>-invariant subspace of <span class="math inline">\(V_1\)</span>. Since <span class="math inline">\(V_1\)</span> is irreducible, either <span class="math inline">\(\ker(A) = V_1\)</span> (so <span class="math inline">\(A = 0\)</span>) or <span class="math inline">\(\ker(A) = \{0\}\)</span> (so <span class="math inline">\(A\)</span> is injective).</p>
+<p>Similarly, <span class="math inline">\(\mathrm{im}(A) \subseteq V_2\)</span> is <span class="math inline">\(G\)</span>-invariant. Since <span class="math inline">\(V_2\)</span> is irreducible, either <span class="math inline">\(\mathrm{im}(A) = \{0\}\)</span> (so <span class="math inline">\(A = 0\)</span>) or <span class="math inline">\(\mathrm{im}(A) = V_2\)</span> (so <span class="math inline">\(A\)</span> is surjective).</p>
+<p>Combining: <span class="math inline">\(A\)</span> is either zero or an isomorphism. <span class="math inline">\(\blacksquare\)</span></p>
+<p><strong>Part 2.</strong> Since we are over <span class="math inline">\(\mathbb{C}\)</span>, <span class="math inline">\(A\)</span> has at least one eigenvalue <span class="math inline">\(\lambda\)</span>. The operator <span class="math inline">\(A - \lambda\mathbb{I}\)</span> commutes with all <span class="math inline">\(D(g)\)</span> (since <span class="math inline">\(A\)</span> and <span class="math inline">\(\mathbb{I}\)</span> both do) and has a non-trivial kernel (the <span class="math inline">\(\lambda\)</span>-eigenspace). By Part 1, <span class="math inline">\(A - \lambda\mathbb{I}\)</span> must be zero. Hence <span class="math inline">\(A = \lambda\mathbb{I}\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
+</section>
+<section id="physical-consequence-why-symmetry-implies-degeneracy" class="level3">
+<h3 class="anchored" data-anchor-id="physical-consequence-why-symmetry-implies-degeneracy">Physical consequence: why symmetry implies degeneracy</h3>
+<p>Part 2 of Schur’s lemma has an immediate and profound physical consequence. Suppose the Hamiltonian <span class="math inline">\(H\)</span> commutes with all elements of a symmetry group <span class="math inline">\(G\)</span>: <span class="math display">\[
+[H, D(g)] = 0 \qquad \text{for all } g \in G.
+\]</span></p>
+<p>Consider an energy eigenspace <span class="math inline">\(V_E = \{|\psi\rangle : H|\psi\rangle = E|\psi\rangle\}\)</span>. Since <span class="math inline">\([H, D(g)] = 0\)</span>, the eigenspace <span class="math inline">\(V_E\)</span> is <span class="math inline">\(G\)</span>-invariant and carries a representation of <span class="math inline">\(G\)</span>. If this representation is irreducible with dimension <span class="math inline">\(d\)</span>, then Schur’s lemma tells us:</p>
+<blockquote class="blockquote">
+<p>Any operator commuting with all <span class="math inline">\(D(g)\)</span> acts as a scalar on <span class="math inline">\(V_E\)</span>.</p>
+</blockquote>
+<p>In particular, <span class="math inline">\(H\)</span> acts as the scalar <span class="math inline">\(E\)</span> on the entire <span class="math inline">\(d\)</span>-dimensional space. <strong>The degeneracy of the energy level <span class="math inline">\(E\)</span> is at least the dimension of the irreducible representation.</strong> This degeneracy is exact and does not require any perturbative or approximate reasoning — it follows purely from the symmetry.</p>
+<p>Conversely, if we observe a <span class="math inline">\(d\)</span>-fold degeneracy in a system with symmetry group <span class="math inline">\(G\)</span>, we know the degenerate states must transform as an irrep of <span class="math inline">\(G\)</span> with dimension <span class="math inline">\(d\)</span>. This is why representation theory is the natural language for organizing quantum mechanical spectra.</p>
+<hr>
+</section>
+</section>
+<section id="su2-and-angular-momentum" class="level2">
+<h2 class="anchored" data-anchor-id="su2-and-angular-momentum">SU(2) and Angular Momentum</h2>
+<section id="the-algebra" class="level3">
+<h3 class="anchored" data-anchor-id="the-algebra">The algebra</h3>
+<p>The group <span class="math inline">\(SU(2)\)</span> is the most important symmetry group in quantum mechanics. Its Lie algebra <span class="math inline">\(\mathfrak{su}(2)\)</span> is spanned by the angular momentum operators <span class="math inline">\(J_x, J_y, J_z\)</span> satisfying <span class="math display">\[
+[J_i, J_j] = i \epsilon_{ijk} J_k.
+\]</span></p>
+<p>The <strong>Casimir operator</strong> <span class="math inline">\(\mathbf{J}^2 = J_x^2 + J_y^2 + J_z^2\)</span> commutes with all <span class="math inline">\(J_i\)</span> and therefore, by Schur’s lemma, acts as a scalar on each irrep.</p>
+</section>
+<section id="irreducible-representations" class="level3">
+<h3 class="anchored" data-anchor-id="irreducible-representations">Irreducible representations</h3>
+<p>The irreps of <span class="math inline">\(SU(2)\)</span> are labeled by <span class="math inline">\(j = 0, \frac{1}{2}, 1, \frac{3}{2}, 2, \ldots\)</span> and have dimension <span class="math inline">\(2j+1\)</span>. Within the irrep labeled by <span class="math inline">\(j\)</span>, the states are <span class="math inline">\(|j, m\rangle\)</span> with <span class="math inline">\(m = -j, -j+1, \ldots, j-1, j\)</span>, and the operators act as: <span class="math display">\[
+\mathbf{J}^2 |j,m\rangle = j(j+1)|j,m\rangle, \qquad J_z |j,m\rangle = m|j,m\rangle,
+\]</span> <span class="math display">\[
+J_\pm |j,m\rangle = \sqrt{j(j+1) - m(m \pm 1)} \, |j, m \pm 1\rangle,
+\]</span> where <span class="math inline">\(J_\pm = J_x \pm iJ_y\)</span> are the raising and lowering operators.</p>
+<p><strong>Integer <span class="math inline">\(j\)</span>:</strong> These correspond to genuine representations of <span class="math inline">\(SO(3)\)</span> (the rotation group). They describe orbital angular momentum.</p>
+<p><strong>Half-integer <span class="math inline">\(j\)</span>:</strong> These are <strong>projective representations</strong> of <span class="math inline">\(SO(3)\)</span> (or equivalently, genuine representations of <span class="math inline">\(SU(2)\)</span>, the double cover). They describe spin. Under a <span class="math inline">\(2\pi\)</span> rotation, a state with half-integer <span class="math inline">\(j\)</span> picks up a factor of <span class="math inline">\((-1)\)</span>, which is invisible in expectation values but detectable in interference experiments.</p>
+</section>
+<section id="angular-momentum-addition" class="level3">
+<h3 class="anchored" data-anchor-id="angular-momentum-addition">Angular momentum addition</h3>
+<p>The problem of adding angular momenta — combining two systems with spins <span class="math inline">\(j_1\)</span> and <span class="math inline">\(j_2\)</span> — is the problem of decomposing the tensor product <span class="math inline">\(j_1 \otimes j_2\)</span> into irreps.</p>
+<p><strong>Clebsch–Gordan decomposition:</strong> <span class="math display">\[
+j_1 \otimes j_2 = |j_1 - j_2| \;\oplus\; (|j_1 - j_2| + 1) \;\oplus\; \cdots \;\oplus\; (j_1 + j_2).
+\]</span></p>
+<p>The total angular momentum <span class="math inline">\(J\)</span> ranges from <span class="math inline">\(|j_1 - j_2|\)</span> to <span class="math inline">\(j_1 + j_2\)</span> in integer steps, and each value appears exactly once. The change-of-basis coefficients are the <strong>Clebsch–Gordan coefficients</strong>: <span class="math display">\[
+|J, M\rangle = \sum_{m_1 + m_2 = M} \langle j_1, m_1; j_2, m_2 | J, M\rangle \, |j_1, m_1\rangle \otimes |j_2, m_2\rangle.
+\]</span></p>
+<p><strong>Dimension check:</strong> <span class="math inline">\(\sum_{J=|j_1-j_2|}^{j_1+j_2}(2J+1) = (2j_1+1)(2j_2+1)\)</span>, confirming the decomposition accounts for all states.</p>
+<p><strong>Example:</strong> Two spin-<span class="math inline">\(1/2\)</span> particles. <span class="math inline">\(\frac{1}{2} \otimes \frac{1}{2} = 0 \oplus 1\)</span>. The triplet (<span class="math inline">\(J=1\)</span>, three states: <span class="math inline">\(|1,1\rangle, |1,0\rangle, |1,-1\rangle\)</span>) and the singlet (<span class="math inline">\(J=0\)</span>, one state: <span class="math inline">\(|0,0\rangle = \frac{1}{\sqrt{2}}(|\!\uparrow\downarrow\rangle - |\!\downarrow\uparrow\rangle)\)</span>). The <span class="math inline">\(4 = 3 + 1\)</span> decomposition is the starting point for understanding the helium atom, the deuteron, and countless other two-particle systems.</p>
+<hr>
+</section>
+</section>
+<section id="the-wigner-eckart-theorem" class="level2">
+<h2 class="anchored" data-anchor-id="the-wigner-eckart-theorem">The Wigner-Eckart Theorem</h2>
+<p>The Wigner-Eckart theorem is one of the most powerful consequences of rotational symmetry in quantum mechanics. It factorizes the matrix elements of any operator that transforms in a definite way under rotations into a geometric part (a Clebsch-Gordan coefficient that encodes the angular momentum coupling) and a dynamical part (a reduced matrix element that encodes the physics specific to the system).</p>
+<section id="spherical-tensor-operators" class="level3">
+<h3 class="anchored" data-anchor-id="spherical-tensor-operators">Spherical tensor operators</h3>
+<p>An operator <span class="math inline">\(T^{(k)}_q\)</span> (with <span class="math inline">\(q = -k, -k+1, \ldots, k\)</span>) is called a <strong>spherical tensor operator of rank <span class="math inline">\(k\)</span></strong> if it transforms under rotations in the same way as the angular momentum eigenstates <span class="math inline">\(|k, q\rangle\)</span>. Precisely, this means it satisfies the commutation relations <span class="math display">\[
+[J_z, T^{(k)}_q] = q \, T^{(k)}_q, \qquad [J_\pm, T^{(k)}_q] = \sqrt{k(k+1) - q(q \pm 1)} \; T^{(k)}_{q \pm 1}.
+\]</span></p>
+<p>These relations say that the <span class="math inline">\((2k+1)\)</span> components <span class="math inline">\(\{T^{(k)}_q\}\)</span> transform among themselves under rotations exactly as an irrep of spin <span class="math inline">\(k\)</span>. Equivalently, under a finite rotation <span class="math inline">\(R\)</span> implemented by the unitary operator <span class="math inline">\(\mathcal{D}(R)\)</span>, <span class="math display">\[
+\mathcal{D}(R) \, T^{(k)}_q \, \mathcal{D}(R)^\dagger = \sum_{q'} D^{(k)}_{q'q}(R) \; T^{(k)}_{q'},
+\]</span> where <span class="math inline">\(D^{(k)}_{q'q}(R)\)</span> are the Wigner <span class="math inline">\(D\)</span>-matrix elements.</p>
+<p><strong>Examples of spherical tensor operators:</strong></p>
+<ul>
+<li><strong>Rank 0 (<span class="math inline">\(k=0\)</span>):</strong> A scalar operator, e.g., <span class="math inline">\(\mathbf{J}^2\)</span> or the Hamiltonian of a rotationally invariant system. It has a single component <span class="math inline">\(T^{(0)}_0\)</span> that commutes with all <span class="math inline">\(J_i\)</span>.</li>
+<li><strong>Rank 1 (<span class="math inline">\(k=1\)</span>):</strong> A vector operator, e.g., the position operator <span class="math inline">\(\hat{\mathbf{r}}\)</span> or the electric dipole operator. The spherical components are <span class="math inline">\(T^{(1)}_0 = z\)</span> and <span class="math inline">\(T^{(1)}_{\pm 1} = \mp(x \pm iy)/\sqrt{2}\)</span>.</li>
+<li><strong>Rank 2 (<span class="math inline">\(k=2\)</span>):</strong> The electric quadrupole moment. Its five components are formed from the symmetric traceless combinations of the position coordinates.</li>
+</ul>
+</section>
+<section id="statement-of-the-theorem" class="level3">
+<h3 class="anchored" data-anchor-id="statement-of-the-theorem">Statement of the theorem</h3>
+<p>The Wigner-Eckart theorem states that the matrix element of a spherical tensor operator between angular momentum eigenstates takes the factored form <span class="math display">\[
+\langle j', m' | T^{(k)}_q | j, m \rangle = \langle j, m; k, q | j', m' \rangle \; \langle j' \| T^{(k)} \| j \rangle.
+\]</span></p>
+<p>Here <span class="math inline">\(\langle j, m; k, q | j', m' \rangle\)</span> is a Clebsch-Gordan coefficient and <span class="math inline">\(\langle j' \| T^{(k)} \| j \rangle\)</span> is the <strong>reduced matrix element</strong>. The key point is:</p>
+<blockquote class="blockquote">
+<p>The reduced matrix element <span class="math inline">\(\langle j' \| T^{(k)} \| j \rangle\)</span> is independent of <span class="math inline">\(m\)</span>, <span class="math inline">\(m'\)</span>, and <span class="math inline">\(q\)</span>.</p>
+</blockquote>
+<p>All dependence on the magnetic quantum numbers is carried entirely by the Clebsch-Gordan coefficient, which is a purely kinematic quantity determined by the geometry of angular momentum coupling. The reduced matrix element encodes the dynamical information specific to the physical system — the radial wavefunctions, the interaction strength, and so forth.</p>
+</section>
+<section id="physical-consequences" class="level3">
+<h3 class="anchored" data-anchor-id="physical-consequences">Physical consequences</h3>
+<p><strong>Separation of geometry from dynamics.</strong> The theorem tells us that among the <span class="math inline">\((2j+1)(2k+1)\)</span> matrix elements <span class="math inline">\(\langle j', m' | T^{(k)}_q | j, m \rangle\)</span> (for fixed <span class="math inline">\(j\)</span>, <span class="math inline">\(j'\)</span>, and <span class="math inline">\(k\)</span> but varying <span class="math inline">\(m\)</span>, <span class="math inline">\(m'\)</span>, <span class="math inline">\(q\)</span>), all are proportional to a single number: the reduced matrix element. The relative magnitudes of different matrix elements are fixed by group theory alone. Only the overall scale requires a dynamical calculation.</p>
+<p><strong>Selection rules.</strong> The Clebsch-Gordan coefficient <span class="math inline">\(\langle j, m; k, q | j', m' \rangle\)</span> vanishes unless two conditions are met:</p>
+<ol type="1">
+<li><strong>Magnetic selection rule:</strong> <span class="math inline">\(m' = m + q\)</span>, i.e., <span class="math inline">\(\Delta m = q\)</span>.</li>
+<li><strong>Triangle rule:</strong> <span class="math inline">\(|j - k| \leq j' \leq j + k\)</span>.</li>
+</ol>
+<p>If either condition fails, the matrix element is exactly zero regardless of the dynamics. These selection rules are a direct consequence of the representation theory of <span class="math inline">\(SU(2)\)</span>.</p>
+</section>
+<section id="example-electric-dipole-transitions-in-hydrogen" class="level3">
+<h3 class="anchored" data-anchor-id="example-electric-dipole-transitions-in-hydrogen">Example: electric dipole transitions in hydrogen</h3>
+<p>The electric dipole operator is the position vector <span class="math inline">\(\hat{\mathbf{r}}\)</span>, which is a rank-1 spherical tensor: <span class="math inline">\(\hat{\mathbf{r}} \sim T^{(1)}\)</span>. The transition amplitude for a photon-induced transition between hydrogen states <span class="math inline">\(|n, \ell, m\rangle\)</span> and <span class="math inline">\(|n', \ell', m'\rangle\)</span> is proportional to <span class="math display">\[
+\langle n', \ell', m' | T^{(1)}_q | n, \ell, m \rangle = \langle \ell, m; 1, q | \ell', m' \rangle \; \langle n', \ell' \| T^{(1)} \| n, \ell \rangle.
+\]</span></p>
+<p>The triangle rule for <span class="math inline">\(k = 1\)</span> requires <span class="math inline">\(|\ell - 1| \leq \ell' \leq \ell + 1\)</span>, which gives the celebrated <strong>electric dipole selection rule</strong> <span class="math inline">\(\Delta \ell = 0, \pm 1\)</span>. However, the case <span class="math inline">\(\Delta \ell = 0\)</span> is further excluded by parity (since <span class="math inline">\(\hat{\mathbf{r}}\)</span> is odd under parity and the parity of <span class="math inline">\(|n, \ell, m\rangle\)</span> is <span class="math inline">\((-1)^\ell\)</span>), leaving <span class="math display">\[
+\Delta \ell = \pm 1, \qquad \Delta m = 0, \pm 1.
+\]</span></p>
+<p>The reduced matrix element <span class="math inline">\(\langle n', \ell' \| T^{(1)} \| n, \ell \rangle\)</span> involves the radial integral <span class="math inline">\(\int_0^\infty R_{n'\ell'}(r) \, r \, R_{n\ell}(r) \, r^2 \, dr\)</span>, which must be computed from the hydrogen wavefunctions. But the selection rules on <span class="math inline">\(\ell\)</span> and <span class="math inline">\(m\)</span> — which dictate which transitions are allowed at all — follow from the Wigner-Eckart theorem without any knowledge of the radial wavefunctions.</p>
+<hr>
+</section>
+</section>
+<section id="selection-rules-from-symmetry" class="level2">
+<h2 class="anchored" data-anchor-id="selection-rules-from-symmetry">Selection Rules from Symmetry</h2>
+<p>The Wigner-Eckart theorem provides selection rules for angular momentum. But the idea of deriving selection rules from representation theory is far more general and applies to any symmetry group.</p>
+<section id="the-general-principle" class="level3">
+<h3 class="anchored" data-anchor-id="the-general-principle">The general principle</h3>
+<p>Consider a matrix element <span class="math inline">\(\langle f | \hat{O} | i \rangle\)</span>, where <span class="math inline">\(|i\rangle\)</span> transforms as an irrep <span class="math inline">\(\Gamma_i\)</span> of a symmetry group <span class="math inline">\(G\)</span>, <span class="math inline">\(|f\rangle\)</span> transforms as <span class="math inline">\(\Gamma_f\)</span>, and the operator <span class="math inline">\(\hat{O}\)</span> transforms as <span class="math inline">\(\Gamma_O\)</span>. The integrand (more precisely, the quantity whose expectation value we compute) transforms as the tensor product representation <span class="math display">\[
+\Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i.
+\]</span></p>
+<p>The matrix element vanishes unless this tensor product contains the <strong>trivial (identity) representation</strong> <span class="math inline">\(\Gamma_0\)</span> of <span class="math inline">\(G\)</span>: <span class="math display">\[
+\langle f | \hat{O} | i \rangle = 0 \quad \text{unless} \quad \Gamma_0 \subseteq \Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i.
+\]</span></p>
+<p>Equivalently, <span class="math inline">\(\langle f | \hat{O} | i \rangle\)</span> can be nonzero only if <span class="math inline">\(\Gamma_f\)</span> appears in the decomposition of <span class="math inline">\(\Gamma_O \otimes \Gamma_i\)</span>. This is the <strong>master selection rule</strong> of representation theory. All concrete selection rules (for angular momentum, parity, crystal symmetry, and so on) are special cases.</p>
+<p>The reasoning is straightforward: if the integrand transforms nontrivially under some symmetry of the system, then the integral is mapped to a multiple of itself by that symmetry transformation. If the representation has no trivial component, the only consistent value for the integral is zero.</p>
+</section>
+<section id="parity-selection-rules" class="level3">
+<h3 class="anchored" data-anchor-id="parity-selection-rules">Parity selection rules</h3>
+<p><strong>Parity</strong> is the simplest example beyond angular momentum. The parity group <span class="math inline">\(\mathbb{Z}_2 = \{e, P\}\)</span> has two irreps: the even representation $_+ $ (with <span class="math inline">\(P \to +1\)</span>) and the odd representation <span class="math inline">\(\Gamma_-\)</span> (with <span class="math inline">\(P \to -1\)</span>).</p>
+<p>An operator <span class="math inline">\(\hat{O}\)</span> has definite parity: <span class="math inline">\(P \hat{O} P^{-1} = \pm \hat{O}\)</span>. Then <span class="math inline">\(\hat{O}\)</span> transforms as <span class="math inline">\(\Gamma_+\)</span> if it is even (a scalar or pseudovector under parity) or as <span class="math inline">\(\Gamma_-\)</span> if it is odd (a polar vector).</p>
+<p>The tensor product rule for <span class="math inline">\(\mathbb{Z}_2\)</span> is simply the multiplication of signs: <span class="math inline">\(\Gamma_+ \otimes \Gamma_+ = \Gamma_+\)</span>, <span class="math inline">\(\Gamma_+ \otimes \Gamma_- = \Gamma_-\)</span>, <span class="math inline">\(\Gamma_- \otimes \Gamma_- = \Gamma_+\)</span>. The matrix element <span class="math inline">\(\langle f | \hat{O} | i \rangle\)</span> is nonzero only if <span class="math inline">\(\Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i = \Gamma_+\)</span> (the trivial representation). Since all irreps of <span class="math inline">\(\mathbb{Z}_2\)</span> are real, <span class="math inline">\(\Gamma_f^* = \Gamma_f\)</span>. Therefore:</p>
+<ul>
+<li>If <span class="math inline">\(\hat{O}\)</span> is <strong>even</strong> (<span class="math inline">\(\Gamma_O = \Gamma_+\)</span>): the matrix element is nonzero only if <span class="math inline">\(|i\rangle\)</span> and <span class="math inline">\(|f\rangle\)</span> have the <strong>same</strong> parity.</li>
+<li>If <span class="math inline">\(\hat{O}\)</span> is <strong>odd</strong> (<span class="math inline">\(\Gamma_O = \Gamma_-\)</span>): the matrix element is nonzero only if <span class="math inline">\(|i\rangle\)</span> and <span class="math inline">\(|f\rangle\)</span> have <strong>opposite</strong> parity.</li>
+</ul>
+<p>For the electric dipole operator <span class="math inline">\(\hat{\mathbf{r}}\)</span>, which is odd under parity, this immediately gives the parity selection rule: electric dipole transitions connect states of opposite parity. In atomic physics, this means <span class="math inline">\(\Delta \ell = \text{odd}\)</span>, which (combined with the angular momentum triangle rule) restricts us to <span class="math inline">\(\Delta \ell = \pm 1\)</span>.</p>
+</section>
+<section id="combining-selection-rules" class="level3">
+<h3 class="anchored" data-anchor-id="combining-selection-rules">Combining selection rules</h3>
+<p>In practice, multiple symmetries act simultaneously, and the matrix element must satisfy the selection rules from each symmetry independently. For a rotationally invariant system with parity, the full selection rule for electric dipole transitions is:</p>
+<ul>
+<li>From <span class="math inline">\(SU(2)\)</span>: <span class="math inline">\(|j - 1| \leq j' \leq j + 1\)</span> and <span class="math inline">\(\Delta m = q\)</span>.</li>
+<li>From parity: <span class="math inline">\((-1)^{\ell'} = -(-1)^{\ell}\)</span>, i.e., <span class="math inline">\(\Delta \ell = \text{odd}\)</span>.</li>
+</ul>
+<p>The intersection of these constraints gives the complete selection rule. The power of the representation-theoretic approach is that it reduces the question “which transitions are allowed?” to a problem of decomposing tensor products of representations — a purely algebraic computation that requires no knowledge of wavefunctions or matrix elements.</p>
+<hr>
+</section>
+</section>
+<section id="character-theory" class="level2">
+<h2 class="anchored" data-anchor-id="character-theory">Character Theory</h2>
+<section id="characters-as-class-functions" class="level3">
+<h3 class="anchored" data-anchor-id="characters-as-class-functions">Characters as class functions</h3>
+<p>The <strong>character</strong> of a representation <span class="math inline">\(D\)</span> evaluated at <span class="math inline">\(g \in G\)</span> is the trace: <span class="math display">\[
+\chi_D(g) = \mathrm{Tr}[D(g)].
+\]</span></p>
+<p>Characters are <strong>class functions</strong>: they depend only on the conjugacy class of <span class="math inline">\(g\)</span>, since <span class="math inline">\(\mathrm{Tr}[D(hgh^{-1})] = \mathrm{Tr}[D(g)]\)</span>. Two representations are equivalent if and only if they have the same character.</p>
+</section>
+<section id="orthogonality-relations" class="level3">
+<h3 class="anchored" data-anchor-id="orthogonality-relations">Orthogonality relations</h3>
+<p>For a finite group <span class="math inline">\(G\)</span>, the characters of irreps satisfy the <strong>great orthogonality theorem</strong>: <span class="math display">\[
+\frac{1}{|G|}\sum_{g \in G} \chi_\alpha(g)^* \, \chi_\beta(g) = \delta_{\alpha\beta},
+\]</span> where <span class="math inline">\(\alpha, \beta\)</span> label irreps. This is an orthonormality relation on the space of class functions, with the inner product <span class="math inline">\(\langle f_1, f_2\rangle = \frac{1}{|G|}\sum_g f_1(g)^* f_2(g)\)</span>.</p>
+<p>The number of distinct irreps equals the number of conjugacy classes. Their dimensions <span class="math inline">\(d_\alpha\)</span> satisfy <span class="math display">\[
+\sum_\alpha d_\alpha^2 = |G|.
+\]</span></p>
+<p><strong>Example: <span class="math inline">\(\mathbb{Z}_3\)</span>.</strong> The group <span class="math inline">\(\mathbb{Z}_3 = \{e, r, r^2\}\)</span> (with <span class="math inline">\(r^3 = e\)</span>) has three conjugacy classes (each element is its own class, since the group is abelian) and three one-dimensional irreps. Setting <span class="math inline">\(\omega = e^{2\pi i/3}\)</span>, the characters are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(e\)</span></th>
+<th><span class="math inline">\(r\)</span></th>
+<th><span class="math inline">\(r^2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\chi_0\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\chi_1\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(\omega\)</span></td>
+<td><span class="math inline">\(\omega^2\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\chi_2\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(\omega^2\)</span></td>
+<td><span class="math inline">\(\omega\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The orthogonality relations are easily verified. The decomposition formula tells us how many times irrep <span class="math inline">\(\alpha\)</span> appears in a given representation: <span class="math inline">\(n_\alpha = \frac{1}{|G|}\sum_g \chi_\alpha(g)^* \chi(g)\)</span>.</p>
+</section>
+<section id="character-table-for-s_3" class="level3">
+<h3 class="anchored" data-anchor-id="character-table-for-s_3">Character table for <span class="math inline">\(S_3\)</span></h3>
+<p>A more substantial example is the symmetric group <span class="math inline">\(S_3\)</span> on three objects, which is isomorphic to the point group <span class="math inline">\(C_{3v}\)</span> (the symmetry group of an equilateral triangle). This is the smallest non-abelian group and has order <span class="math inline">\(|S_3| = 6\)</span>.</p>
+<p><strong>Conjugacy classes.</strong> The six elements fall into three conjugacy classes:</p>
+<ul>
+<li><span class="math inline">\(\{e\}\)</span>: the identity (1 element).</li>
+<li><span class="math inline">\(\{(123), (132)\}\)</span>: the two 3-cycles, i.e., rotations by <span class="math inline">\(120°\)</span> and <span class="math inline">\(240°\)</span> (2 elements).</li>
+<li><span class="math inline">\(\{(12), (13), (23)\}\)</span>: the three transpositions, i.e., reflections (3 elements).</li>
+</ul>
+<p>Since there are three conjugacy classes, there are exactly three irreducible representations. Their dimensions <span class="math inline">\(d_1, d_2, d_3\)</span> must satisfy <span class="math inline">\(d_1^2 + d_2^2 + d_3^2 = 6\)</span>, which has the unique solution (up to ordering) <span class="math inline">\(d_1 = 1, d_2 = 1, d_3 = 2\)</span>.</p>
+<p>The three irreps are:</p>
+<ul>
+<li><span class="math inline">\(\Gamma_{\text{triv}}\)</span> (dimension 1): the <strong>trivial</strong> representation, where every element maps to <span class="math inline">\(+1\)</span>.</li>
+<li><span class="math inline">\(\Gamma_{\text{sign}}\)</span> (dimension 1): the <strong>sign</strong> (alternating) representation, where even permutations map to <span class="math inline">\(+1\)</span> and odd permutations map to <span class="math inline">\(-1\)</span>.</li>
+<li><span class="math inline">\(\Gamma_{\text{std}}\)</span> (dimension 2): the <strong>standard</strong> representation, obtained from the natural 3-dimensional permutation representation by restricting to the 2-dimensional subspace orthogonal to the vector <span class="math inline">\((1, 1, 1)\)</span>.</li>
+</ul>
+<p>The complete character table is:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(e\)</span> (1)</th>
+<th><span class="math inline">\((123)\)</span> (2)</th>
+<th><span class="math inline">\((12)\)</span> (3)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Gamma_{\text{triv}}\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Gamma_{\text{sign}}\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(-1\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Gamma_{\text{std}}\)</span></td>
+<td><span class="math inline">\(2\)</span></td>
+<td><span class="math inline">\(-1\)</span></td>
+<td><span class="math inline">\(0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The numbers in parentheses in the header row indicate the size of each conjugacy class.</p>
+<p><strong>Verifying orthogonality.</strong> The orthogonality relation <span class="math inline">\(\frac{1}{|G|}\sum_C |C| \, \chi_\alpha(C)^* \chi_\beta(C) = \delta_{\alpha\beta}\)</span> can be checked explicitly. For example, taking <span class="math inline">\(\alpha = \Gamma_{\text{sign}}\)</span> and <span class="math inline">\(\beta = \Gamma_{\text{std}}\)</span>: <span class="math display">\[
+\frac{1}{6}\left[1 \cdot 1 \cdot 2 + 2 \cdot 1 \cdot (-1) + 3 \cdot (-1) \cdot 0\right] = \frac{1}{6}(2 - 2 + 0) = 0. \quad \checkmark
+\]</span></p>
+<p><strong>Decomposing a representation.</strong> Suppose we have a 6-dimensional representation whose character is <span class="math inline">\(\chi(e) = 6\)</span>, <span class="math inline">\(\chi(123) = 0\)</span>, <span class="math inline">\(\chi(12) = 2\)</span>. The multiplicity of each irrep is: <span class="math display">\[
+n_{\text{triv}} = \frac{1}{6}(1 \cdot 6 + 2 \cdot 0 + 3 \cdot 2) = 2,
+\]</span> <span class="math display">\[
+n_{\text{sign}} = \frac{1}{6}(1 \cdot 6 + 2 \cdot 0 + 3 \cdot (-1) \cdot 2) = 0,
+\]</span> <span class="math display">\[
+n_{\text{std}} = \frac{1}{6}(1 \cdot 2 \cdot 6 + 2 \cdot (-1) \cdot 0 + 3 \cdot 0 \cdot 2) = 2.
+\]</span> So the representation decomposes as <span class="math inline">\(2\,\Gamma_{\text{triv}} \oplus 2\,\Gamma_{\text{std}}\)</span>, with total dimension <span class="math inline">\(2 \cdot 1 + 2 \cdot 2 = 6\)</span>. <span class="math inline">\(\checkmark\)</span></p>
+<p>This procedure — computing multiplicities via the decomposition formula using the character table — works for any finite group representation and is the standard method for predicting how energy levels split when symmetry is reduced.</p>
+<hr>
+</section>
+</section>
+<section id="worked-examples" class="level2">
+<h2 class="anchored" data-anchor-id="worked-examples">Worked Examples</h2>
+<section id="the-hydrogen-atom-so3-and-accidental-so4-symmetry" class="level3">
+<h3 class="anchored" data-anchor-id="the-hydrogen-atom-so3-and-accidental-so4-symmetry">The hydrogen atom: SO(3) and accidental SO(4) symmetry</h3>
+<p>The Coulomb Hamiltonian <span class="math display">\[
+H = \frac{\mathbf{p}^2}{2m} - \frac{e^2}{r}
+\]</span> is invariant under <span class="math inline">\(SO(3)\)</span> rotations. Therefore, by the representation theory of <span class="math inline">\(SO(3)\)</span>, each energy level must form an irrep (or direct sum of irreps) of <span class="math inline">\(SO(3)\)</span>. The angular momentum quantum number <span class="math inline">\(\ell\)</span> labels the irrep, and states with a given <span class="math inline">\(\ell\)</span> are <span class="math inline">\((2\ell+1)\)</span>-fold degenerate.</p>
+<p>But the hydrogen atom has a larger degeneracy than <span class="math inline">\(SO(3)\)</span> alone requires. For principal quantum number <span class="math inline">\(n\)</span>, the states with <span class="math inline">\(\ell = 0, 1, \ldots, n-1\)</span> are <strong>all degenerate</strong>, giving a total degeneracy of <span class="math inline">\(n^2\)</span> (ignoring spin). This is not explained by rotational symmetry — it is an <strong>accidental degeneracy</strong> arising from a hidden <strong>SO(4) symmetry</strong>.</p>
+<p>The additional symmetry is generated by the <strong>Laplace–Runge–Lenz vector</strong> <span class="math display">\[
+\mathbf{A} = \frac{1}{2m}(\mathbf{p} \times \mathbf{L} - \mathbf{L} \times \mathbf{p}) - \frac{e^2 \mathbf{r}}{r},
+\]</span> which satisfies <span class="math inline">\([H, \mathbf{A}] = 0\)</span>. Together with <span class="math inline">\(\mathbf{L}\)</span>, the components of <span class="math inline">\(\mathbf{A}\)</span> (suitably normalized on a fixed energy shell) generate an <span class="math inline">\(\mathfrak{so}(4) \cong \mathfrak{su}(2) \oplus \mathfrak{su}(2)\)</span> algebra. The bound states at energy <span class="math inline">\(E_n\)</span> transform as the <span class="math inline">\((j, j)\)</span> representation of <span class="math inline">\(SU(2) \times SU(2)\)</span> with <span class="math inline">\(j = (n-1)/2\)</span>, which has dimension <span class="math inline">\((2j+1)^2 = n^2\)</span>. This completely explains the observed degeneracy.</p>
+<p>This is a beautiful example of how group theory reveals hidden structure: the “accidental” degeneracy is not accidental at all, but a consequence of an enhanced symmetry specific to the <span class="math inline">\(1/r\)</span> potential.</p>
+</section>
+<section id="the-harmonic-oscillator-sun-symmetry" class="level3">
+<h3 class="anchored" data-anchor-id="the-harmonic-oscillator-sun-symmetry">The harmonic oscillator: SU(N) symmetry</h3>
+<p>The <span class="math inline">\(N\)</span>-dimensional isotropic harmonic oscillator <span class="math display">\[
+H = \frac{\mathbf{p}^2}{2m} + \frac{1}{2}m\omega^2 \mathbf{r}^2 = \sum_{i=1}^{N}\hbar\omega\left(a_i^\dagger a_i + \frac{1}{2}\right)
+\]</span> has energy levels <span class="math inline">\(E_n = \hbar\omega(n + N/2)\)</span>. The degeneracy of the <span class="math inline">\(n\)</span>-th level is <span class="math inline">\(\binom{n+N-1}{N-1}\)</span>, which grows as a polynomial in <span class="math inline">\(n\)</span>.</p>
+<p>The symmetry group is <span class="math inline">\(SU(N)\)</span>. The generators are the <span class="math inline">\(N^2 - 1\)</span> bilinear operators <span class="math inline">\(a_i^\dagger a_j - \frac{1}{N}\delta_{ij}\hat{n}\)</span> (traceless combinations), which all commute with <span class="math inline">\(H\)</span>. The states at level <span class="math inline">\(n\)</span> transform as the <strong>completely symmetric</strong> representation of <span class="math inline">\(SU(N)\)</span> with <span class="math inline">\(n\)</span> indices, which has dimension <span class="math inline">\(\binom{n+N-1}{N-1}\)</span>.</p>
+<p>For <span class="math inline">\(N = 3\)</span>, this is <span class="math inline">\(SU(3)\)</span>, and the level-<span class="math inline">\(n\)</span> degeneracy is <span class="math inline">\(\frac{1}{2}(n+1)(n+2)\)</span>: 1, 3, 6, 10, 15, <span class="math inline">\(\ldots\)</span> The decomposition under the <span class="math inline">\(SO(3)\)</span> subgroup gives <span class="math inline">\(\ell = n, n-2, n-4, \ldots, 0 \text{ or } 1\)</span>, recovering the familiar angular momentum content.</p>
+</section>
+<section id="crystal-field-splitting-branching-rules-from-so3-to-o_h" class="level3">
+<h3 class="anchored" data-anchor-id="crystal-field-splitting-branching-rules-from-so3-to-o_h">Crystal field splitting: branching rules from <span class="math inline">\(SO(3)\)</span> to <span class="math inline">\(O_h\)</span></h3>
+<p>When an atom is placed in a crystal, the full <span class="math inline">\(SO(3)\)</span> rotational symmetry is broken to the <strong>point group</strong> <span class="math inline">\(G\)</span> of the crystal site. An atomic level that transformed as an irrep of <span class="math inline">\(SO(3)\)</span> with angular momentum <span class="math inline">\(\ell\)</span> (and degeneracy <span class="math inline">\(2\ell+1\)</span>) now splits into irreps of <span class="math inline">\(G\)</span>.</p>
+<p>The splitting is determined by <strong>restricting</strong> the <span class="math inline">\(SO(3)\)</span> representation to <span class="math inline">\(G\)</span> and decomposing it into irreps of <span class="math inline">\(G\)</span>. This is called <strong>subduction</strong> or <strong>branching</strong>. The tool for computing these branching rules is the character: we evaluate the <span class="math inline">\(SO(3)\)</span> character <span class="math inline">\(\chi^{(\ell)}(\theta) = \frac{\sin((2\ell+1)\theta/2)}{\sin(\theta/2)}\)</span> on the conjugacy classes of <span class="math inline">\(G\)</span>, then use the decomposition formula with the character table of <span class="math inline">\(G\)</span>.</p>
+<p><strong>The octahedral group <span class="math inline">\(O_h\)</span>.</strong> The full octahedral group <span class="math inline">\(O_h = O \times \{e, i\}\)</span> includes inversions. The proper rotation subgroup <span class="math inline">\(O\)</span> has order 24, with five conjugacy classes: <span class="math inline">\(\{e\}\)</span>, <span class="math inline">\(\{6C_4\}\)</span> (rotations by <span class="math inline">\(\pm 90°\)</span> about cube axes), <span class="math inline">\(\{3C_4^2 = 3C_2\}\)</span> (rotations by <span class="math inline">\(180°\)</span> about cube axes), <span class="math inline">\(\{8C_3\}\)</span> (rotations by <span class="math inline">\(\pm 120°\)</span> about body diagonals), and <span class="math inline">\(\{6C_2'\}\)</span> (rotations by <span class="math inline">\(180°\)</span> about face diagonals). Including inversion doubles the group to order 48 and introduces the gerade (<span class="math inline">\(g\)</span>) and ungerade (<span class="math inline">\(u\)</span>) labels.</p>
+<p>The irreps of <span class="math inline">\(O\)</span> (and their dimensions) are: <span class="math inline">\(A_1\)</span> (1), <span class="math inline">\(A_2\)</span> (1), <span class="math inline">\(E\)</span> (2), <span class="math inline">\(T_1\)</span> (3), <span class="math inline">\(T_2\)</span> (3). With inversion, each acquires a <span class="math inline">\(g/u\)</span> subscript.</p>
+<p><strong>Branching rules for <span class="math inline">\(\ell = 0, 1, 2, 3\)</span>:</strong></p>
+<p>For <strong><span class="math inline">\(\ell = 0\)</span></strong> (<span class="math inline">\(s\)</span>-orbital, dimension 1): The <span class="math inline">\(SO(3)\)</span> character is <span class="math inline">\(\chi^{(0)} = 1\)</span> for all rotations. The only matching irrep of <span class="math inline">\(O_h\)</span> is the trivial representation: <span class="math display">\[
+D^{(0)} \downarrow O_h = A_{1g}.
+\]</span> The <span class="math inline">\(s\)</span>-orbital is unsplit, as expected — it is a singlet.</p>
+<p>For <strong><span class="math inline">\(\ell = 1\)</span></strong> (<span class="math inline">\(p\)</span>-orbital, dimension 3): The character values are <span class="math inline">\(\chi^{(1)}(e) = 3\)</span>, <span class="math inline">\(\chi^{(1)}(C_4) = 1\)</span>, <span class="math inline">\(\chi^{(1)}(C_2) = -1\)</span>, <span class="math inline">\(\chi^{(1)}(C_3) = 0\)</span>, <span class="math inline">\(\chi^{(1)}(C_2') = -1\)</span>. Comparing with the <span class="math inline">\(O\)</span> character table, this matches <span class="math inline">\(T_1\)</span> exactly. Since <span class="math inline">\(p\)</span>-orbitals are odd under parity (<span class="math inline">\((-1)^\ell = -1\)</span>): <span class="math display">\[
+D^{(1)} \downarrow O_h = T_{1u}.
+\]</span> The <span class="math inline">\(p\)</span>-orbital remains unsplit in an octahedral field — the three <span class="math inline">\(p\)</span>-orbitals transform as a single irreducible triplet.</p>
+<p>For <strong><span class="math inline">\(\ell = 2\)</span></strong> (<span class="math inline">\(d\)</span>-orbital, dimension 5): The character values are <span class="math inline">\(\chi^{(2)}(e) = 5\)</span>, <span class="math inline">\(\chi^{(2)}(C_4) = -1\)</span>, <span class="math inline">\(\chi^{(2)}(C_2) = 1\)</span>, <span class="math inline">\(\chi^{(2)}(C_3) = -1\)</span>, <span class="math inline">\(\chi^{(2)}(C_2') = 1\)</span>. Applying the decomposition formula: <span class="math display">\[
+D^{(2)} \downarrow O_h = E_g \oplus T_{2g},
+\]</span> where <span class="math inline">\(E_g\)</span> is 2-dimensional and <span class="math inline">\(T_{2g}\)</span> is 3-dimensional (<span class="math inline">\(2 + 3 = 5\)</span>). This is the famous <strong><span class="math inline">\(e_g\)</span>–<span class="math inline">\(t_{2g}\)</span> splitting</strong> of crystal field theory.</p>
+<p>Physically, the <span class="math inline">\(e_g\)</span> orbitals are <span class="math inline">\(d_{z^2}\)</span> and <span class="math inline">\(d_{x^2-y^2}\)</span>, which point directly toward the six ligands along the coordinate axes in an octahedral complex. The <span class="math inline">\(t_{2g}\)</span> orbitals are <span class="math inline">\(d_{xy}\)</span>, <span class="math inline">\(d_{xz}\)</span>, and <span class="math inline">\(d_{yz}\)</span>, which point between the ligands. The electrostatic repulsion from the ligands raises the energy of the <span class="math inline">\(e_g\)</span> orbitals relative to <span class="math inline">\(t_{2g}\)</span>. The energy splitting <span class="math inline">\(\Delta_{\text{oct}} = 10Dq\)</span> depends on the ligand field strength, but the pattern of splitting into a doublet and a triplet is dictated purely by group theory.</p>
+<p>For <strong><span class="math inline">\(\ell = 3\)</span></strong> (<span class="math inline">\(f\)</span>-orbital, dimension 7): The character values are <span class="math inline">\(\chi^{(3)}(e) = 7\)</span>, <span class="math inline">\(\chi^{(3)}(C_4) = -1\)</span>, <span class="math inline">\(\chi^{(3)}(C_2) = -1\)</span>, <span class="math inline">\(\chi^{(3)}(C_3) = 1\)</span>, <span class="math inline">\(\chi^{(3)}(C_2') = 1\)</span>. Decomposing: <span class="math display">\[
+D^{(3)} \downarrow O_h = A_{2u} \oplus T_{1u} \oplus T_{2u},
+\]</span> giving <span class="math inline">\(1 + 3 + 3 = 7\)</span>. The <span class="math inline">\(f\)</span>-shell splits into a singlet and two triplets.</p>
+<p><strong>Summary of branching rules:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(\ell\)</span></th>
+<th><span class="math inline">\(SO(3)\)</span> dim</th>
+<th><span class="math inline">\(O_h\)</span> decomposition</th>
+<th>Dimensions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1</td>
+<td><span class="math inline">\(A_{1g}\)</span></td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>3</td>
+<td><span class="math inline">\(T_{1u}\)</span></td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>5</td>
+<td><span class="math inline">\(E_g \oplus T_{2g}\)</span></td>
+<td>2 + 3</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>7</td>
+<td><span class="math inline">\(A_{2u} \oplus T_{1u} \oplus T_{2u}\)</span></td>
+<td>1 + 3 + 3</td>
+</tr>
+</tbody>
+</table>
+<p>These branching rules are computed using the character tables of <span class="math inline">\(O_h\)</span> and the decomposition formula. They are tabulated in standard references and are essential tools in spectroscopy, transition metal chemistry, and condensed matter physics. The <span class="math inline">\(e_g\)</span>–<span class="math inline">\(t_{2g}\)</span> splitting of <span class="math inline">\(d\)</span>-orbitals, in particular, governs the electronic structure and magnetic properties of transition metal complexes: it determines the crystal field stabilization energy, controls whether a complex is high-spin or low-spin, and explains the colors of coordination compounds through <span class="math inline">\(d\)</span>–<span class="math inline">\(d\)</span> transitions.</p>
+<hr>
+</section>
+</section>
+<section id="point-groups-and-space-groups" class="level2">
+<h2 class="anchored" data-anchor-id="point-groups-and-space-groups">Point Groups and Space Groups</h2>
+<section id="point-groups" class="level3">
+<h3 class="anchored" data-anchor-id="point-groups">Point groups</h3>
+<p>A <strong>point group</strong> is a finite subgroup of <span class="math inline">\(O(3)\)</span> that leaves at least one point fixed. The crystallographic point groups — those compatible with a lattice — number 32 in three dimensions. They are classified as:</p>
+<ul>
+<li><strong>Cyclic groups</strong> <span class="math inline">\(C_n\)</span>: <span class="math inline">\(n\)</span>-fold rotation axis.</li>
+<li><strong>Dihedral groups</strong> <span class="math inline">\(D_n\)</span>: <span class="math inline">\(n\)</span>-fold axis plus <span class="math inline">\(n\)</span> perpendicular 2-fold axes.</li>
+<li><strong>Cubic groups</strong> <span class="math inline">\(T\)</span>, <span class="math inline">\(O\)</span>, <span class="math inline">\(T_d\)</span>, <span class="math inline">\(T_h\)</span>, <span class="math inline">\(O_h\)</span>: the symmetries of the tetrahedron and octahedron/cube.</li>
+<li>Various extensions with improper rotations (reflections, inversions).</li>
+</ul>
+<p>The representation theory of these finite groups is well-developed: each has a finite character table, and all irreps can be explicitly constructed. The branching rules from <span class="math inline">\(SO(3)\)</span> to any point group are tabulated and allow immediate prediction of crystal field splittings.</p>
+</section>
+<section id="beyond-point-groups-space-groups-and-band-theory" class="level3">
+<h3 class="anchored" data-anchor-id="beyond-point-groups-space-groups-and-band-theory">Beyond point groups: space groups and band theory</h3>
+<p>In a periodic solid, the full symmetry is a <strong>space group</strong>: a point group combined with translations. The representation theory of space groups leads to <strong>Bloch’s theorem</strong> (states are labeled by crystal momentum <span class="math inline">\(\mathbf{k}\)</span>) and the classification of <strong>band structures</strong>. The irreps of the little group at each high-symmetry point in the Brillouin zone determine the allowed band degeneracies and crossings. This is the group-theoretic foundation of topological band theory.</p>
+<hr>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>The key takeaways:</p>
+<ol type="1">
+<li><p><strong>Symmetries of <span class="math inline">\(H\)</span> organize the spectrum.</strong> If <span class="math inline">\([H, D(g)] = 0\)</span> for all <span class="math inline">\(g \in G\)</span>, energy eigenspaces carry representations of <span class="math inline">\(G\)</span>.</p></li>
+<li><p><strong>Schur’s lemma implies degeneracy.</strong> Irreducible representations cannot be split by any operator commuting with <span class="math inline">\(G\)</span>, so the dimension of the irrep is a lower bound on the degeneracy.</p></li>
+<li><p><strong><span class="math inline">\(SU(2)\)</span> irreps</strong> are labeled by <span class="math inline">\(j\)</span> with dimension <span class="math inline">\(2j+1\)</span>. This explains the <span class="math inline">\(2\ell+1\)</span> degeneracy of angular momentum multiplets and the rules for adding angular momenta.</p></li>
+<li><p><strong>The Wigner-Eckart theorem</strong> factorizes matrix elements into geometry (Clebsch-Gordan coefficients) and dynamics (reduced matrix elements), yielding selection rules from representation theory alone.</p></li>
+<li><p><strong>Selection rules from symmetry</strong> follow from the general principle: <span class="math inline">\(\langle f | \hat{O} | i \rangle = 0\)</span> unless <span class="math inline">\(\Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i\)</span> contains the trivial representation. This unifies angular momentum and parity selection rules.</p></li>
+<li><p><strong>Accidental degeneracies</strong> signal hidden symmetries: <span class="math inline">\(SO(4)\)</span> in hydrogen, <span class="math inline">\(SU(N)\)</span> in the isotropic oscillator.</p></li>
+<li><p><strong>Symmetry breaking</strong> (e.g., by a crystal field) splits multiplets according to branching rules that are determined entirely by the group-subgroup relationship. The <span class="math inline">\(e_g\)</span>–<span class="math inline">\(t_{2g}\)</span> splitting of <span class="math inline">\(d\)</span>-orbitals in an octahedral field is a prime example.</p></li>
+</ol>
+<hr>
+</section>
+<section id="related-notes" class="level2">
+<h2 class="anchored" data-anchor-id="related-notes">Related Notes</h2>
+<ul>
+<li><a href="../notes/quantum-information.html">Quantum Information and Computation</a> — entanglement, quantum channels, and the role of symmetry in quantum error correction</li>
+<li><a href="../notes/2d-cft-swampland.html">2D CFT, Orbifolding, and the Swampland</a> — representation theory of the Virasoro algebra, modular symmetry, and orbifolding by discrete groups</li>
+</ul>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><p>H. Georgi, <em>Lie Algebras in Particle Physics: From Isospin to Unified Theories</em>, 2nd edition (Westview Press, 1999). An excellent physics-oriented treatment of representation theory.</p></li>
+<li><p>M. Tinkham, <em>Group Theory and Quantum Mechanics</em> (McGraw-Hill, 1964; Dover reprint, 2003). The classic reference for point groups, crystal field theory, and molecular symmetry.</p></li>
+<li><p>J. J. Sakurai and J. Napolitano, <em>Modern Quantum Mechanics</em>, 3rd edition (Cambridge University Press, 2021). Chapters 3 and 4 cover angular momentum and symmetry in quantum mechanics.</p></li>
+<li><p>W. Miller, <em>Symmetry Groups and Their Applications</em> (Academic Press, 1972).</p></li>
+<li><p>M. S. Dresselhaus, G. Dresselhaus, and A. Jorio, <em>Group Theory: Application to the Physics of Condensed Matter</em> (Springer, 2008). Comprehensive treatment of point groups, space groups, and applications to solid-state physics.</p></li>
+<li><p>R. Gilmore, <em>Lie Groups, Lie Algebras, and Some of Their Applications</em> (Dover, 2005). Accessible introduction to continuous groups with many physics applications.</p></li>
+<li><p>B. G. Wybourne, <em>Classical Groups for Physicists</em> (Wiley, 1974). Detailed treatment of the representation theory of classical Lie groups.</p></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ajitkumar1991\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Ajit Kumar Sorout</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:ajitkumar@umass.edu">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ajitkumar1991">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

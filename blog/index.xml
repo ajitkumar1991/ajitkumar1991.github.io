@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Ajit Kumar Sorout</title>
+<link>https://ajitkumar1991.github.io/blog/</link>
+<atom:link href="https://ajitkumar1991.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description>Physics PhD Student | String Theory - Condensed Matter - Computational Physics</description>
+<generator>quarto-1.9.36</generator>
+<lastBuildDate>Sat, 15 Nov 2025 05:00:00 GMT</lastBuildDate>
+<item>
+  <title>Zeta Regularization and Vacuum Energy</title>
+  <link>https://ajitkumar1991.github.io/blog/2025-11-15-zeta-regularization.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="riemann-zeta-and-the-sum-1-2-3-cdots--tfrac112" class="level2">
+<h2 class="anchored" data-anchor-id="riemann-zeta-and-the-sum-1-2-3-cdots--tfrac112">Riemann zeta and the “sum” <img src="https://latex.codecogs.com/png.latex?1%20+%202%20+%203%20+%20%5Ccdots%20=%20-%5Ctfrac%7B1%7D%7B12%7D"></h2>
+<p>The <strong>Riemann zeta function</strong> is defined for <img src="https://latex.codecogs.com/png.latex?%5CRe(s)%20%3E%201"> by the convergent series [ (s) = _{n=1}^{} . ] For <img src="https://latex.codecogs.com/png.latex?%5CRe(s)%20%5Cle%201"> this series diverges, but <img src="https://latex.codecogs.com/png.latex?%5Czeta(s)"> has an <strong>analytic continuation</strong> to a meromorphic function on the whole complex plane, with a single pole at <img src="https://latex.codecogs.com/png.latex?s=1">.</p>
+<p>In particular, at <img src="https://latex.codecogs.com/png.latex?s%20=%20-1"> the analytic continuation gives [ (-1) = -. ] Formally, [ (-1) = _{n=1}^{} n . ] This does <strong>not</strong> mean that the usual sum [ 1 + 2 + 3 + ] converges in the ordinary sense—it diverges to <img src="https://latex.codecogs.com/png.latex?+%5Cinfty">. But in many QFT/CFT/string-theory contexts we replace such divergent sums by their <strong>zeta-regularized</strong> values, and then [ 1 + 2 + 3 + &nbsp; &nbsp;(-1) = -. ]</p>
+<hr>
+</section>
+<section id="ground-state-energy-in-2d-cft-and-the--c24-shift" class="level2">
+<h2 class="anchored" data-anchor-id="ground-state-energy-in-2d-cft-and-the--c24-shift">Ground-state energy in 2d CFT and the <img src="https://latex.codecogs.com/png.latex?-c/24"> shift</h2>
+<p>Consider a 2d CFT on a <strong>circle</strong> of circumference <img src="https://latex.codecogs.com/png.latex?L">. The Hamiltonian on the cylinder is related to the Virasoro generators by [ H = (L_0 + L_0 - ), ] for a theory with left/right central charges <img src="https://latex.codecogs.com/png.latex?c"> and <img src="https://latex.codecogs.com/png.latex?%5Cbar%20c"> (for a purely holomorphic theory you often see just <img src="https://latex.codecogs.com/png.latex?L_0%20-%20%5Ctfrac%7Bc%7D%7B24%7D">).</p>
+<p>The key point is that the <strong>vacuum</strong> is not at zero energy; instead, [ E_0 = - . ] The term <img src="https://latex.codecogs.com/png.latex?-c/12"> or <img src="https://latex.codecogs.com/png.latex?-c/24"> arises from <strong>normal ordering</strong> the infinite sum of oscillator zero-point energies.</p>
+<p>For a single chiral boson, the modes are labeled by positive integers <img src="https://latex.codecogs.com/png.latex?n%20=%201,2,3,%5Cdots"> and each mode contributes a zero-point energy <img src="https://latex.codecogs.com/png.latex?%5Ctfrac%7B1%7D%7B2%7D%5Chbar%20%5Comega_n">. On a circle, <img src="https://latex.codecogs.com/png.latex?%5Comega_n%20%5Cpropto%20n">, so schematically [ E_{} <em>{n=1}^{} n. ] This sum diverges, but using zeta-regularization [ </em>{n=1}^{} n &nbsp; &nbsp;(-1) = -, ] we obtain a <strong>finite</strong> negative vacuum energy. That’s the origin of the familiar shifts like [ L_0 L_0 - , ] and the factor <img src="https://latex.codecogs.com/png.latex?q%5E%7B-c/24%7D"> in the torus partition function [ Z() = ,(q^{L_0 - c/24} q^{L_0 - c/24}), q = e^{2i }. ]</p>
+<hr>
+</section>
+<section id="bosonic-string-and-the-critical-dimension" class="level2">
+<h2 class="anchored" data-anchor-id="bosonic-string-and-the-critical-dimension">Bosonic string and the critical dimension</h2>
+<p>In the <strong>bosonic string</strong>, we have <img src="https://latex.codecogs.com/png.latex?D"> spacetime coordinates <img src="https://latex.codecogs.com/png.latex?X%5E%5Cmu">, but in light-cone gauge only <img src="https://latex.codecogs.com/png.latex?D-2"> transverse coordinates are physical oscillators. For each transverse direction, the normal ordering constant is proportional to [ a_{} = -, ] coming again from [ _{n=1}^{} n -, ] with an extra factor <img src="https://latex.codecogs.com/png.latex?%5Ctfrac%7B1%7D%7B2%7D"> from <img src="https://latex.codecogs.com/png.latex?%5Ctfrac%7B1%7D%7B2%7D%5Chbar%5Comega">.</p>
+<p>So for <img src="https://latex.codecogs.com/png.latex?D-2"> transverse bosons, the total intercept is [ a = -. ] The mass formula for an open bosonic string is (in units with <img src="https://latex.codecogs.com/png.latex?%5Calpha'%20=%201">) [ m^2 = N - a, ] where <img src="https://latex.codecogs.com/png.latex?N"> is the number operator. To have the <strong>first excited state</strong> be massless (and to get a consistent spectrum), we require [ a = 1 - = -1 D-2 = 24 D = 26. ] Thus the famous result:</p>
+<blockquote class="blockquote">
+<p>The critical dimension of the bosonic string is <img src="https://latex.codecogs.com/png.latex?D%20=%2026">,</p>
+</blockquote>
+<p>and the value <img src="https://latex.codecogs.com/png.latex?-1/12"> from <img src="https://latex.codecogs.com/png.latex?%5Czeta(-1)"> is hiding inside the <strong>zero-point energy</strong> of the string oscillators.</p>
+<hr>
+</section>
+<section id="takeaway" class="level2">
+<h2 class="anchored" data-anchor-id="takeaway">Takeaway</h2>
+<ul>
+<li>The identity <img src="https://latex.codecogs.com/png.latex?1%20+%202%20+%203%20+%20%5Ccdots%20=%20-%5Ctfrac%7B1%7D%7B12%7D"> is a <strong>regularized</strong> statement via the analytic continuation of <img src="https://latex.codecogs.com/png.latex?%5Czeta(s)">.</li>
+<li>In 2d CFT, this regularization gives the finite vacuum energy shift <img src="https://latex.codecogs.com/png.latex?-c/24"> (or <img src="https://latex.codecogs.com/png.latex?-c/12"> for <img src="https://latex.codecogs.com/png.latex?L_0%20+%20%5Cbar%20L_0">), which controls the ground-state energy on the cylinder and the modular properties of the partition function.</li>
+<li>In bosonic string theory, the same zeta-regularized sum over oscillator modes leads to the intercept <img src="https://latex.codecogs.com/png.latex?a%20=%20(D-2)/24"> and the critical dimension <img src="https://latex.codecogs.com/png.latex?D=26">.</li>
+</ul>
+
+
+</section>
+
+ ]]></description>
+  <category>string-theory</category>
+  <category>QFT-CFT-MATH</category>
+  <guid>https://ajitkumar1991.github.io/blog/2025-11-15-zeta-regularization.html</guid>
+  <pubDate>Sat, 15 Nov 2025 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Orientifolds of Brane Tilings: A Pictorial Guide</title>
+  <link>https://ajitkumar1991.github.io/blog/2025-01-15-brane-tilings.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Expanded Version Available
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This blog post has been expanded into a comprehensive exposition covering brane tilings, 4D N=1 SCFTs, orientifold projections, brane bending, Seiberg duality, and connections to geometric engineering.</p>
+<p><strong><a href="../notes/brane-tilings.html">Read the full Notes page on Brane Tilings and SCFTs →</a></strong></p>
+</div>
+</div>
+<p>The original post introduced brane tilings as bipartite graphs on a torus, walked through orientifold projections, and presented a worked example for the Z3 orbifold. The expanded version adds detailed treatments of 4D superconformal field theories, the mechanism of deconfining N=2 theories via brane bending, S-duality and Seiberg duality, and connections to Heidenreich’s program on geometric engineering.</p>
+
+
+
+ ]]></description>
+  <category>string-theory</category>
+  <category>brane-tilings</category>
+  <guid>https://ajitkumar1991.github.io/blog/2025-01-15-brane-tilings.html</guid>
+  <pubDate>Wed, 15 Jan 2025 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>The Worm Algorithm: Sampling Path Integrals Efficiently</title>
+  <link>https://ajitkumar1991.github.io/blog/2025-01-08-worm-algorithm.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Expanded Version Available
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This blog post has been expanded into a comprehensive exposition covering Metropolis, cluster algorithms, worm algorithms, error analysis (bootstrap, jackknife, blocking), and autocorrelation.</p>
+<p><strong><a href="../notes/monte-carlo.html">Read the full Notes page on Monte Carlo Methods →</a></strong></p>
+</div>
+</div>
+<p>The original post focused on the worm algorithm for path integral Monte Carlo. The expanded version adds coverage of the Metropolis algorithm, cluster algorithms (Swendsen-Wang, Wolff), a detailed treatment of error analysis methods, autocorrelation time estimation, and practical data analysis workflows.</p>
+
+
+
+ ]]></description>
+  <category>condensed-matter</category>
+  <category>monte-carlo</category>
+  <guid>https://ajitkumar1991.github.io/blog/2025-01-08-worm-algorithm.html</guid>
+  <pubDate>Wed, 08 Jan 2025 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Tensor Networks and the Geometry of Entanglement</title>
+  <link>https://ajitkumar1991.github.io/blog/2025-01-01-tensor-networks.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Expanded Version Available
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This blog post has been expanded into a comprehensive exposition covering MPS, DMRG, entanglement entropy, TCI, quantics methods, and connections to holography.</p>
+<p><strong><a href="../notes/tensor-networks.html">Read the full Notes page on Tensor Networks →</a></strong></p>
+</div>
+</div>
+<p>The original post covered the area law, matrix product states, DMRG, extracting CFT data, boundary CFT, and connections to holography. The expanded version adds sections on tensor diagrams, Renyi entropies, correlation functions, tensor cross interpolation (TCI), quantics tensor methods, and a detailed discussion of limitations.</p>
+
+
+
+ ]]></description>
+  <category>tensor-networks</category>
+  <category>condensed-matter</category>
+  <guid>https://ajitkumar1991.github.io/blog/2025-01-01-tensor-networks.html</guid>
+  <pubDate>Wed, 01 Jan 2025 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Diffusion Models Meet Statistical Physics</title>
+  <link>https://ajitkumar1991.github.io/blog/2024-12-20-diffusion-models.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Expanded Version Available
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This blog post has been expanded into a comprehensive exposition covering neural network fundamentals, transformers, diffusion models, normalizing flows, grokking, manifold learning, and physics-ML connections.</p>
+<p><strong><a href="../notes/machine-learning.html">Read the full Notes page on Machine Learning →</a></strong></p>
+</div>
+</div>
+<p>The original post explored diffusion models through the lens of Langevin dynamics, covering score functions, time reversal, physics applications, and normalizing flows. The expanded version adds sections on neural network fundamentals, the transformer architecture and attention mechanism, grokking and phase transitions in learning, manifold learning, and deep connections between machine learning and statistical physics.</p>
+
+
+
+ ]]></description>
+  <category>machine-learning</category>
+  <category>monte-carlo</category>
+  <guid>https://ajitkumar1991.github.io/blog/2024-12-20-diffusion-models.html</guid>
+  <pubDate>Fri, 20 Dec 2024 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>On Being an Interdisciplinary Physicist</title>
+  <link>https://ajitkumar1991.github.io/blog/2024-12-01-interdisciplinary.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>A few months into my PhD, a senior theorist asked me a pointed question: “So what <em>are</em> you? A string theorist? A condensed matter person? A computational physicist?”</p>
+<p>I didn’t have a good answer then. I’m not sure I have one now. But I’ve come to see this ambiguity as a feature, not a bug.</p>
+<section id="the-traditional-view" class="level2">
+<h2 class="anchored" data-anchor-id="the-traditional-view">The Traditional View</h2>
+<p>Physics departments have tribes. String theorists talk to string theorists. Condensed matter folks go to their own conferences. Computational people are sometimes viewed as “merely” doing numerics rather than “real” theory.</p>
+<p>These divisions made more sense historically. A PhD program was supposed to make you an expert in one thing. Depth over breadth. Master the tools of your subfield, make contributions, and eventually you’d be the world expert on some narrow topic.</p>
+<p>This still works—but I think the most exciting physics often happens at the boundaries.</p>
+</section>
+<section id="why-i-wander" class="level2">
+<h2 class="anchored" data-anchor-id="why-i-wander">Why I Wander</h2>
+<p>My path has been unusual:</p>
+<ul>
+<li>Started with string theory, seduced by the mathematical elegance</li>
+<li>Realized that many string constructions never touch experiment</li>
+<li>Got curious about systems where we <em>can</em> compute and compare</li>
+<li>Discovered that condensed matter has beautiful mathematical structures too</li>
+<li>Found that numerical methods force you to really understand what’s going on</li>
+<li>Now interested in how ML connects to all of this</li>
+</ul>
+<p>Each transition felt like starting over. New literature, new conferences, new jargon. It’s inefficient if your goal is maximizing publications.</p>
+<p>But I’ve found that ideas <em>transfer</em>. The RG ideas in string theory (holography, emergent space) connect to tensor networks and entanglement in condensed matter. Monte Carlo techniques from particle physics apply to quantum spin systems. And machine learning is injecting new ideas everywhere.</p>
+</section>
+<section id="concrete-examples" class="level2">
+<h2 class="anchored" data-anchor-id="concrete-examples">Concrete Examples</h2>
+<p>Some connections I’ve found valuable:</p>
+<p><strong>Brane tilings ↔︎ Dimer models</strong>: Brane tilings in string theory are mathematically identical to dimer models studied in statistical mechanics. The string theorist’s “perfect matching” is the condensed matter physicist’s “dimer covering.” Different motivation, same math.</p>
+<p><strong>Conformal field theory</strong>: CFT appears everywhere—at critical points in condensed matter, on the worldsheet in string theory, as the boundary theory in AdS/CFT. Learning it once pays dividends across subfields.</p>
+<p><strong>Entanglement</strong>: Originally a quantum information concept, now central to understanding holography, area laws, and topological order. It bridges communities.</p>
+<p><strong>Numerical methods</strong>: String theorists are often allergic to numerics. But even “exact” string theory calculations require understanding what you’re calculating and why. Numerics builds intuition.</p>
+</section>
+<section id="the-downsides" class="level2">
+<h2 class="anchored" data-anchor-id="the-downsides">The Downsides</h2>
+<p>I won’t pretend it’s all rosy:</p>
+<ul>
+<li><strong>Jack of all trades</strong>: I’m not the best at any single technique</li>
+<li><strong>Publication pressure</strong>: Interdisciplinary work can be harder to publish—it falls between stools</li>
+<li><strong>Job market</strong>: Search committees want to categorize you</li>
+<li><strong>Impostor syndrome</strong>: Always feeling like you don’t know enough</li>
+</ul>
+<p>The job market concern is real. When I apply for postdocs, I worry about being seen as unfocused. A string theory position wants someone who can hit the ground running on string amplitudes. A condensed matter position wants someone who knows DMRG inside out.</p>
+<p>My hope is that there are PIs who value breadth, who want someone who can bridge subfields and bring fresh perspectives. They exist—I’ve met them. But they’re not the majority.</p>
+</section>
+<section id="advice-to-my-past-self" class="level2">
+<h2 class="anchored" data-anchor-id="advice-to-my-past-self">Advice (to My Past Self)</h2>
+<p>If you’re a grad student contemplating an interdisciplinary path:</p>
+<ol type="1">
+<li><p><strong>Have a home base</strong>: Pick one area where you go deep. You need <em>some</em> expertise that’s undeniable. Mine is probably geometric engineering—I know the string theory construction well.</p></li>
+<li><p><strong>Learn to translate</strong>: Every subfield has jargon. Learning to speak multiple languages is valuable, but you have to actually learn them, not just hand-wave.</p></li>
+<li><p><strong>Find bridges</strong>: Look for problems where multiple perspectives help. Not “I’ll do string theory on Monday and condensed matter on Tuesday” but genuine synthesis.</p></li>
+<li><p><strong>Don’t apologize</strong>: “I’m interested in many things” sounds weak. “I work on quantum systems using geometric and computational methods” sounds stronger. Frame your breadth as coherence.</p></li>
+<li><p><strong>Find your people</strong>: Interdisciplinary work is lonely if you’re isolated. Find collaborators who appreciate boundary-crossing. They’re out there.</p></li>
+</ol>
+</section>
+<section id="what-im-excited-about" class="level2">
+<h2 class="anchored" data-anchor-id="what-im-excited-about">What I’m Excited About</h2>
+<p>Looking forward, I see several areas where boundaries are blurring:</p>
+<ul>
+<li><strong>Holography and condensed matter</strong>: The tensor network / AdS connection is still mysterious</li>
+<li><strong>ML and physics</strong>: Not just “ML for simulations” but ML as a lens on physics</li>
+<li><strong>Quantum information and high-energy</strong>: Entanglement, complexity, and quantum gravity</li>
+<li><strong>Mathematical physics</strong>: Rigorous connections (not just analogies) between areas</li>
+</ul>
+<p>Whether I end up in a traditional subfield or carve out a niche at the intersection, I’m grateful for the wandering. Physics is one subject, after all, even if we’ve divided it up.</p>
+<hr>
+<p><em>Next post back to technical content, I promise. But occasionally I need to reflect on the meta-level.</em></p>
+
+
+</section>
+
+ ]]></description>
+  <category>personal</category>
+  <guid>https://ajitkumar1991.github.io/blog/2024-12-01-interdisciplinary.html</guid>
+  <pubDate>Sun, 01 Dec 2024 05:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>
