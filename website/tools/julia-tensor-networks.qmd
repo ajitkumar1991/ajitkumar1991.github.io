@@ -1,0 +1,313 @@
+---
+title: "Julia Tensor Network Workflows"
+subtitle: "A practical guide to ITensor.jl"
+description: "Setting up ITensor.jl, building Hamiltonians as MPOs, running DMRG, and measuring observables — with working code examples."
+author: "Ajit Kumar Sorout"
+date: 2026-03-23
+date-modified: last-modified
+sidebar: tools-sidebar
+toc: true
+toc-depth: 3
+code-fold: false
+---
+
+This page is a practical guide to performing tensor network calculations in Julia using the [ITensor](https://itensor.org) library. For the physics background, see [Tensor Networks](../notes/tensor-networks.qmd).
+
+## Setup
+
+Install ITensor and ITensorMPS:
+
+```julia
+using Pkg
+Pkg.add("ITensors")
+Pkg.add("ITensorMPS")
+```
+
+Import the packages:
+
+```julia
+using ITensors, ITensorMPS
+```
+
+## Defining the Hilbert Space
+
+The first step is defining the local Hilbert space — what lives on each site. ITensor provides built-in site types for common models.
+
+```julia
+# Spin-1/2 chain with N sites
+N = 100
+sites = siteinds("S=1/2", N)
+
+# Spin-1 chain
+sites_s1 = siteinds("S=1", N)
+
+# Spinless fermions
+sites_sf = siteinds("Fermion", N)
+
+# Electrons (spin-1/2 fermions with charge)
+sites_el = siteinds("Electron", N)
+```
+
+Each site index carries quantum number information. ITensor automatically enforces conservation laws (total $S^z$, particle number, etc.) when you use these site types, which dramatically speeds up calculations.
+
+### Custom Site Types
+
+For non-standard models, you can define custom site types. But for most condensed matter applications, the built-in types suffice.
+
+## Building Hamiltonians as MPOs
+
+Use `OpSum` (formerly `AutoMPO`) to build Hamiltonians from operator expressions:
+
+### Heisenberg Chain
+
+$$H = \sum_{j} \mathbf{S}_j \cdot \mathbf{S}_{j+1} = \sum_j \left[ S^z_j S^z_{j+1} + \frac{1}{2}(S^+_j S^-_{j+1} + S^-_j S^+_{j+1}) \right]$$
+
+```julia
+os = OpSum()
+for j in 1:N-1
+    os += "Sz", j, "Sz", j+1
+    os += 0.5, "S+", j, "S-", j+1
+    os += 0.5, "S-", j, "S+", j+1
+end
+H = MPO(os, sites)
+```
+
+### Transverse-Field Ising Model
+
+$$H = -J \sum_j S^z_j S^z_{j+1} - h \sum_j S^x_j$$
+
+```julia
+J = 1.0
+h = 1.0  # Critical point for S=1/2
+
+os = OpSum()
+for j in 1:N-1
+    os += -4*J, "Sz", j, "Sz", j+1  # Factor of 4 because Sz = ±1/2
+end
+for j in 1:N
+    os += -2*h, "Sx", j  # Factor of 2 for same reason
+end
+H = MPO(os, sites)
+```
+
+### Longer-Range Interactions
+
+```julia
+# Next-nearest-neighbor Heisenberg: J1-J2 model
+J1, J2 = 1.0, 0.5
+os = OpSum()
+for j in 1:N-1
+    os += J1, "Sz", j, "Sz", j+1
+    os += J1*0.5, "S+", j, "S-", j+1
+    os += J1*0.5, "S-", j, "S+", j+1
+end
+for j in 1:N-2
+    os += J2, "Sz", j, "Sz", j+2
+    os += J2*0.5, "S+", j, "S-", j+2
+    os += J2*0.5, "S-", j, "S+", j+2
+end
+H = MPO(os, sites)
+```
+
+### Boundary Terms
+
+For studying boundary critical phenomena, you often need boundary-specific couplings:
+
+```julia
+# Heisenberg chain with tunable boundary coupling
+h_boundary = 0.5  # Boundary magnetic field
+
+os = OpSum()
+# Bulk terms
+for j in 1:N-1
+    os += "Sz", j, "Sz", j+1
+    os += 0.5, "S+", j, "S-", j+1
+    os += 0.5, "S-", j, "S+", j+1
+end
+# Boundary field on site 1
+os += h_boundary, "Sz", 1
+H = MPO(os, sites)
+```
+
+## Running DMRG
+
+### Basic Usage
+
+```julia
+# Start from a random MPS with small bond dimension
+psi0 = random_mps(sites; linkdims=10)
+
+# Define sweep schedule
+sweeps = Sweeps(10)
+setmaxdim!(sweeps, 20, 50, 100, 200, 400, 400)
+setcutoff!(sweeps, 1e-10)
+setnoise!(sweeps, 1e-6, 1e-7, 1e-8, 0.0)
+
+# Run DMRG
+energy, psi = dmrg(H, psi0, sweeps)
+println("Ground state energy: $energy")
+println("Energy per site: $(energy/N)")
+```
+
+### Sweep Schedule Tips
+
+- **Start with small bond dimensions** and gradually increase. This helps DMRG find the right entanglement structure before committing to large tensors.
+- **Noise terms** help escape local minima in the first few sweeps. Set them to zero in later sweeps for precision.
+- **Cutoff** controls the SVD truncation. For most purposes, `1e-10` is a good default.
+- **Number of sweeps**: 5–10 for gapped systems, 10–20+ for critical systems.
+
+### Targeting Quantum Number Sectors
+
+To find the ground state in a specific symmetry sector (e.g., $S^z_{\text{total}} = 0$):
+
+```julia
+# Initialize in the Sz=0 sector
+# For N even, alternate up and down spins
+state = [isodd(n) ? "Up" : "Dn" for n in 1:N]
+psi0 = MPS(sites, state)
+
+energy, psi = dmrg(H, psi0, sweeps)
+```
+
+### Excited States
+
+To find excited states, pass previously found states as a penalty:
+
+```julia
+# Find first excited state
+energy1, psi1 = dmrg(H, [psi], psi0, sweeps; weight=20.0)
+```
+
+The `weight` parameter controls how strongly the new state is pushed away from the previous ones.
+
+## Measuring Observables
+
+### Local Expectation Values
+
+```julia
+# Measure <Sz> at each site
+sz_values = expect(psi, "Sz")
+
+# Measure <Sx> at each site
+sx_values = expect(psi, "Sx")
+
+# Print magnetization profile
+for j in 1:N
+    println("Site $j: <Sz> = $(sz_values[j])")
+end
+```
+
+### Two-Point Correlation Functions
+
+```julia
+# Compute <Sz_i Sz_j> for all pairs
+function correlation_function(psi::MPS, op1::String, op2::String, site1::Int, site2::Int)
+    orthogonalize!(psi, site1)
+
+    if site1 == site2
+        # Single-site operator
+        s = siteind(psi, site1)
+        T = psi[site1]
+        val = scalar(dag(prime(T, s)) * op(op1, s) * op(op2, s) * T)
+        return real(val)
+    end
+
+    # Use the correlation_matrix function for efficiency
+    C = correlation_matrix(psi, op1, op2)
+    return C[site1, site2]
+end
+
+# Compute full correlation matrix
+C_zz = correlation_matrix(psi, "Sz", "Sz")
+```
+
+### Entanglement Entropy
+
+```julia
+function entanglement_entropy(psi::MPS, bond::Int)
+    orthogonalize!(psi, bond)
+
+    U, S, V = svd(psi[bond], (linkind(psi, bond-1), siteind(psi, bond)))
+
+    SvN = 0.0
+    for n in 1:dim(S, 1)
+        p = S[n, n]^2
+        if p > 1e-15
+            SvN -= p * log(p)
+        end
+    end
+    return SvN
+end
+
+# Compute entanglement entropy profile
+S_profile = [entanglement_entropy(psi, b) for b in 1:N-1]
+```
+
+### Extracting the Central Charge
+
+For a critical system with open boundary conditions, fit the entanglement entropy to:
+$$S(\ell) = \frac{c}{6} \log\left(\frac{2L}{\pi}\sin\frac{\pi \ell}{L}\right) + s_0$$
+
+```julia
+using LsqFit
+
+function fit_central_charge(S_profile, N)
+    # Calabrese-Cardy formula for open boundaries
+    model(x, p) = (p[1] / 6) .* log.((2 * N / π) .* sin.(π .* x ./ N)) .+ p[2]
+
+    xdata = collect(1.0:length(S_profile))
+    ydata = S_profile
+
+    p0 = [0.5, 0.0]  # Initial guess: c=0.5, s0=0
+    fit = curve_fit(model, xdata, ydata, p0)
+
+    c = fit.param[1]
+    c_err = stderror(fit)[1]
+
+    return c, c_err
+end
+```
+
+## Bond Dimension Convergence
+
+Always check that your results are converged in bond dimension:
+
+```julia
+# Run DMRG at several bond dimensions
+chi_values = [50, 100, 200, 400, 800]
+energies = Float64[]
+
+for chi in chi_values
+    sweeps = Sweeps(10)
+    setmaxdim!(sweeps, chi)
+    setcutoff!(sweeps, 1e-12)
+
+    psi0 = random_mps(sites; linkdims=10)
+    E, _ = dmrg(H, psi0, sweeps)
+    push!(energies, E)
+    println("chi = $chi: E = $E")
+end
+
+# Check convergence: |E(chi) - E(chi_max)| should decrease
+for i in 1:length(chi_values)-1
+    println("Delta E (chi=$(chi_values[i])): $(abs(energies[i] - energies[end]))")
+end
+```
+
+For gapped systems, the energy should converge exponentially in $\chi$. For critical systems, convergence is polynomial — plot $E$ vs. $1/\chi$ and extrapolate.
+
+## Common Pitfalls
+
+1. **Wrong quantum numbers in initial state**: If you initialize in the wrong symmetry sector, DMRG finds the ground state of that sector, not the overall ground state.
+
+2. **Insufficient sweeps for critical systems**: Critical systems need more sweeps because the entanglement grows slowly during optimization.
+
+3. **Local minima**: For frustrated or quasi-degenerate systems, try multiple random initial states and take the lowest energy.
+
+4. **Periodic boundary conditions**: These require much larger $\chi$ than open boundaries. Use open boundaries unless periodicity is essential.
+
+5. **Not using noise terms**: Without noise in early sweeps, DMRG can get stuck in states with the wrong entanglement structure.
+
+---
+
+*See also:* [Tensor Networks](../notes/tensor-networks.qmd) for the physics background, and the [ITensor documentation](https://itensor.org/docs.cgi) for the full API reference.

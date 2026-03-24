@@ -1,0 +1,28 @@
+---
+title: "Contact"
+subtitle: "Get in touch"
+toc: false
+---
+
+The best way to reach me is by email:
+
+**ajitkumar@umass.edu**
+
+**Office:**
+Department of Physics, University of Massachusetts Amherst
+Amherst, MA 01003
+
+---
+
+## CV
+
+A PDF version of my full curriculum vitae is available here:
+
+[Download CV (PDF)](assets/cv.pdf){.btn .btn-primary}
+
+---
+
+## Elsewhere
+
+- [GitHub](https://github.com/ajitkumar1991)
+- [Google Scholar](https://scholar.google.com/citations?user=mjxdcyMAAAAJ&hl=en)

@@ -4,53 +4,97 @@ project:
 
 website:
   title: "Ajit Kumar Sorout"
-  description: "Physics PhD Student | String Theory • Condensed Matter • Machine Learning"
-  
+  description: "Physics PhD Student | String Theory - Condensed Matter - Computational Physics"
+  site-url: "https://ajitkumar1991.github.io"
+
   navbar:
     background: dark
     foreground: light
-    logo: images/logo.png  # Optional: add a small logo if desired
     left:
       - href: index.qmd
         text: Home
       - href: research.qmd
         text: Research
-      - href: blog/index.qmd
-        text: Blog
-      - href: photos.qmd
-        text: Photos
-      - href: about.qmd
-        text: About
+      - text: Writing
+        menu:
+          - href: notes/index.qmd
+            text: Notes & Expositions
+          - href: blog/index.qmd
+            text: Blog
+      - href: tools/index.qmd
+        text: Computational Tools
+      - href: publications.qmd
+        text: Publications
+      - text: More
+        menu:
+          - href: about.qmd
+            text: About
+          - href: contact.qmd
+            text: Contact & CV
+          - href: photos.qmd
+            text: Photos
     right:
       - icon: github
-        href: https://github.com/YOUR_GITHUB_USERNAME
+        href: https://github.com/ajitkumar1991
         aria-label: GitHub
       - icon: mortarboard
-        href: https://scholar.google.com/citations?user=YOUR_ID
+        href: https://scholar.google.com/citations?user=mjxdcyMAAAAJ&hl=en
         aria-label: Google Scholar
       - icon: file-earmark-pdf
         href: assets/cv.pdf
         aria-label: CV
 
   page-footer:
-    left: "© 2025 Ajit Kumar Sorout"
+    left: "© 2026 Ajit Kumar Sorout"
     center: "Built with [Quarto](https://quarto.org)"
     right:
       - icon: envelope
-        href: mailto:YOUR_EMAIL@umass.edu
+        href: mailto:ajitkumar@umass.edu
       - icon: github
-        href: https://github.com/YOUR_GITHUB_USERNAME
+        href: https://github.com/ajitkumar1991
 
   sidebar:
-    - id: blog-sidebar
+    - id: notes-sidebar
+      title: "Notes & Expositions"
       style: floating
       contents:
-        - section: "Topics"
+        - notes/index.qmd
+        - section: "String Theory & Geometry"
           contents:
-            - topics/string-theory.qmd
-            - topics/condensed-matter.qmd
-            - topics/tensor-networks.qmd
-            - topics/machine-learning.qmd
+            - notes/brane-tilings.qmd
+            - notes/mirror-symmetry.qmd
+            - notes/2d-cft-swampland.qmd
+        - section: "Many-Body & Computation"
+          contents:
+            - notes/tensor-networks.qmd
+            - notes/monte-carlo.qmd
+            - notes/quantum-information.qmd
+        - section: "Methods & Foundations"
+          contents:
+            - notes/machine-learning.qmd
+            - notes/group-theory-qm.qmd
+
+    - id: tools-sidebar
+      title: "Computational Tools"
+      style: floating
+      contents:
+        - tools/index.qmd
+        - tools/julia-tensor-networks.qmd
+        - tools/monte-carlo-errors.qmd
+        - tools/data-analysis.qmd
+
+    - id: blog-sidebar
+      title: "Blog"
+      style: floating
+      contents:
+        - text: "All Posts"
+          href: blog/index.qmd
+        - section: "Browse by Topic"
+          contents:
+            - text: "Notes & Expositions"
+              href: notes/index.qmd
+            - text: "Computational Tools"
+              href: tools/index.qmd
 
   search: true
 
@@ -63,27 +107,20 @@ format:
     toc: true
     toc-depth: 3
     code-fold: true
-    code-tools: true
+    code-tools: false
     code-copy: true
     highlight-style: github
     fontsize: 1.05em
     linestretch: 1.6
     mainfont: "Source Serif Pro"
     monofont: "JetBrains Mono"
+    grid:
+      body-width: 950px
+      sidebar-width: 300px
+      margin-width: 300px
 
-# Enable math rendering
 execute:
   freeze: auto
 
-# Blog listing configuration
-listings:
-  - id: blog-listing
-    contents: blog/*.qmd
-    sort: "date desc"
-    type: default
-    categories: true
-    feed: true
-
-# Metadata defaults for blog posts
 metadata-files:
   - _metadata.yml

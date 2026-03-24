@@ -1,196 +1,348 @@
 ---
 title: "Research"
-subtitle: "Bridging geometry, computation, and quantum matter"
+subtitle: "Strongly coupled quantum field theories: from geometric engineering to lattice simulations"
 toc: true
 toc-depth: 2
 ---
 
-My research program centers on understanding strongly coupled quantum systems through a combination of geometric, computational, and field-theoretic methods. I draw on tools from string theory, condensed matter physics, and machine learning to attack problems where conventional perturbative approaches fail.
+My research develops theoretical and computational tools to understand strongly coupled quantum field theories. On the high-energy side, I use string theory and geometric engineering to construct and analyze four-dimensional superconformal field theories — building Lagrangian descriptions of non-Lagrangian theories, organizing infrared phase diagrams via strongly coupled building blocks, and classifying S-dual families arising from orientifolded geometries. On the condensed-matter side, I investigate symmetry-enriched criticality and superfluidity with long-range interactions, using tensor networks and Monte Carlo methods to study boundary renormalization-group flows and phase transitions. A unifying thread is the use of string-theoretic and conformal-field-theoretic structures — generalized symmetries, dualities, and categorical data — to illuminate physics in both domains.
 
 ---
 
-## String Theory & High-Energy Physics {#string-theory}
+## High-Energy Theory {#high-energy}
 
-The framework of string theory provides a remarkable geometric perspective on quantum field theory. Through **geometric engineering**, we can construct supersymmetric gauge theories by engineering configurations of D-branes at singularities—the resulting physics is encoded in the geometry of the internal Calabi-Yau manifold.
+### The Art of Brane Bending: Lagrangians for Non-Lagrangian SCFTs
 
-### Current Projects
-
-::: {.callout-note collapse="true"}
-#### Geometric Engineering of $\mathcal{N}=1$ SCFTs
-
-I study 4d $\mathcal{N}=1$ superconformal field theories realized via toric Calabi-Yau threefold orientifolds. The key question: how do orientifold projections, flavor D7-branes, and discrete torsion affect the resulting gauge theory and its conformal manifold?
-
-Starting from parent $\mathcal{N}=2$ theories engineered at toric singularities, the orientifold projects out certain states while introducing O-planes that source D-brane charge. The interplay between the orientifold action on the toric diagram and the resulting quiver gauge theory reveals intricate structures—including the emergence of real and pseudoreal gauge groups and specific patterns of chiral matter.
-
-**Key techniques:** Brane tilings (dimer models), toric geometry, orientifold projections, anomaly cancellation.
+::: {.callout-note appearance="simple" icon=false}
+**Problem.** Many four-dimensional $\mathcal{N}=2$ superconformal field theories — including the rank-one $E_6$ Minahan-Nemeschansky theory and Argyres-Wittig theories — have no known Lagrangian description. Can we construct Lagrangians that flow to these strongly coupled fixed points, thereby making their dynamics accessible?
 :::
 
-::: {.callout-note collapse="true"}
-#### Brane Tilings and Dimer Models
+In published work with Heidenreich, García-Etxebarria, and Lotito, I developed new Lagrangians for a class of these theories. The construction starts from $\mathcal{N}=1$ quiver gauge theories engineered by D3-branes at orientifolded toric Calabi-Yau singularities of type $Y^{2,0}$, and exploits **partial resolutions** to flow to $\mathcal{N}=2$ fixed points. This produces Lagrangians for the $R_{2,k}$ series of Argyres-Douglas-type theories, including:
 
-Brane tilings provide a powerful combinatorial tool for studying D3-branes probing toric Calabi-Yau singularities. The bipartite graph on $T^2$ encodes both the quiver gauge theory and the mesonic moduli space.
+- The **rank-one $E_6$ Minahan-Nemeschansky theory**, one of the most-studied non-Lagrangian SCFTs
+- The **Argyres-Wittig theory**, previously accessible only through class-$\mathcal{S}$ constructions
 
-I am exploring how orientifold projections act on brane tilings, mapping the dimer to itself and identifying gauge groups and matter fields. This provides a systematic way to construct large classes of orientifold theories and study their infrared physics.
+The name "brane bending" refers to the key geometric mechanism: the D3-branes, which in the parent configuration probe an $\mathcal{N}=1$-preserving singularity, are partially resolved into a configuration where a subset of branes probe an $\mathcal{N}=2$ singularity. This partial resolution is realized in the brane tiling as removing faces from the bipartite graph, and in the field theory as giving vacuum expectation values to certain bifundamental fields, triggering an RG flow whose endpoint is the desired $\mathcal{N}=2$ SCFT.
 
-**Mathematical connections:** Perfect matchings, Kasteleyn matrices, cluster algebras.
-:::
+The brane tiling provides a systematic algorithm for each stage: the gauge group, matter content, and superpotential at any point along the resolution chain are read off directly from the tiling data. Anomaly cancellation and the correct $a$-maximization at the fixed point serve as nontrivial consistency checks.
 
-::: {.callout-note collapse="true"}
-#### Discrete Torsion and Wilson Lines
+```
+  Brane bending schematic:
 
-In orientifold constructions, discrete choices—such as discrete torsion and Wilson lines—can dramatically affect the low-energy physics. I investigate how these discrete data modify the spectrum and interactions of the resulting gauge theory.
+  N=1 quiver at             Partial           N=2 SCFT
+  Y^{2,0} singularity       resolution        (e.g. E₆ MN theory)
+  ┌──────────┐           ┌──────────┐        ┌──────────┐
+  │ D3-branes│  remove   │ D3-branes│  flow  │ Strongly │
+  │ at toric │ → faces → │ at less  │  ───→  │ coupled  │
+  │ orientif.│  from     │ singular │   IR   │ N=2 SCFT │
+  │ singul.  │  tiling   │ geometry │        │          │
+  └──────────┘           └──────────┘        └──────────┘
+    N=1 Lagrangian          Intermediate         Non-Lagrangian
+    (known)                 RG flow              fixed point
+```
 
-This connects to deep mathematical structures: discrete torsion corresponds to elements of $H^2(G, U(1))$ for the orbifold group $G$, while Wilson lines parameterize flat connections on the orientifold planes.
-:::
+**Physical framework.** The construction lives within geometric engineering — the program of realizing quantum field theories as low-energy limits of string theory on singular geometries. The specific setup uses type IIB string theory with D3-branes probing orientifolded cones over Sasaki-Einstein manifolds $Y^{p,q}$. The orientifold projection introduces O-planes that modify the gauge group (producing orthogonal or symplectic factors) and the matter content. The partial resolution geometry is controlled by Kähler moduli of the toric Calabi-Yau.
 
-[View related blog posts →](topics/string-theory.qmd)
+**Significance.** Lagrangian descriptions are the primary computational tool in quantum field theory: they give direct access to perturbative and semi-classical calculations, anomalies, moduli spaces, and lattice formulations. Providing Lagrangians for previously non-Lagrangian theories opens them to a much wider range of analysis techniques — including exact results via supersymmetric localization, superconformal index computations, and potential lattice Monte Carlo simulations.
+
+**Future directions.** I plan to extend these methods to cones over $Y^{2n,0}$ for general $n$, which should produce Lagrangians for a broader family of $\mathcal{N}=2$ SCFTs. I am also working to understand how the brane bending mechanism is encoded in the class-$\mathcal{S}$ framework, which would connect the brane tiling approach to the more standard classification of $\mathcal{N}=2$ theories via M5-branes wrapping punctured Riemann surfaces.
 
 ---
 
-## Condensed Matter & Many-Body Physics {#condensed-matter}
+### Flavor Orientifolds and S-Duality
 
-Quantum many-body systems exhibit rich phenomena—from quantum criticality to topological order—that challenge our computational and conceptual tools. I develop and apply numerical methods to study these systems, with a focus on **boundary critical phenomena** and **long-range interactions**.
-
-### Current Projects
-
-::: {.callout-tip collapse="true"}
-#### Boundary RG Flows in Interacting Majorana Chains
-
-The Kitaev Majorana chain hosts topologically protected edge modes. But what happens at quantum critical points when the bulk is tuned to criticality? The boundary can exhibit its own rich phase structure.
-
-Using DMRG (Density Matrix Renormalization Group), I study how boundary conditions affect the critical behavior of interacting Majorana chains. The boundary can flow between different conformally invariant boundary conditions as bulk or boundary parameters are varied—a boundary RG flow.
-
-**Key observables:** Boundary entropy (g-factor), boundary scaling dimensions, entanglement spectra.
-
-The interacting critical point is described by the tricritical Ising CFT, and the boundary CFT (BCFT) structure reveals multiple conformally invariant boundary conditions connected by RG flows.
+::: {.callout-note appearance="simple" icon=false}
+**Problem.** How can non-compact orientifolding with flavor branes construct new $\mathcal{N}=1$ SCFTs, and what S-duality structure do these theories exhibit? How do discrete choices — torsion and Wilson lines — determine the resulting symmetries and dualities?
 :::
 
-::: {.callout-tip collapse="true"}
-#### Monte Carlo for Long-Range Coulomb Interactions
+In work to be submitted with Heidenreich and Lotito, I study $\mathcal{N}=1$ SCFTs arising from D3-branes probing orientifolded toric singularities with flavor branes and **non-compact O7-planes**. We call these constructions **flavor orientifolds**, distinguishing them from the more commonly studied compact orientifolds. The key finding is that discrete data — discrete torsion and Wilson lines — decisively determine the resulting symmetries and dualities:
 
-Simulating systems with $1/r$ Coulomb interactions is notoriously difficult due to the long-range nature of the potential. Standard local-update algorithms suffer from critical slowing down, while the $O(N^2)$ cost of evaluating all pairwise interactions limits system sizes.
+- For the $\mathbb{C}^3/\mathbb{Z}_3$ singularity, we find **five inequivalent Wilson line classes**, each yielding a distinct SCFT with different global symmetry and anomaly structure.
+- For the conifold with $\mathbb{Z}_2$ torsion, **different Wilson lines produce S-dual theories** — pairs of SCFTs that flow to the same IR fixed point but have manifestly different global symmetry realizations in the UV.
 
-I am developing efficient Monte Carlo algorithms for 3D Bose gases with Coulomb interactions, combining:
+The classification proceeds by enumerating the consistent choices of discrete data for each toric singularity. Discrete torsion is classified by $H^2(G, U(1))$ for the orbifold group $G$, while Wilson lines correspond to flat connections on the orientifold planes. For each choice, the resulting gauge theory — gauge group, matter representations, and superpotential — is computed using brane tiling techniques: the orientifold involution on the bipartite graph identifies faces, edges, and nodes, producing the projected theory.
 
-- **Worm algorithms** that work in the path-integral representation
-- **Cluster updates** that move many particles collectively  
-- **Hierarchical methods** for efficient energy evaluation
+**Physical framework.** The setup uses type IIB string theory with D3-branes, D7-branes (flavor branes providing fundamental matter), and non-compact O7-planes at toric Calabi-Yau singularities. The non-compactness of the O-planes means they extend to infinity in the internal directions, providing a source of flavor symmetry rather than modifying the total D-brane charge as compact O-planes would. Anomaly cancellation (vanishing of gauge anomalies and matching of ABJ anomalies) provides stringent consistency checks on the construction.
 
-The goal: access the phase diagram of charged Bose systems, including the superfluid-to-Wigner-crystal transition.
-:::
+**Significance.** S-duality in $\mathcal{N}=1$ theories is much less understood than in $\mathcal{N}=2$ or $\mathcal{N}=4$. Our construction provides explicit examples where S-duality acts non-trivially on the discrete data, giving concrete laboratories for studying strong-weak duality in the $\mathcal{N}=1$ setting. The Wilson line classification also connects to the mathematical structure of equivariant K-theory on the singularity.
 
-::: {.callout-tip collapse="true"}
-#### Quantum Criticality and Scaling
-
-A unifying theme in my work is quantum criticality—the physics near continuous phase transitions at zero temperature. Critical systems exhibit universal behavior characterized by scaling dimensions, correlation functions, and central charges.
-
-I study how:
-
-- Boundary conditions affect universal critical data
-- Long-range interactions modify universality classes
-- Numerical methods can extract conformal data
-
-**Example:** The 1D transverse-field Ising model at criticality is described by the $c = 1/2$ Ising CFT. Adding interactions tunes to the $c = 7/10$ tricritical Ising CFT—a rare example of an interacting 2D CFT with exact solutions.
-:::
-
-[View related blog posts →](topics/condensed-matter.qmd)
+**Future directions.** I plan to classify flavor orientifolds for broader classes of singularities — including the $Y^{p,q}$ family and del Pezzo singularities — and to apply these tools to construct Lagrangians for further class-$\mathcal{S}$ theories.
 
 ---
 
-## Tensor Networks & Numerical Methods {#tensor-networks}
+### The IR Dynamics of $\mathcal{N}=1$ Gauge Theories Using Quad-CFTs
 
-Tensor networks provide a variational ansatz for quantum many-body wave functions that respects the entanglement structure of low-energy states. The **area law** of entanglement in gapped systems makes tensor networks particularly efficient.
-
-### Current Projects
-
-::: {.callout-warning collapse="true"}
-#### MPS and DMRG for Critical Systems
-
-Matrix Product States (MPS) are the workhorses of 1D quantum many-body numerics. The DMRG algorithm optimizes an MPS approximation to the ground state with remarkable efficiency.
-
-I use ITensor (Julia) to implement DMRG calculations for:
-
-- Interacting Majorana chains near quantum criticality
-- Systems with open boundaries to study boundary phenomena
-- Extraction of conformal data (scaling dimensions, OPE coefficients)
-
-**Challenge:** Critical systems violate the area law logarithmically, requiring larger bond dimensions. But this logarithmic scaling is still tractable for 1D systems.
+::: {.callout-note appearance="simple" icon=false}
+**Problem.** What are the infrared phases of $\mathcal{N}=1$ supersymmetric gauge theories with tensor matter — fields in the symmetric ($\,\mathbf{S}\,$) or antisymmetric ($\,\mathbf{A}\,$) representation of $SU(N)$? Standard tools like Seiberg duality do not directly apply to tensor representations, and the widely used **deconfinement** technique can produce inconsistent duals when applied naively.
 :::
 
-::: {.callout-warning collapse="true"}
-#### Entanglement and Holography
+In work in preparation with Heidenreich, I show that the infrared phases of these theories can be systematically described using **quad-CFTs** — a new class of strongly coupled $\mathcal{N}=1$ SCFTs that serve as elementary building blocks for the IR dynamics.
 
-The entanglement structure of tensor networks has deep connections to holography and AdS/CFT. The Ryu-Takayanagi formula relates entanglement entropy to minimal surfaces—and tensor networks like MERA (Multiscale Entanglement Renormalization Ansatz) seem to discretize this geometric picture.
+Quad-CFTs are engineered by **D5/NS5 brane tilings with an O5-plane** and come in two families. They are the minimal strongly coupled sectors that appear when one correctly accounts for the strong-coupling dynamics that the naive deconfinement technique misses. By deforming quad-CFTs with mass terms and relevant operators, we:
 
-I am interested in:
+- Construct **consistent dual descriptions** for $SU(N)$ theories with symmetric and antisymmetric tensor matter
+- Map out the **full IR phase diagram** as a function of the number of flavors $N_f$ and the tensor matter content
+- Identify the regime where the theory confines, where it flows to an interacting SCFT, and where it is in a free magnetic phase
 
-- How boundary DMRG data connects to bulk AdS physics
-- Extracting CFT data from tensor network calculations
-- The role of tensor networks in understanding quantum gravity
-:::
+This resolves a longstanding puzzle: the deconfinement technique — which replaces a tensor-matter field by a pair of fundamental fields coupled to an auxiliary gauge group — can produce inconsistent results because it omits contributions from strongly coupled sectors. The quad-CFT framework identifies exactly what these missing sectors are and provides the correct building blocks.
 
-[View related blog posts →](topics/tensor-networks.qmd)
+```
+  Naive deconfinement (can fail):
+
+  SU(N) + ⊞ + N_f □    →    SU(N) × SU(N') + bifundamentals
+                              (may give wrong IR physics)
+
+  Quad-CFT framework (correct):
+
+  SU(N) + ⊞ + N_f □    →    SU(N) × [Quad-CFT] + N_f □
+                              (strongly coupled building block
+                               captures the correct IR dynamics)
+```
+
+**Physical framework.** The brane construction uses type IIB with D5-branes and NS5-branes, with the O5-plane implementing the orientifold projection that introduces tensor matter. The quad-CFT arises as the theory on a particular arrangement of branes at the orientifold, and its properties (operator spectrum, anomalies, moduli space) are determined by the brane configuration. The two families of quad-CFTs correspond to the two possible orientifold actions (giving symmetric or antisymmetric matter).
+
+**Significance.** Theories with tensor matter arise ubiquitously in orientifold constructions, in dynamical supersymmetry breaking scenarios (e.g., the Intriligator-Thomas-Izawa-Yanagida model), and as duals of theories with only fundamental matter. A systematic understanding of their IR dynamics has been an open problem since the 1990s.
+
+**Future directions.** I plan to extend this framework to theories with non-$SU$ gauge groups ($SO$, $Sp$) and additional flavor symmetries, and to connect the quad-CFT structure to the classification of $\mathcal{N}=1$ SCFTs via the superconformal index.
 
 ---
 
-## Machine Learning & Generative Models {#machine-learning}
+### Mirror Symmetry in Quad-CFTs
 
-Modern generative models—diffusion models, normalizing flows, transformers—offer powerful tools for sampling complex probability distributions. These techniques are increasingly relevant to physics, from lattice QCD to statistical mechanics.
+In ongoing work with Pittman and Heidenreich, I study the quad-CFT framework from the perspective of **mirror symmetry** — specifically, the type IIA mirror with D6- and O6-branes.
 
-### Current Projects
+The type IIB brane tiling construction of quad-CFTs has a mirror description in type IIA string theory, where D5/NS5 systems map to D6-branes wrapping special Lagrangian cycles in the mirror Calabi-Yau. The O5-plane maps to an O6-plane, and the gauge theory data is encoded in the geometry of the D6-brane configuration.
 
-::: {.callout-caution collapse="true"}
-#### Diffusion Models for Sampling
+The goal is to understand how the key features of quad-CFTs — symmetry enhancement at strong coupling, moduli space structure (Coulomb and Higgs branches), and the duality web — are encoded in the **mirror Calabi-Yau geometry**. In the mirror description:
 
-Diffusion models (score-based generative models) learn to sample distributions by reversing a noise process. Starting from pure noise, the model iteratively denoises to produce samples from the target distribution.
+- The Coulomb branch is geometrized as deformations of the special Lagrangian cycles wrapped by D6-branes
+- The Higgs branch corresponds to brane recombination in the mirror
+- S-duality of the quad-CFTs maps to geometric transitions in the mirror
 
-I am exploring applications to:
+This provides a **global geometric picture** that organizes the field-theoretic dualities: different-looking gauge theories that flow to the same IR fixed point correspond to different degeneration limits of the same mirror geometry.
 
-- **Lattice field theory**: Sampling field configurations for path integrals
-- **Statistical mechanics**: Generating equilibrium configurations of spin systems
-- **Molecular dynamics**: Sampling rare events and transition states
-
-**Key idea:** The score function $\nabla_x \log p(x)$ can be learned from data and used to reverse the diffusion process.
-:::
-
-::: {.callout-caution collapse="true"}
-#### Normalizing Flows for Physics
-
-Normalizing flows learn an invertible map between a simple base distribution (e.g., Gaussian) and the target distribution. The change of variables formula gives the exact density.
-
-For physics applications, flows offer:
-
-- **Exact sampling** without MCMC autocorrelation
-- **Tractable density evaluation** for thermodynamic quantities
-- **Incorporation of symmetries** via equivariant architectures
-
-I am particularly interested in flows that respect the symmetries of physical systems—gauge invariance, translation symmetry, etc.
-:::
-
-::: {.callout-caution collapse="true"}
-#### Transformers and Attention for Sequences
-
-Transformers have revolutionized natural language processing and are increasingly applied to scientific problems. The self-attention mechanism allows modeling long-range dependencies in sequences.
-
-I am exploring:
-
-- **Autoregressive models** for spin configurations
-- **Transformer architectures** for molecular property prediction
-- **Attention mechanisms** in the context of tensor network contractions
-
-**Speculation:** Can attention-based architectures learn efficient tensor network contractions?
-:::
-
-[View related blog posts →](topics/machine-learning.qmd)
+**Significance.** While brane tilings give efficient algorithms for computing gauge theory data, the mirror perspective provides complementary geometric insight — particularly for understanding the global structure of the moduli space and the action of dualities. The combination of both perspectives gives a more complete picture than either alone.
 
 ---
 
-## Connections and Philosophy
+### 2D CFTs, Discrete Gaugings, and the Weak Gravity Conjecture
 
-The common thread through my work is the use of **geometric and structural thinking** to understand complex physical systems. Whether the geometry is that of a Calabi-Yau manifold or the entanglement structure of a quantum state, I find that the right mathematical framework often illuminates the underlying physics.
+In ongoing work with Heidenreich and Pittman, I study how **discrete gaugings of two-dimensional CFTs** with conserved currents constrain or modify the Weak Gravity Conjecture (WGC).
 
-I am particularly drawn to problems where:
+The WGC, in its simplest form, asserts that in any consistent theory of quantum gravity with a $U(1)$ gauge symmetry, there must exist a particle whose charge-to-mass ratio exceeds that of an extremal black hole. Lattice versions of the WGC strengthen this to a statement about the full charge lattice: the convex hull of the charge-to-mass ratios of all particles must contain the unit ball.
 
-- Different areas of physics inform each other (e.g., holography connecting strings and condensed matter)
-- Computational methods reveal structure invisible to analytics
-- Mathematical elegance guides physical intuition
+Starting from **WZW models** (exact 2D CFTs built from Lie groups) and their quotients, we construct orbifold CFTs by gauging discrete subgroups of the global symmetry. The gauging introduces **twisted sectors** — new states in the spectrum that carry fractional charges under the original symmetry. These twisted-sector states reorganize the charge lattice in ways that may preserve, strengthen, or apparently violate lattice versions of the WGC.
+
+The central questions are:
+
+- Does the WGC lattice condition survive discrete gauging in general?
+- When it is violated, does this signal an inconsistency in the orbifold CFT, or a limitation of the lattice WGC formulation?
+- What role does modular invariance — a consistency condition for 2D CFTs on the torus — play in constraining the charge lattice?
+
+**Significance.** This connects the swampland program — which seeks universal constraints on effective theories with gravity — to the rich and mathematically controlled setting of 2D CFT orbifolds. The advantage of working in 2D is that we have exact control over the spectrum and can test swampland conjectures in a fully non-perturbative setting.
+
+[Read background notes on 2D CFT and the swampland →](notes/2d-cft-swampland.qmd)
+
+---
+
+## Condensed Matter and Computational Physics {#condensed-matter}
+
+### Topological Symmetry and Boundary RG Flow in Ising Criticality
+
+::: {.callout-note appearance="simple" icon=false}
+**Problem.** Can topologically protected edge modes persist at bulk quantum critical points, where the protecting gap has closed? The phenomenon of **symmetry-enriched criticality** overturns the standard expectation that robust boundary modes require a gapped bulk.
+:::
+
+In work to be submitted with Wang and Zhang, I study an interacting Majorana chain that hosts **three distinct phases** separated by symmetry-enriched and trivial Ising transitions. The topological symmetry — a non-on-site symmetry related to the Kramers-Wannier duality of the Ising model — protects edge modes even at the critical point, where the bulk correlation length diverges.
+
+The key physical question is what happens to the boundary degrees of freedom as the system is tuned through a quantum phase transition. A perturbation breaking time-reversal symmetry induces a **boundary RG flow** between different conformally invariant boundary conditions of the Ising CFT ($c = 1/2$). Using DMRG on systems with open boundaries, I extract:
+
+- **Boundary entropy** ($g$-factor, the Affleck-Ludwig boundary degeneracy) as a function of the symmetry-breaking perturbation
+- **Boundary scaling dimensions** from the finite-size spectrum, identifying the relevant boundary operators
+- A **universal scaling function** characterizing the crossover between boundary conditions, which is a prediction of boundary conformal field theory that can be tested numerically
+
+The three phases of the Majorana chain correspond to three distinct boundary conditions of the Ising CFT (free, fixed, and a mixed boundary condition). The symmetry-enriched transition connects two of these via a boundary RG flow that is controlled by a relevant boundary operator, while the trivial transition does not involve a change in boundary condition.
+
+```
+  Phase diagram of the interacting Majorana chain:
+
+  Phase I ──── SEQ transition ──── Phase II ──── trivial transition ──── Phase III
+  (topological)  (symmetry-enriched    (trivial)     (trivial Ising         (trivial)
+                  Ising criticality)                   criticality)
+
+  Boundary conditions of the Ising CFT (c = 1/2):
+    Phase I  →  "free" BC       (g = 1)
+    Phase II →  "fixed" BC      (g = 1/√2)
+    Phase III → "fixed" BC      (g = 1/√2)
+
+  Boundary RG flow: free → fixed  (driven by time-reversal breaking)
+  g decreases monotonically (g-theorem)
+```
+
+**Physical framework.** The Majorana chain is a lattice model of interacting Majorana fermions with a $\mathbb{Z}_2 \times \mathbb{Z}_2^T$ symmetry, where $\mathbb{Z}_2$ is the fermion parity and $\mathbb{Z}_2^T$ is time-reversal. The topological symmetry enrichment means that the critical point carries a nontrivial SPT invariant for the protecting symmetry. The boundary CFT analysis uses the Cardy formalism for conformal boundary conditions.
+
+**Methods.** DMRG (density matrix renormalization group) via the ITensor library in Julia, with bond dimensions up to $\chi \sim 400$. Open boundary conditions are essential for studying boundary phenomena. Finite-entanglement scaling is used to extrapolate critical exponents.
+
+**Significance.** Symmetry-enriched criticality is a recently recognized phenomenon with implications for topological quantum computing (edge modes surviving gap closure) and for the classification of critical phases of matter beyond the Landau paradigm.
+
+**Future directions.** I plan to extend this analysis to other symmetry-enriched chains and to explore connections with non-invertible symmetries — a natural bridge to my high-energy work on generalized symmetries.
+
+---
+
+### DMRG Using Tensor Networks
+
+The condensed matter projects above rely on the **density matrix renormalization group** (DMRG), implemented within the matrix product state (MPS) framework using the ITensor library in Julia. DMRG is the method of choice for ground-state properties of one-dimensional quantum systems, and tensor networks provide the mathematical language that makes it efficient.
+
+My computational work involves:
+
+- **Ground-state calculations** for interacting Majorana chains with bond dimensions up to $\chi \sim 400$, achieving energy convergence to $\sim 10^{-10}$
+- **Entanglement entropy** extraction from the singular value spectrum of the MPS, used to determine central charges via the Calabrese-Cardy formula $S(\ell) = \frac{c}{6}\log\ell + \text{const}$ for open boundary conditions
+- **Boundary entropy** ($g$-factor) computation by comparing entanglement between open and periodic systems
+- **Conformal data** extraction: scaling dimensions from the finite-size energy spectrum $E_n - E_0 = \frac{2\pi v}{L}(\Delta_n - c/12)$, and OPE coefficients from three-point functions
+
+The key challenge for critical systems is that the entanglement entropy diverges logarithmically with system size ($S \sim \frac{c}{3}\log L$), requiring bond dimensions that grow polynomially: $\chi \sim L^{c/6}$ for a given accuracy. Finite-entanglement scaling — exploiting the systematic relationship between finite $\chi$ and an effective correlation length $\xi_\chi \sim \chi^\kappa$ — is essential for extracting quantitative critical data.
+
+[Read full exposition on tensor networks →](notes/tensor-networks.qmd) | [Julia workflows →](tools/julia-tensor-networks.qmd)
+
+---
+
+### Superfluidity in the 3D Lattice Bose Gas
+
+::: {.callout-note appearance="simple" icon=false}
+**Problem.** How does long-range Coulomb repulsion modify the superfluid transition in three-dimensional bosonic systems? Does it shift the critical temperature, alter the universality class away from 3D XY, or induce competing density-ordered phases?
+:::
+
+In current work with Prokof'ev and Wei, I study a 3D Bose gas with Coulomb interactions, formulated as a classical $|\psi|^4$ lattice field theory on a simple cubic lattice with $N = L^3$ sites:
+
+$$
+\frac{\mathcal{H}}{T} = -\frac{1}{T}\sum_{\langle ij \rangle} (\psi_i^* \psi_j + \psi_i \psi_j^*) + \sum_i \left(-\frac{\mu}{T}|\psi_i|^2 + \frac{U}{2T}|\psi_i|^4\right) + \frac{V}{2T}\sum_{i \neq j} \frac{|\psi_i|^2 |\psi_j|^2}{|\mathbf{r}_i - \mathbf{r}_j|}
+$$
+
+This model interpolates between well-understood limits. For $V = 0$, the transition is in the 3D XY universality class ($\nu \approx 0.67$, $\eta \approx 0.04$). The Coulomb term $V > 0$ introduces long-range density-density repulsion that competes with the tendency toward Bose condensation. Physical realizations include granular superconductors (where Cooper pairs experience Coulomb repulsion), excitonic condensates in semiconductor bilayers, and ultracold dipolar gases in optical lattices.
+
+The key observables are the particle density $\rho = N^{-1}\sum_i \langle |\psi_i|^2 \rangle$ and the superfluid stiffness, measured from winding-number fluctuations:
+$$
+\rho_s = \frac{T}{2L}\langle W^2 \rangle, \qquad W^2 = W_x^2 + W_y^2 + W_z^2
+$$
+where $W_\alpha$ counts the net current around periodic boundaries in direction $\alpha$.
+
+**Future directions.** I plan to map how universality and $T_c$ evolve as interaction range and screening are varied, interpolating between the short-range (3D XY) and long-range (Coulomb) limits, and to search for potential density-modulated phases (supersolids, charge-density waves) at strong Coulomb coupling.
+
+---
+
+### Worm and Cluster Algorithms for Long-Range Interactions
+
+::: {.callout-note appearance="simple" icon=false}
+**Problem.** The standard worm algorithm achieves near-zero dynamical critical exponent ($z \approx 0$) for lattice models with short-range interactions, but its foundational step — analytically integrating out field amplitudes into tabulated single-site weight functions $Q(k)$ — breaks down catastrophically when long-range density-density interactions couple all sites. Can the worm algorithm be extended to handle $1/r$ Coulomb interactions while preserving its favorable scaling?
+:::
+
+In work with Prokof'ev and Wei, I develop worm and cluster Monte Carlo algorithms for classical lattice models with long-range interactions, using the 3D $|\psi|^4$ + Coulomb model as a benchmark.
+
+#### Why the standard worm algorithm fails for long-range interactions
+
+The Prokof'ev-Svistunov worm algorithm (2001) operates in a **high-temperature expansion** of the partition function. One expands the Boltzmann weight in powers of the hopping term, introducing non-negative integer bond variables $n_b^{(\pm)}$ on each nearest-neighbor link. After integrating over the phases $\theta_i$ of the complex fields $\psi_i = x_i e^{i\theta_i}$, current conservation is enforced, and the amplitude integrals at each site *factorize*:
+
+$$
+Z = \sum_{\text{CP}} \prod_b \frac{1}{T^{n_b} \, n_b^{(+)}! \, n_b^{(-)}!} \prod_i Q(k_i)
+$$
+
+where $k_i = \sum_\nu (n_{i,\nu}^{(+)} + n_{i,\nu}^{(-)})$ is the site occupation number and
+
+$$
+Q(k) = \int_0^\infty dx \, x^{k+1} \exp\!\left[\frac{\mu}{T}x^2 - \frac{U}{2T}x^4\right]
+$$
+
+is a function of a *single integer argument* that can be precomputed and tabulated. This factorization is what makes the algorithm $O(1)$ per local update: changing a bond only modifies $Q(k_i)$ at the two endpoint sites, requiring only table lookups.
+
+**With Coulomb interactions, this factorization is destroyed.** The partition function becomes:
+
+$$
+Z = \sum_{\text{CP}} \int \prod_i [x_i \, dx_i] \prod_b \frac{1}{T^{n_b} \, n_b^{(+)}! \, n_b^{(-)}!} \prod_i x_i^{k_i+1} \exp\!\left[\sum_i \left(\frac{\mu}{T}x_i^2 - \frac{U}{2T}x_i^4\right) - \frac{V}{2T}\sum_{i \neq j} \frac{x_i^2 x_j^2}{r_{ij}}\right]
+$$
+
+The Coulomb term couples all amplitudes $x_i$ simultaneously — the integral over $\{x_i\}$ is an $N$-dimensional integral that cannot be factored into single-site contributions. One would need a function $Q(k_1, \ldots, k_N)$ over the full configuration space, which is computationally intractable.
+
+#### The mixed representation: stochastic amplitude sampling
+
+Our solution is to abandon analytical integration of amplitudes and instead treat them as **explicit dynamical variables** sampled by Monte Carlo. In this **mixed representation**, a configuration consists of both bond currents $\{n_b^{(\pm)}\}$ *and* field amplitudes $\{x_i\}$, with weight:
+
+$$
+W[\{n_b\}, \{x_i\}] = \prod_b \frac{1}{T^{n_b} \, n_b^{(+)}! \, n_b^{(-)}!} \prod_i x_i^{p_i+1} \exp\!\left[\frac{\mu}{T}x_i^2 - \frac{U}{2T}x_i^4 - \frac{V}{T}x_i^2 \Phi_i\right]
+$$
+
+where $p_i$ is the local power determined by bond occupations and worm endpoints, and $\Phi_i = \sum_{j \neq i} x_j^2 / |\mathbf{r}_i - \mathbf{r}_j|$ is the Coulomb potential at site $i$. The algorithm performs two types of updates:
+
+1. **Worm moves** (shift Masha along bonds): These change bond occupations but *not* amplitudes. Since amplitudes are unchanged, the Coulomb energy $\mathcal{V}_{\text{Coul}}$ is unchanged, and acceptance ratios retain the same $O(1)$ form as the short-range case.
+
+2. **Modulus updates** (Metropolis on $x_i$): These change the amplitude at a single site, with acceptance ratio involving $\Delta E_{\text{Coul}} = (V/T)(x_i'^2 - x_i^2)\Phi_i$ — a *local* factor. After acceptance, the Coulomb cache is updated incrementally: $\Phi_j \to \Phi_j + (x_i'^2 - x_i^2)/|\mathbf{r}_i - \mathbf{r}_j|$ for all $j \neq i$, costing $O(N)$.
+
+```
+  Standard worm algorithm (short-range, V=0):
+  ┌──────────────────────────────────────────┐
+  │  Integrate out amplitudes analytically   │
+  │  → tabulated Q(k), O(1) per update      │
+  └──────────────────────────────────────────┘
+
+  Mixed-representation worm algorithm (long-range, V≠0):
+  ┌──────────────────────────────────────────┐
+  │  Keep amplitudes {x_i} as MC variables   │
+  │                                          │
+  │  Worm moves: change bonds, not x_i      │
+  │    → Coulomb energy unchanged → O(1)     │
+  │                                          │
+  │  Modulus updates: change x_i locally     │
+  │    → incremental cache update → O(N)     │
+  │                                          │
+  │  Net: worm moves O(1), modulus O(N)      │
+  │  Preprocessing: O(N²) distance table     │
+  └──────────────────────────────────────────┘
+```
+
+The key insight is the **separation of fast and slow degrees of freedom**: worm moves efficiently update the *phase* (bond/current) sector while modulus updates handle the *amplitude* (density) sector. Long-range interactions couple only densities, so they are invisible to worm moves and appear only as a local correction in modulus updates.
+
+#### Cluster algorithm: density-invariance under Wolff reflections
+
+We also develop a complementary **Wolff cluster algorithm** for the same model. The key observation is that Wolff reflections — which reflect all fields in a cluster through a random axis in the complex plane, $\psi_i \to \psi_i - 2z\,\mathrm{Re}(\psi_i z^*)$ — preserve amplitudes: $|\psi_i'|^2 = |\psi_i|^2$. Since both the Coulomb interaction and the local potential depend only on $|\psi_i|^2$, they are **exactly invariant** under any cluster flip. Cluster moves are always accepted — no Metropolis step is needed — even with $1/r$ interactions. Separate local Metropolis updates handle amplitude equilibration.
+
+#### Results and scaling
+
+Benchmarks on systems up to $L = 16$ show that both algorithms achieve autocorrelation times scaling as $\tau(L) \sim \ln L$, consistent with dynamical critical exponent $z \lesssim 0.2$, even with Coulomb interactions. This is remarkable: long-range interactions do *not* destroy the near-optimal scaling of these algorithms. The cost per independent sample scales as $C_{\text{eff}} \sim L^3 \ln L$ (dominated by the $O(N)$ modulus updates times the logarithmic autocorrelation time).
+
+| | $V = 0$ (short-range) | $V = 0.1$ (Coulomb) |
+|:--|:--|:--|
+| Worm $\tau(L=16)$ | $\approx 14$ sweeps | $\approx 20$ sweeps |
+| Cluster $\tau(L=16)$ | $\approx 11$ sweeps | $\approx 16$ sweeps |
+| $z_{\text{eff}}$ | $\lesssim 0.2$ | $\lesssim 0.2$ |
+
+**Significance.** These results demonstrate that long-range interactions do not inherently destroy the advantages of advanced Monte Carlo schemes. The mixed representation (for the worm algorithm) and the density-invariance property (for the cluster algorithm) provide general principles for handling slowly decaying pair potentials. The techniques extend naturally to dipolar interactions, power-law forces, and quantum lattice models in the worldline representation.
+
+**Future directions.** For larger systems ($L \sim 50$–$100$), Ewald summation can reduce the modulus update cost from $O(N)$ to $O(N^{2/3})$ in 3D. I plan to apply these algorithms to map the full phase diagram of the Coulomb Bose gas, including the search for density-modulated phases, and to extend the methods to quantum models and frustrated systems where worm algorithms' ability to perform non-local updates via open paths offers a natural advantage.
+
+[Read full exposition on Monte Carlo methods →](notes/monte-carlo.qmd) | [Error analysis tools →](tools/monte-carlo-errors.qmd)
+
+---
+
+## Future Directions {#future-directions}
+
+A unifying theme of my future work is to use **generalized symmetries** as a bridge between string-theoretic SCFTs and lattice models of quantum matter.
+
+The past decade has transformed our understanding of symmetry in quantum field theory: symmetries now include higher-form, non-invertible, and categorical structures with profound implications for dualities, anomalies, and the classification of phases.
+
+**On the high-energy side**, geometric engineering and brane constructions provide systematic ways to read off higher-form and discrete symmetries from internal Calabi-Yau data. I plan to extract this information explicitly in the SCFTs I construct — in particular in flavor orientifolds and quad-CFTs — and to study how S-duality and discrete gauging organize their symmetry TFTs and categorical structures.
+
+**On the condensed-matter side**, tensor networks offer a natural language for realizing generalized symmetries on the lattice. Non-invertible symmetry operators, such as Kramers-Wannier-type dualities, can be implemented as matrix product operators, and their presence constrains the entanglement structure and possible phases of lattice systems. I plan to construct and analyze models whose microscopic symmetries flow to nontrivial infrared symmetry algebras, and to describe these using tensor networks — connecting the generalized symmetry structures from my high-energy projects to concrete numerical realizations in strongly correlated systems.
+
+---
+
+## Notes & Technical Background
+
+The [Notes & Expositions](notes/index.qmd) section provides extended technical background on the methods and frameworks used in my research:
+
+- [Brane Tilings and SCFTs](notes/brane-tilings.qmd) — The combinatorial framework underlying the geometric engineering constructions
+- [Tensor Networks](notes/tensor-networks.qmd) — MPS, DMRG, and the numerical methods used for boundary RG flows
+- [Monte Carlo Methods](notes/monte-carlo.qmd) — Worm and cluster algorithms, error analysis
+- [2D CFT, Orbifolding, and the Swampland](notes/2d-cft-swampland.qmd) — Background for the discrete gauging and WGC project
+- [Mirror Symmetry and T-Duality](notes/mirror-symmetry.qmd) — Geometric dualities relevant to the mirror symmetry project
+- [Machine Learning and Neural Networks](notes/machine-learning.qmd) — Diffusion models, normalizing flows, and connections to statistical physics
+
+See [Publications](publications.qmd) for papers and preprints.

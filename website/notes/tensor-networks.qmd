@@ -1,0 +1,532 @@
+---
+title: "Tensor Networks"
+subtitle: "From area laws to DMRG to holography"
+description: "A comprehensive introduction to tensor network methods for quantum many-body physics, including MPS, DMRG, entanglement entropy, TCI, quantics methods, and connections to holography."
+author: "Ajit Kumar Sorout"
+date: 2025-01-01
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+Tensor networks have become indispensable in quantum many-body physics. They provide a language for describing quantum states that respects the entanglement structure of nature — and in doing so, they compress the exponential complexity of quantum mechanics into something tractable. These notes cover the conceptual foundations, the main algorithms, and several modern extensions.
+
+## Tensors and Tensor Diagrams
+
+A tensor is a multi-dimensional array of numbers. A scalar is a rank-0 tensor, a vector is rank-1, a matrix is rank-2, and so on. In tensor network language, we draw each tensor as a shape (node) with legs (edges) — one leg per index:
+
+- A vector $v_i$: one leg.
+- A matrix $M_{ij}$: two legs.
+- A rank-3 tensor $T_{ijk}$: three legs.
+
+In diagrams:
+
+```
+  Vector:     Matrix:      Rank-3:
+    |           |            |
+   [v]        [M]          [T]
+               |           / \
+```
+
+**Contraction** means summing over a shared index. In diagrammatic notation, we connect the legs being summed over. Matrix multiplication $C_{ik} = \sum_j A_{ij} B_{jk}$ becomes:
+
+```
+  i─[A]─j─[B]─k    =    i─[C]─k
+```
+
+The connected $j$-leg is summed over; the free legs $i$ and $k$ remain. A **trace** is a self-contraction (connecting two legs of the same tensor):
+
+```
+     ┌───┐
+  ───┤ M ├───    =    Tr(M)    (a scalar, no free legs)
+     └───┘
+```
+
+An **MPS** (Matrix Product State) for $N$ sites looks like:
+
+```
+  s₁   s₂   s₃         sₙ
+  |    |    |           |
+ [A]──[A]──[A]── ··· ──[A]
+      α₁   α₂         αₙ₋₁
+```
+
+Each vertical leg $s_k$ is a **physical index** (local Hilbert space dimension $d$), and each horizontal leg $\alpha_k$ is a **bond index** (bond dimension $\chi$). The full state is obtained by contracting all bond indices.
+
+This notation is more than cosmetic. For complicated networks of contractions, diagrams make the structure transparent in a way that index notation obscures. The computational cost of contracting a tensor network depends on the *order* of contractions, and finding the optimal contraction order is itself a rich algorithmic problem.
+
+## The Entanglement Problem
+
+The Hilbert space of $N$ qubits has dimension $2^N$. A general quantum state requires exponentially many coefficients:
+$$
+|\psi\rangle = \sum_{s_1, \ldots, s_N} c_{s_1 \ldots s_N} |s_1, \ldots, s_N\rangle
+$$
+
+This exponential wall seems to doom exact simulation. But ground states of local Hamiltonians are not generic — they obey the **area law**.
+
+### The Area Law
+
+For a gapped local Hamiltonian in one spatial dimension, the entanglement entropy of a contiguous subsystem $A$ satisfies:
+$$
+S_A \equiv -\mathrm{Tr}(\rho_A \log \rho_A) = O(1)
+$$
+
+That is, the entanglement entropy is bounded by a constant independent of the size of $A$. This was proven rigorously by Hastings (2007) for 1D systems with a spectral gap.
+
+For gapless (critical) systems described by a conformal field theory, there is a logarithmic violation:
+$$
+S_A = \frac{c}{3} \log \ell + \text{const}
+$$
+where $c$ is the central charge and $\ell$ is the subsystem size. This result, due to Calabrese and Cardy (2004), connects entanglement to conformal invariance.
+
+In higher dimensions, the area law states that $S_A$ scales as the boundary area of $A$, not its volume — hence the name. Ground states live in a tiny corner of the full Hilbert space, and tensor networks are designed to parametrize exactly that corner.
+
+## Matrix Product States
+
+The simplest tensor network for one-dimensional systems is the **Matrix Product State** (MPS). Instead of one giant coefficient tensor $c_{s_1 \cdots s_N}$, we decompose:
+$$
+c_{s_1 s_2 \cdots s_N} = \sum_{\alpha_1, \ldots, \alpha_{N-1}} A^{[1] s_1}_{\phantom{[1]}\alpha_1} \, A^{[2] s_2}_{\phantom{[2]}\alpha_1 \alpha_2} \cdots A^{[N] s_N}_{\phantom{[N]}\alpha_{N-1}}
+$$
+
+Each $A^{[k] s_k}$ is a $\chi_{k-1} \times \chi_k$ matrix (with the boundary convention $\chi_0 = \chi_N = 1$ for open boundary conditions). The indices $\alpha_k$ are called **bond indices** and the dimensions $\chi_k$ are the **bond dimensions**.
+
+### Parameter Count
+
+The total number of parameters in an MPS with uniform bond dimension $\chi$ and local Hilbert space dimension $d$ is $O(N d \chi^2)$. This is *linear* in system size. Compare with $d^N$ for a general state. For $N = 50$ qubits, a general state needs $2^{50} \approx 10^{15}$ complex numbers. An MPS with $\chi = 100$ needs about $50 \times 2 \times 10^4 = 10^6$.
+
+### Bond Dimension and Entanglement
+
+The bond dimension $\chi$ controls the maximum entanglement the MPS can represent. For a bipartition at bond $k$, the Schmidt decomposition of the MPS has at most $\chi_k$ terms, so:
+$$
+S_A \leq \log \chi_k
+$$
+
+For area-law states (gapped 1D systems), a constant $\chi$ suffices for a faithful approximation. For critical states with $S_A \sim \frac{c}{3} \log \ell$, the required bond dimension grows as a power law with system size: $\chi \sim \ell^{c/6}$ (more precisely, $\chi$ grows polynomially for fixed accuracy). This is still tractable.
+
+### Canonical Forms
+
+An MPS can be brought into **canonical form** by performing QR or SVD decompositions. In left-canonical form, each tensor satisfies $\sum_{s} A^{[k]s\dagger} A^{[k]s} = I$. In mixed-canonical form, there is an **orthogonality center** at one site, and all tensors to the left are left-canonical and all to the right are right-canonical. This is essential for efficient computation: expectation values of local operators reduce to contractions involving only the tensors near the operator's support.
+
+## DMRG: The Density Matrix Renormalization Group
+
+The **DMRG algorithm**, introduced by White (1992), is the standard method for finding ground states of 1D quantum systems. In modern language, it is a variational optimization over MPS.
+
+### The Algorithm
+
+Given a Hamiltonian $H$ (represented as a Matrix Product Operator, or MPO), DMRG finds the MPS $|\psi\rangle$ minimizing $\langle \psi | H | \psi \rangle$.
+
+The strategy is to optimize one tensor at a time while holding all others fixed:
+
+1. Place the orthogonality center at site $k$.
+2. Contract the environment — all tensors except the one at site $k$ — with the MPO to form an **effective Hamiltonian** $H_{\mathrm{eff}}$ acting on the local tensor.
+3. Solve the local eigenvalue problem $H_{\mathrm{eff}} |v\rangle = E |v\rangle$ using an iterative solver (Lanczos or Davidson).
+4. Replace the tensor at site $k$ with the ground state eigenvector.
+5. Move the orthogonality center to site $k+1$ (or $k-1$) and repeat.
+
+Diagrammatically, the effective Hamiltonian at site $k$ is formed by contracting everything except the tensor being optimized:
+
+```
+         s₁  s₂       sₖ       sₙ
+         |   |        |        |
+ ⟨ψ| :  [A*]─[A*]─···─[?]─···─[A*]
+                       |
+  H  :  [W]──[W]──···─[W]─···──[W]
+                       |
+ |ψ⟩ :  [A]──[A]──···─[?]─···──[A]
+         |   |        |        |
+         s₁  s₂       sₖ       sₙ
+
+  = Left environment ─── H_eff(sₖ,sₖ') ─── Right environment
+```
+
+The left and right environments are built incrementally as the sweep progresses, making each local optimization step efficient ($O(\chi^3 d)$ per site).
+
+One **sweep** consists of moving right from site 1 to $N$, then left from $N$ to 1. Multiple sweeps are performed until the energy converges.
+
+```julia
+using ITensors, ITensorMPS
+
+# Build the Heisenberg spin-1/2 chain
+N = 100
+sites = siteinds("S=1/2", N)
+
+os = OpSum()
+for j in 1:N-1
+    os += "Sz", j, "Sz", j+1
+    os += 0.5, "S+", j, "S-", j+1
+    os += 0.5, "S-", j, "S+", j+1
+end
+H = MPO(os, sites)
+
+# Initial MPS (random product state)
+psi0 = random_mps(sites; linkdims=10)
+
+# Run DMRG
+sweeps = Sweeps(10)
+setmaxdim!(sweeps, 20, 50, 100, 200, 200)
+setcutoff!(sweeps, 1e-10)
+
+energy, psi = dmrg(H, psi0, sweeps)
+```
+
+### Key Parameters
+
+- **Bond dimension $\chi$**: Controls accuracy. Increase until observables converge.
+- **Truncation cutoff**: Singular values below this threshold are discarded.
+- **Number of sweeps**: Usually 5–20 suffice for gapped systems; critical systems need more.
+- **Subspace expansion / noise**: Helps escape local minima, especially important in the first few sweeps.
+
+### When DMRG Works Well
+
+DMRG is extremely effective for:
+
+- 1D gapped systems (exponentially fast convergence in $\chi$)
+- 1D critical systems (polynomial convergence in $\chi$, still practical)
+- Quasi-1D systems (ladders, cylinders) with moderate width
+
+It struggles with:
+
+- Truly 2D systems (entanglement grows with system width, requiring very large $\chi$)
+- Highly excited states (variational principle finds ground state; targeting excited states requires modifications)
+- Systems with long-range entanglement (topological order, volume-law states)
+
+## Entanglement Entropy
+
+Entanglement entropy is both a physical observable and a diagnostic for tensor network calculations.
+
+### Von Neumann Entropy
+
+For a bipartition of the system into $A$ and $\bar{A}$, the reduced density matrix $\rho_A = \mathrm{Tr}_{\bar{A}} |\psi\rangle\langle\psi|$ has eigenvalues $\lambda_i$ (the **entanglement spectrum**). The von Neumann entropy is:
+$$
+S_A = -\sum_i \lambda_i \log \lambda_i
+$$
+
+In an MPS with the orthogonality center at the bipartition point, the singular values of the center tensor directly give $\sqrt{\lambda_i}$.
+
+### Rényi Entropies
+
+The $n$-th Rényi entropy is:
+$$
+S_A^{(n)} = \frac{1}{1-n} \log \mathrm{Tr}(\rho_A^n)
+$$
+
+The von Neumann entropy is the limit $n \to 1$. Rényi entropies with integer $n \geq 2$ are often easier to measure in both numerics and experiments (via the replica trick or randomized measurements). For conformal systems:
+$$
+S_A^{(n)} = \frac{c}{6}\left(1 + \frac{1}{n}\right) \log \ell + \text{const}
+$$
+
+### Computing Entanglement from MPS
+
+In an MPS in mixed-canonical form with the orthogonality center at the bipartition bond, the entanglement spectrum is read off directly from the singular values. This makes entanglement entropy essentially free to compute once you have a converged MPS.
+
+```julia
+# Compute entanglement entropy across bond at site N/2
+function entanglement_entropy(psi::MPS, bond::Int)
+    orthogonalize!(psi, bond)
+    _, S, _ = svd(psi[bond], (linkind(psi, bond-1), siteind(psi, bond)))
+    SvN = 0.0
+    for n in 1:dim(S, 1)
+        p = S[n, n]^2
+        if p > 1e-15
+            SvN -= p * log(p)
+        end
+    end
+    return SvN
+end
+```
+
+## Correlation Functions
+
+### Two-Point Functions from MPS
+
+Given a converged MPS $|\psi\rangle$, the two-point correlation function $\langle O_i O_j \rangle$ for operators $O_i$ at site $i$ and $O_j$ at site $j > i$ is computed by:
+
+1. Place the orthogonality center between sites $i$ and $j$.
+2. Contract the local tensors at sites $i$ and $j$ with the operators.
+3. Contract the chain of tensors between $i$ and $j$ (the "transfer matrices").
+
+The computational cost is $O(|i - j| \chi^3)$ for a single correlator. For a critical system, the two-point function of a primary operator $\phi$ with scaling dimension $\Delta$ decays as:
+$$
+\langle \phi(x) \phi(0) \rangle \sim |x|^{-2\Delta}
+$$
+
+Fitting this power law from DMRG data is a standard way to extract scaling dimensions.
+
+### Connected vs. Disconnected Correlators
+
+The connected correlator $\langle O_i O_j \rangle_c = \langle O_i O_j \rangle - \langle O_i \rangle \langle O_j \rangle$ isolates genuine correlations. For symmetry-broken states, the disconnected part can dominate, making the subtraction numerically delicate. Using symmetry sectors (quantum numbers) in the MPS avoids this issue by working in definite symmetry sectors from the start.
+
+## Extracting CFT Data
+
+At critical points, DMRG becomes a tool for extracting conformal field theory data — effectively a numerical bootstrap.
+
+### Central Charge from Entanglement
+
+For a critical system of length $L$ with periodic boundary conditions, the entanglement entropy across a cut at position $\ell$ is:
+$$
+S(\ell) = \frac{c}{3} \log\left(\frac{L}{\pi} \sin\frac{\pi \ell}{L}\right) + s_0
+$$
+
+For open boundary conditions:
+$$
+S(\ell) = \frac{c}{6} \log\left(\frac{2L}{\pi} \sin\frac{\pi \ell}{L}\right) + s_0'
+$$
+
+Fitting $S(\ell)$ to these functional forms extracts the central charge $c$ with high precision (typically 3–4 significant digits with $\chi \sim 200$).
+
+### Scaling Dimensions from the Spectrum
+
+The energy spectrum of a critical chain of length $L$ with periodic boundary conditions organizes into conformal towers:
+$$
+E_n - E_0 = \frac{2\pi v}{L}\left(\Delta_n + \bar{\Delta}_n - \frac{c}{12}\right)
+$$
+
+where $v$ is the velocity, $\Delta_n$ and $\bar{\Delta}_n$ are the holomorphic and anti-holomorphic scaling dimensions, and $c$ is the central charge. Computing the low-lying spectrum at several system sizes and fitting the $1/L$ scaling yields the scaling dimensions.
+
+### Operator Content and OPE
+
+By computing three-point functions $\langle O_i(x_1) O_j(x_2) O_k(x_3) \rangle$ and matching to the CFT prediction:
+$$
+\langle O_i(x_1) O_j(x_2) O_k(x_3) \rangle = \frac{C_{ijk}}{|x_{12}|^{\Delta_i + \Delta_j - \Delta_k} |x_{13}|^{\Delta_i + \Delta_k - \Delta_j} |x_{23}|^{\Delta_j + \Delta_k - \Delta_i}}
+$$
+one can extract OPE coefficients $C_{ijk}$. This is numerically challenging but has been demonstrated for several CFTs.
+
+## Boundary CFT
+
+When a 1D critical system has boundaries, the boundary conditions must be specified — and they are classified by boundary conformal field theory (BCFT). This is directly relevant to my research on boundary RG flows in interacting Majorana chains.
+
+### Boundary Entropy
+
+The boundary entropy, or $g$-factor (Affleck-Ludwig), quantifies the boundary degree of freedom:
+$$
+\ln g = S_{\mathrm{open}} - \frac{1}{2} S_{\mathrm{periodic}}
+$$
+
+Under renormalization group flow, $g$ decreases monotonically — this is the $g$-theorem (Friedan-Konechny). The $g$-factor labels the conformally invariant boundary condition.
+
+### Boundary RG Flows
+
+By tuning boundary parameters in the Hamiltonian, one can drive RG flows between different conformally invariant boundary conditions. DMRG is ideal for this: we can compute $g$ as a function of boundary coupling and map out the phase diagram. The tricritical Ising model ($c = 7/10$) has a particularly rich boundary structure, with multiple relevant boundary operators and flows between distinct boundary conditions.
+
+## Tensor Cross Interpolation (TCI)
+
+Tensor Cross Interpolation (TCI) is a more recent development that extends the reach of tensor network methods beyond quantum states. The idea: given a function $f(x_1, \ldots, x_N)$ that is not known analytically but can be evaluated pointwise, TCI constructs a tensor train (TT) approximation by adaptively selecting which entries to evaluate.
+
+### From Matrix Cross Approximation to Tensors
+
+The starting point is **cross approximation** (or skeleton decomposition) for matrices. Given an $m \times n$ matrix $M$, choose a subset of row indices $I = \{i_1, \ldots, i_r\}$ and column indices $J = \{j_1, \ldots, j_r\}$ (with $r \ll \min(m, n)$). Then:
+$$
+M \approx M(:, J) \, M(I, J)^{-1} \, M(I, :)
+$$
+
+This is exact if $M$ has rank $r$ and $M(I, J)$ is non-singular. The key insight is that this approximation only requires evaluating:
+
+- $m \cdot r$ entries (the columns $M(:, J)$)
+- $r \cdot n$ entries (the rows $M(I, :)$)
+- $r^2$ entries (the pivot submatrix $M(I, J)$)
+
+for a total of $(m + n)r + r^2$ entries, far less than the $mn$ entries of the full matrix.
+
+For a rank-$N$ tensor $T_{i_1 i_2 \cdots i_N}$ with each index of dimension $d$, TCI performs a sequence of matrix cross approximations along each bond of the tensor train decomposition:
+$$
+T_{i_1 i_2 \cdots i_N} \approx \sum_{\alpha_1, \ldots, \alpha_{N-1}} A^{[1]}_{i_1, \alpha_1} \, A^{[2]}_{\alpha_1, i_2, \alpha_2} \cdots A^{[N]}_{\alpha_{N-1}, i_N}
+$$
+
+The algorithm proceeds by **sweeping** through the bonds, at each bond choosing pivot indices that maximize the accuracy of the decomposition. The pivots are multi-indices: $I_k = \{(i_1^{(1)}, \ldots, i_k^{(1)}), \ldots\}$ that specify which "rows" of the unfolded tensor to sample.
+
+### The TCI Algorithm
+
+The two main variants are:
+
+1. **TCI1** (one-site update): Sweep through bonds, at each bond select the best pivot by maximizing the absolute value of the residual. Simple but can get stuck in local optima.
+
+2. **TCI2** (two-site update): At each step, consider a pair of adjacent bonds and perform a cross approximation on the combined two-site tensor. This is more robust and is the recommended default.
+
+At each bond, the algorithm:
+
+1. Unfolds the tensor into a matrix $M$ of size $(d^k \chi) \times (d^{N-k} \chi)$ (conceptually — it never forms this matrix explicitly).
+2. Selects pivots by evaluating $M$ at specific entries and updating the row/column index sets.
+3. Performs the cross decomposition to update the local tensor train cores.
+
+The total number of function evaluations scales as $O(N d \chi^2)$ per sweep, and typically a few sweeps suffice for convergence. Compare this to $d^N$ for brute-force evaluation — the compression is exponential when the tensor has low TT-rank.
+
+### When to Use TCI
+
+TCI is the right tool when:
+
+- The function $f$ is **expensive to evaluate** (e.g., a quantum chemistry calculation, a Feynman diagram, or any computation that takes seconds or more per point)
+- The tensor has **low-rank structure** but is too large to store explicitly — even $d = 2$ with $N = 50$ gives $2^{50} \approx 10^{15}$ entries
+- You need to **integrate** over the function: once in TT form, high-dimensional integrals reduce to contracting the network, which costs $O(N \chi^2)$
+- You want to **compress** simulation data or kernel functions for reuse
+
+The cost scales as $O(N d \chi^3 r)$ where $r$ is the number of pivot updates per sweep, far less than the $d^N$ cost of evaluating all entries.
+
+### Practical Considerations
+
+TCI is implemented in several libraries:
+
+- **`TensorCrossInterpolation.jl`** (Julia): The most actively developed library, with good documentation
+- **`xfac`** (C++/Python): High-performance implementation
+
+The main tuning parameters are:
+
+- **Tolerance $\epsilon$**: Controls the accuracy of the decomposition. The algorithm stops adding pivots when the estimated error drops below $\epsilon$.
+- **Maximum bond dimension $\chi_{\max}$**: Limits the rank of each bond. If the true rank exceeds $\chi_{\max}$, the result is a controlled approximation.
+- **Pivot selection strategy**: Full pivoting (maximizing over all candidates) is optimal but expensive; partial or randomized pivoting is faster and usually sufficient.
+
+```julia
+using TensorCrossInterpolation
+
+# Example: compress a 2D function on a 2^20 × 2^20 grid
+# (over 10^12 grid points, but only ~10^4 evaluations needed)
+function expensive_function(indices)
+    # indices is a vector of N binary digits
+    x = sum(indices[k] * 2.0^(-k) for k in 1:length(indices))
+    return exp(-10 * (x - 0.5)^2) * cos(20π * x)
+end
+
+N = 20  # 2^20 grid points
+localdims = fill(2, N)  # Each index is binary
+tci, ranks, errors = crossinterpolate(
+    Float64, expensive_function, localdims;
+    tolerance=1e-8
+)
+# Result: a tensor train with bond dimensions typically O(10),
+# built from O(N * chi^2) ≈ O(2000) function evaluations
+```
+
+## Quantics Tensor Methods
+
+**Quantics** (also called quantized tensor trains or QTT) is a technique for representing functions on fine grids by re-interpreting the grid points in a binary (or higher base) representation. A function $f(x)$ on a grid of $2^N$ points is reshaped into a rank-$N$ tensor with each index taking values in $\{0, 1\}$:
+$$
+f(x_{b_1 b_2 \cdots b_N}) \to T_{b_1 b_2 \cdots b_N}
+$$
+
+where $x = \sum_{k=1}^N b_k 2^{-k}$ in the binary expansion.
+
+### Why This Works
+
+Many smooth functions and oscillatory functions have low-rank quantics representations. For example:
+
+- A Gaussian $e^{-ax^2}$ has QTT rank bounded by a constant independent of grid size
+- Trigonometric functions $\sin(kx)$ have QTT rank 2
+- Solutions to differential equations often have low QTT rank
+
+This means you can represent a function on a grid of $10^{15}$ points with $O(N)$ parameters — an exponential compression.
+
+### Quantics + TCI
+
+The combination of quantics representation with TCI is particularly powerful: given a function that can be evaluated pointwise, quantics+TCI builds a compact tensor representation by evaluating only $O(N \chi^2)$ function values out of $2^N$ total grid points.
+
+Applications include:
+
+- Solving integral equations in high dimensions
+- Representing Green's functions in quantum field theory
+- Compressing data for many-body calculations
+- Evaluating Feynman diagrams
+
+This is an active area of research with connections to my work on efficient numerical methods for condensed matter systems.
+
+## Connections to Holography
+
+The connection between tensor networks and holography (AdS/CFT) is one of the most stimulating ideas in recent theoretical physics.
+
+### Ryu-Takayanagi Formula
+
+The Ryu-Takayanagi formula relates entanglement entropy in a CFT to geometry in the dual AdS space:
+$$
+S_A = \frac{\mathrm{Area}(\gamma_A)}{4 G_N}
+$$
+where $\gamma_A$ is the minimal surface in AdS homologous to the boundary region $A$.
+
+### MERA and Holographic Geometry
+
+The Multi-scale Entanglement Renormalization Ansatz (MERA) is a tensor network with a hierarchical structure of **disentanglers** ($u$) and **isometries** ($w$) that implements real-space renormalization:
+
+```
+  Physical sites (boundary):
+  |   |   |   |   |   |   |   |
+  [u] [u] [u] [u]               ← disentanglers
+  |\ /|   |\ /|   |\ /|   |\ /|
+   [w]     [w]     [w]     [w]  ← isometries (coarse-grain)
+    |       |       |       |
+    [u]     [u]                  ← disentanglers (next scale)
+    |\ /|   |\ /|
+     [w]     [w]                 ← isometries
+      |       |
+      [u]                       ← top level
+      |\ /|
+       [w]
+        |
+     (bulk / IR)
+```
+
+Each layer removes short-range entanglement (disentanglers) and then coarse-grains (isometries), building a hierarchy from UV (physical sites at the bottom) to IR (top). Swingle (2012) observed that the MERA geometry — a hyperbolic tree — resembles a discretization of an AdS time slice. In this picture:
+
+- Tensors deeper in the MERA correspond to bulk points farther from the boundary
+- The entanglement entropy of a boundary region $A$ is bounded by the number of bonds cut by the minimal surface through the network — mimicking Ryu-Takayanagi
+- Renormalization scale maps to the radial (holographic) direction
+
+### Holographic Quantum Error Correction
+
+Pastawski, Yoshida, Harlow, and Preskill (2015) showed that certain tensor networks built from **perfect tensors** (tensors that are isometric from any bipartition of their indices to the complement) realize holographic quantum error correction. The boundary state can reconstruct bulk operators within the **entanglement wedge**, precisely as predicted by the AdS/CFT entanglement wedge reconstruction conjecture.
+
+These results suggest that spacetime geometry may emerge from entanglement patterns in a deeper quantum theory — and tensor networks provide a concrete mathematical language for this emergence.
+
+## Limitations and Where Methods Break Down
+
+No method is universal. Tensor networks have characteristic limitations:
+
+1. **Two dimensions**: For 2D systems, the entanglement of a region scales as its perimeter. DMRG on cylinders requires $\chi$ that grows exponentially with cylinder width. PEPS (Projected Entangled Pair States) are the 2D analogue of MPS, but their contraction is $\#P$-hard in general.
+
+2. **Volume-law entanglement**: Highly excited states and thermal states at high temperature have volume-law entanglement, making MPS representations exponentially expensive.
+
+3. **Fermion sign structure**: While tensor networks handle 1D fermions well (via Jordan-Wigner), higher-dimensional fermionic systems face challenges similar to the sign problem in Monte Carlo.
+
+4. **Dynamical properties**: Real-time evolution generates entanglement linearly in time, so MPS simulations of quench dynamics are limited to short-to-moderate times.
+
+5. **Finite-entanglement effects**: At criticality, finite $\chi$ introduces an effective correlation length $\xi_\chi \sim \chi^\kappa$ where the exponent $\kappa$ depends on the universality class. Extrapolation to $\chi \to \infty$ is necessary for quantitative results.
+
+## Practical Tips
+
+If you are starting with tensor networks:
+
+1. **Use ITensor (Julia) or TeNPy (Python).** These are mature, well-documented libraries. Do not rewrite DMRG from scratch unless you are studying the algorithm itself.
+
+2. **Bond dimension convergence is essential.** Always plot observables as a function of $\chi$ (or $1/\chi$) and check that results are converged or can be reliably extrapolated.
+
+3. **Open boundaries are cheaper.** Periodic boundary conditions require significantly larger $\chi$ for the same accuracy. Use open boundaries and account for boundary effects analytically when possible.
+
+4. **Exploit symmetries.** Implementing $U(1)$ or $SU(2)$ quantum number conservation in the MPS reduces the effective bond dimension and makes calculations faster and more stable.
+
+5. **For critical systems, use finite-entanglement scaling.** The effective correlation length $\xi_\chi \sim \chi^\kappa$ allows systematic extrapolation of critical exponents and scaling dimensions.
+
+6. **Validate against exact results.** Free-fermion systems, Bethe ansatz solutions, and small systems (exact diagonalization) provide essential benchmarks.
+
+---
+
+## Related Notes
+
+- [Monte Carlo and Computational Statistical Physics](monte-carlo.qmd) — Alternative numerical methods for many-body physics
+- [Quantum Information and Computation](quantum-information.qmd) — Entanglement theory and connections to tensor networks
+- [2D CFT, Orbifolding, and the Swampland](2d-cft-swampland.qmd) — The CFT formalism underlying scaling analysis
+
+## Computational Tools
+
+- [Julia Tensor Network Workflows](../tools/julia-tensor-networks.qmd) — Practical ITensor.jl guide
+
+---
+
+*References:*
+
+- S. R. White, "Density matrix formulation for quantum renormalization groups," Phys. Rev. Lett. **69**, 2863 (1992)
+- U. Schollwöck, "The density-matrix renormalization group in the age of matrix product states," Ann. Phys. **326**, 96 (2011)
+- P. Calabrese and J. Cardy, "Entanglement entropy and quantum field theory," J. Stat. Mech. (2004) P06002
+- B. Swingle, "Entanglement renormalization and holography," Phys. Rev. D **86**, 065007 (2012)
+- D. Perez-Garcia, F. Verstraete, M. M. Wolf, J. I. Cirac, "Matrix product state representations," Quant. Inf. Comp. **7**, 401 (2007)
+- M. B. Hastings, "An area law for one-dimensional quantum systems," J. Stat. Mech. (2007) P08024
+- I. Affleck and A. W. W. Ludwig, "Universal noninteger 'ground-state degeneracy' in critical quantum systems," Phys. Rev. Lett. **67**, 161 (1991)
+- F. Pastawski, B. Yoshida, D. Harlow, J. Preskill, "Holographic quantum error-correcting codes," JHEP **2015**, 149 (2015)
+- Y. Núñez Fernández et al., "Learning tensor networks with tensor cross interpolation," arXiv:2407.02454

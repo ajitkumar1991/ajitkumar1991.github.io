@@ -1,6 +1,8 @@
 ---
 title: "Blog"
 subtitle: "Research notes, explorations, and thoughts"
+sidebar: blog-sidebar
+
 listing:
   contents: "*.qmd"
   type: default
@@ -8,10 +10,13 @@ listing:
   categories: true
   feed: true
   fields: [title, date, description, categories]
+
 page-layout: full
 toc: false
 ---
 
-A research diary where I write about topics I'm exploring, interesting calculations, and occasional reflections on the practice of physics.
+A research diary where I write about topics I'm exploring, interesting
+calculations, and occasional reflections on the practice of physics.
 
+Each post is one **topic** (usually with a date in the title or metadata).
 Posts are tagged by topic—click a category to filter.

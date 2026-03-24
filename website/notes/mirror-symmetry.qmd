@@ -1,0 +1,408 @@
+---
+title: "Mirror Symmetry and T-Duality"
+subtitle: "Dualities that reshape our understanding of geometry"
+description: "An overview of mirror symmetry and T-duality: Calabi-Yau pairs, the SYZ conjecture, and connections to string theory and brane constructions."
+author: "Ajit Kumar Sorout"
+date: 2026-03-23
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+## Introduction
+
+Mirror symmetry is one of the most profound and surprising discoveries to emerge from string theory. At its core, it asserts that two topologically distinct Calabi--Yau manifolds can give rise to identical physics when used as string compactification backgrounds. What began as a computational coincidence in the late 1980s has since grown into a deep mathematical subject, connecting enumerative geometry, symplectic topology, algebraic geometry, and homological algebra.
+
+These notes give an overview of the key ideas: T-duality as the simplest string duality, mirror symmetry as a generalization thereof, the SYZ conjecture that connects the two, and the role of D-branes. We work at a level of detail appropriate for someone who has seen the basics of string theory and wants to understand how mirror symmetry fits together.
+
+---
+
+## T-Duality: The Simplest String Duality
+
+### Circle compactification
+
+Consider a closed bosonic string propagating on a spacetime where one direction is compactified on a circle of radius $R$. The center-of-mass momentum along the circle is quantized:
+$$
+p = \frac{n}{R}, \qquad n \in \mathbb{Z},
+$$
+since the wavefunction must be single-valued, $e^{ipX} = e^{ip(X+2\pi R)}$. But strings, unlike point particles, can also **wind** around the circle. The winding contribution to the energy depends on the string length stretched around the circle:
+$$
+E_{\text{winding}} \propto \frac{w R}{\alpha'}, \qquad w \in \mathbb{Z},
+$$
+where $w$ is the winding number and $\alpha' = l_s^2$ is the Regge slope.
+
+The full mass formula for a string on $\mathbb{R}^{1,d-1} \times S^1$ is
+$$
+m^2 = \frac{n^2}{R^2} + \frac{w^2 R^2}{\alpha'^2} + \frac{2}{\alpha'}(N_L + N_R - 2),
+$$
+with the level-matching condition $N_L - N_R = nw$.
+
+### The duality
+
+The spectrum is invariant under the simultaneous exchange
+$$
+R \;\longleftrightarrow\; \frac{\alpha'}{R}, \qquad n \;\longleftrightarrow\; w.
+$$
+
+This is **T-duality**. A string propagating on a circle of radius $R$ sees exactly the same physics as a string on a circle of radius $\alpha'/R$, provided we exchange momentum modes with winding modes. In particular, the self-dual radius $R = \sqrt{\alpha'}$ is a special point where the theory has enhanced $SU(2)_L \times SU(2)_R$ gauge symmetry.
+
+T-duality is not merely a classical statement: it is an exact equivalence of the full quantum string theory, order by order in the string coupling $g_s$. It relates large and small geometries, demonstrating that string theory has a minimum meaningful length scale $\sim \sqrt{\alpha'}$.
+
+### Detailed example: free boson on a circle
+
+To see T-duality concretely, consider the worldsheet action for a single free boson $X$ compactified on a circle of radius $R$, so that $X \sim X + 2\pi R$. The mode expansion on a closed string worldsheet (with worldsheet coordinates $\sigma \in [0, 2\pi)$ and Euclidean time $\tau$) is
+$$
+X(\tau, \sigma) = x_0 + \frac{\alpha' p}{2}\tau + w R \sigma + \frac{i}{2}\sqrt{\frac{\alpha'}{2}} \sum_{n \neq 0} \left( \frac{\alpha_n}{n} e^{-in(\tau + \sigma)} + \frac{\tilde{\alpha}_n}{n} e^{-in(\tau - \sigma)} \right),
+$$
+where $x_0$ is the center-of-mass position, $p = n/R$ is the quantized momentum ($n \in \mathbb{Z}$), $w \in \mathbb{Z}$ is the winding number, and $\alpha_n$, $\tilde{\alpha}_n$ are the left- and right-moving oscillator modes satisfying $[\alpha_m, \alpha_n] = m\,\delta_{m+n,0}$ and similarly for $\tilde{\alpha}_n$.
+
+It is illuminating to decompose $X$ into left- and right-moving parts, $X = X_L(\tau + \sigma) + X_R(\tau - \sigma)$, with
+$$
+X_L = \frac{x_0}{2} + \frac{\alpha'}{2} p_L (\tau + \sigma) + \text{oscillators}, \qquad X_R = \frac{x_0}{2} + \frac{\alpha'}{2} p_R (\tau - \sigma) + \text{oscillators},
+$$
+where the left- and right-moving momenta are
+$$
+p_L = \frac{n}{R} + \frac{wR}{\alpha'}, \qquad p_R = \frac{n}{R} - \frac{wR}{\alpha'}.
+$$
+The mass-shell condition for the closed string then gives the spacetime mass
+$$
+m^2 = p_L^2 + p_R^2 + \frac{2}{\alpha'}(N_L + N_R - 2) = \frac{n^2}{R^2} + \frac{w^2 R^2}{\alpha'^2} + \frac{2}{\alpha'}(N_L + N_R - 2),
+$$
+together with the level-matching constraint $N_L - N_R = nw$, which follows from the requirement that $p_L^2 - p_R^2 = 4nw/\alpha'$ be compensated by the oscillator contributions.
+
+The key observation is that the spectrum depends on $n$ and $w$ only through the combination $n^2/R^2 + w^2 R^2/\alpha'^2$, which is manifestly invariant under the simultaneous exchange
+$$
+R \to \frac{\alpha'}{R}, \qquad n \leftrightarrow w.
+$$
+At the level of the left- and right-moving momenta, this acts as $p_L \to p_L$, $p_R \to -p_R$, or equivalently $X_R \to -X_R$ while leaving $X_L$ unchanged. This asymmetric action on the worldsheet is the hallmark of T-duality: it is a parity transformation on the right-movers only.
+
+The partition function on the torus (the one-loop vacuum amplitude) can be written as a sum over the Narain lattice $\Gamma_{1,1}$ of left- and right-moving momenta $(p_L, p_R)$, and T-duality is an $O(1,1;\mathbb{Z})$ automorphism of this lattice. For compactification on $T^d$, this generalizes to $O(d,d;\mathbb{Z})$, the T-duality group acting on the Narain lattice $\Gamma_{d,d}$.
+
+### T-duality and type II strings
+
+For superstrings, T-duality has an additional twist: it exchanges the two type II theories.
+
+- **Type IIA** on $S^1$ of radius $R$ $\;\longleftrightarrow\;$ **Type IIB** on $S^1$ of radius $\alpha'/R$.
+
+The reason is that T-duality acts on the right-moving worldsheet fermions by a sign flip, which exchanges the GSO projections of IIA and IIB. This already hints at mirror symmetry: if T-duality along one circle exchanges IIA and IIB, what happens when we T-dualize along three circles simultaneously?
+
+---
+
+## Calabi--Yau Geometry Primer
+
+Before discussing mirror symmetry, we collect the essential geometric background on Calabi--Yau manifolds.
+
+### Definition and equivalent characterizations
+
+A **Calabi--Yau manifold** of complex dimension $n$ is a compact Kahler manifold $(X, g, J, \omega)$ satisfying any of the following equivalent conditions (by Yau's theorem, proving the Calabi conjecture):
+
+1. **Vanishing first Chern class:** $c_1(X) = 0$ in $H^2(X, \mathbb{R})$.
+2. **Ricci-flat Kahler metric:** there exists a Kahler metric with $\mathrm{Ric}(g) = 0$.
+3. **$SU(n)$ holonomy:** the holonomy group of $g$ is contained in $SU(n)$.
+4. **Trivial canonical bundle:** $K_X = \Lambda^n T^*X \cong \mathcal{O}_X$, i.e., there exists a nowhere-vanishing holomorphic $n$-form $\Omega$.
+
+The existence of the Ricci-flat metric is guaranteed by Yau's theorem (1978): given any Kahler class $[\omega]$ on a compact Kahler manifold with $c_1 = 0$, there exists a unique Ricci-flat Kahler metric in that class. This metric is not known explicitly in any non-trivial compact example, but its existence is sufficient for many applications.
+
+For string theory, we primarily care about Calabi--Yau **threefolds** ($n = 3$), which provide the six extra dimensions needed to compactify ten-dimensional superstring theory to four dimensions while preserving $\mathcal{N} = 2$ supersymmetry.
+
+### The Hodge diamond
+
+On a compact Kahler manifold of complex dimension $n$, the Dolbeault cohomology groups $H^{p,q}(X)$ have dimensions $h^{p,q} = \dim H^{p,q}(X)$, arranged in the **Hodge diamond**. For a Calabi--Yau threefold, the existence of $\Omega$ and the Kahler condition impose strong constraints. The Hodge diamond simplifies to:
+$$
+\begin{array}{ccccccc}
+& & & 1 & & & \\
+& & 0 & & 0 & & \\
+& 0 & & h^{1,1} & & 0 & \\
+1 & & h^{2,1} & & h^{2,1} & & 1 \\
+& 0 & & h^{1,1} & & 0 & \\
+& & 0 & & 0 & & \\
+& & & 1 & & & \\
+\end{array}
+$$
+Here we have used: $h^{0,0} = h^{3,3} = 1$ (connectedness), $h^{1,0} = h^{0,1} = 0$ (for strict $SU(3)$ holonomy), $h^{3,0} = h^{0,3} = 1$ (from $\Omega$), $h^{2,0} = h^{0,2} = 0$, and Serre duality $h^{p,q} = h^{n-p, n-q}$. The only independent Hodge numbers are $h^{1,1}$ and $h^{2,1}$.
+
+### Moduli: Kahler and complex structure
+
+The two independent Hodge numbers have direct geometric and physical interpretations:
+
+**Kahler moduli** ($h^{1,1}$): The Kahler form $\omega$ is a closed real $(1,1)$-form, and $H^{1,1}(X, \mathbb{R})$ parametrizes the deformations of $\omega$ within the Kahler cone. Choosing a basis $\{e_i\}$ of $H^{1,1}(X, \mathbb{Z})$, we write $\omega = \sum_{i=1}^{h^{1,1}} t^i e_i$ where $t^i > 0$ are the Kahler parameters. Physically, these control the volumes of holomorphic 2-cycles (and hence 4-cycles by Poincare duality). In string theory, these are complexified by the $B$-field: $t^i_{\mathbb{C}} = \int_{C_i} (B + i\omega)$.
+
+**Complex structure moduli** ($h^{2,1}$): By the Kodaira--Spencer theory, infinitesimal deformations of the complex structure of $X$ are classified by $H^1(X, TX) \cong H^{2,1}(X)$ (using the contraction with $\Omega$ to identify $TX \cong \Omega^2_X$). There are $h^{2,1}$ independent ways to deform the shape of $X$ while preserving the Calabi--Yau condition. These deformations change the periods $\int_{\gamma} \Omega$ of the holomorphic 3-form over 3-cycles $\gamma \in H_3(X, \mathbb{Z})$.
+
+The total number of massless scalar fields in the four-dimensional $\mathcal{N} = 2$ theory is $h^{1,1} + h^{2,1}$ (plus the dilaton and the dual of the $B$-field), organized into $h^{1,1}$ vector multiplets and $h^{2,1}$ hypermultiplets (or vice versa, depending on whether we compactify type IIA or type IIB).
+
+---
+
+## Mirror Symmetry
+
+### Calabi--Yau compactification
+
+To obtain $\mathcal{N} = 2$ supersymmetry in four dimensions from type II strings in ten dimensions, we compactify on a **Calabi--Yau threefold** $X$ --- a compact Kahler manifold of complex dimension 3 with vanishing first Chern class (equivalently, with $SU(3)$ holonomy). The topology of $X$ determines the low-energy spectrum, and the relevant topological data is captured by the **Hodge numbers** $h^{p,q}(X)$.
+
+For a Calabi--Yau threefold, the independent Hodge numbers reduce to two: $h^{1,1}$ and $h^{2,1}$. These count, respectively:
+
+- $h^{1,1}$: the number of Kahler moduli (deformations of the size and shape of 2-cycles),
+- $h^{2,1}$: the number of complex structure moduli (deformations of the shape of 3-cycles).
+
+The Euler characteristic is $\chi = 2(h^{1,1} - h^{2,1})$.
+
+### The mirror phenomenon
+
+**Mirror symmetry** asserts that for every Calabi--Yau threefold $X$, there exists a **mirror** Calabi--Yau $\widetilde{X}$ such that
+$$
+h^{1,1}(X) = h^{2,1}(\widetilde{X}), \qquad h^{2,1}(X) = h^{1,1}(\widetilde{X}).
+$$
+
+The Hodge diamond is reflected, hence the name. Since the Euler characteristics satisfy $\chi(\widetilde{X}) = -\chi(X)$, the mirror partners are topologically distinct.
+
+The physical content is deeper than a numerical coincidence: the full string theories are equivalent,
+$$
+\text{Type IIA on } X \quad \longleftrightarrow \quad \text{Type IIB on } \widetilde{X}.
+$$
+
+Under this duality, the Kahler moduli space of $X$ is identified with the complex structure moduli space of $\widetilde{X}$, and vice versa. Quantities that are difficult to compute on one side (because they receive quantum corrections) become classical computations on the mirror side.
+
+### Why mirror symmetry matters: enumerative geometry
+
+The most celebrated early application was the computation of the number of rational curves on the quintic threefold. Consider the **quintic** $X \subset \mathbb{CP}^4$, defined as the zero locus of a degree-5 polynomial. It has $h^{1,1} = 1$ and $h^{2,1} = 101$.
+
+Candelas, de la Ossa, Green, and Parkes (1991) used mirror symmetry to compute the genus-zero prepotential on the Kahler moduli space of $X$, which encodes the numbers $n_d$ of rational curves of degree $d$:
+$$
+\mathcal{F} = \frac{5}{6}t^3 + \sum_{d=1}^{\infty} n_d \, \mathrm{Li}_3(e^{-dt}),
+$$
+where $t$ is the complexified Kahler parameter and $\mathrm{Li}_3$ is the trilogarithm. On the mirror side, $\widetilde{X}$ has $h^{1,1} = 101$ and $h^{2,1} = 1$, and the prepotential is determined by the **periods** of the holomorphic 3-form $\Omega$ --- a classical computation involving Picard--Fuchs differential equations.
+
+The result: $n_1 = 2875$, $n_2 = 609250$, $n_3 = 317206375$, and so on. The degree-3 number had been recently computed by algebraic geometers (Ellingsrud and Stromme) and initially disagreed with the physics prediction. After a bug in the mathematicians' code was found and fixed, the numbers agreed. This was a dramatic early confirmation of mirror symmetry.
+
+---
+
+## The SYZ Conjecture
+
+### Statement
+
+Strominger, Yau, and Zaslow (1996) proposed a geometric explanation for mirror symmetry:
+
+**SYZ Conjecture.** A Calabi--Yau threefold $X$ admitting a mirror partner $\widetilde{X}$ has a **special Lagrangian $T^3$ fibration**
+$$
+T^3 \hookrightarrow X \xrightarrow{\pi} B,
+$$
+where $B$ is a 3-dimensional base. The mirror $\widetilde{X}$ is obtained by **T-dualizing** the $T^3$ fibers.
+
+A **special Lagrangian** submanifold $L$ of a Calabi--Yau $X$ is a real 3-dimensional submanifold satisfying two conditions:
+
+1. $\omega|_L = 0$ (Lagrangian condition, where $\omega$ is the Kahler form),
+2. $\mathrm{Im}(e^{i\theta}\Omega)|_L = 0$ for some phase $\theta$ (special condition, where $\Omega$ is the holomorphic 3-form).
+
+### Physical reasoning
+
+The SYZ conjecture generalizes T-duality from a single circle to three circles simultaneously. On a torus $T^3$ of radii $R_1, R_2, R_3$, performing T-duality on all three circles gives a dual torus with radii $\alpha'/R_1, \alpha'/R_2, \alpha'/R_3$. Since T-duality along a single circle exchanges type IIA and IIB, T-duality along three circles (an odd number) again exchanges IIA and IIB --- exactly what mirror symmetry does.
+
+The SYZ picture is most reliable in the **large complex structure limit** of $X$ (equivalently the large volume limit of $\widetilde{X}$), where the $T^3$ fibers are large and the T-duality along each circle is well-defined. Away from this limit, quantum corrections modify the picture, and singular fibers (where the torus degenerates) play an important role.
+
+### Singular fibers and quantum corrections
+
+In practice, the SYZ fibration always has singular fibers over a codimension-2 locus $\Delta \subset B$ (the **discriminant locus**). Near these singular fibers, the semiclassical T-duality picture breaks down, and one must account for contributions from holomorphic discs with boundary on the Lagrangian fibers. These **disc instanton corrections** are responsible for much of the richness of mirror symmetry.
+
+The discriminant locus $\Delta$ is generically a trivalent graph (in the case of a threefold), and the singular fibers above $\Delta$ are tori with collapsed cycles. The simplest degeneration is the **Kodaira type $I_1$ fiber**, where a single 1-cycle of $T^3$ pinches to zero size, producing a nodal torus. More complicated singularities occur at the vertices of the graph $\Delta$, where multiple cycles degenerate simultaneously.
+
+The physical importance of singular fibers is as follows. A D-brane (say a D2-brane in type IIA) wrapping a holomorphic disc $D$ with boundary $\partial D$ on a Lagrangian fiber $L_b$ contributes a factor $\exp(-\int_D \omega)$ to the effective action. These disc instantons correct the naive T-duality transformation in a crucial way: without them, the dual torus fibers would glue together incorrectly, and the mirror $\widetilde{X}$ would not be a Kahler manifold.
+
+More precisely, consider the complexified symplectic area $A = \int_D (B + i\omega)$ of a holomorphic disc. The generating function of disc instanton contributions defines a **superpotential** on the moduli space of the Lagrangian fiber:
+$$
+W(L_b) = \sum_{\beta \in \pi_2(X, L_b)} n_\beta \, e^{-A(\beta)},
+$$
+where $n_\beta$ is an open Gromov--Witten invariant counting discs in the class $\beta$. These corrections are localized near the discriminant locus: far from $\Delta$, the fibers are smooth and have no holomorphic discs ending on them (by a monotonicity argument), so the naive T-duality is valid. The non-trivial corrections arise only as one approaches the singular fibers.
+
+The program of making the SYZ construction rigorous, incorporating these quantum corrections, has been carried out in detail for toric Calabi--Yau manifolds (by Gross and Siebert using tropical geometry, and by Auroux using symplectic techniques) and remains an active area of research for compact Calabi--Yaus. The key insight from this program is that the quantum-corrected SYZ mirror is constructed not by naive fiberwise T-duality, but by a wall-crossing procedure: as one crosses **walls of marginal stability** (real codimension-1 loci in $B$ emanating from $\Delta$), the gluing of the dual torus fibers jumps by symplectomorphisms determined by the disc counts.
+
+---
+
+## The Quintic and Its Mirror
+
+### The quintic threefold
+
+The **quintic threefold** is the hypersurface
+$$
+X_5 = \left\{ [z_0 : z_1 : z_2 : z_3 : z_4] \in \mathbb{CP}^4 \;\middle|\; z_0^5 + z_1^5 + z_2^5 + z_3^5 + z_4^5 + \text{lower-order terms} = 0 \right\},
+$$
+defined as the zero locus of a generic homogeneous polynomial of degree 5 in the five homogeneous coordinates of $\mathbb{CP}^4$. By the Lefschetz hyperplane theorem and adjunction, $X_5$ is a smooth Calabi--Yau threefold: the canonical bundle is $K_{X_5} = \mathcal{O}_{\mathbb{CP}^4}(-5)|_{X_5} \otimes \mathcal{O}_{\mathbb{CP}^4}(5)|_{X_5} = \mathcal{O}_{X_5}$, confirming $c_1 = 0$.
+
+The Hodge numbers are computed from the Lefschetz theorem and residue calculus:
+$$
+h^{1,1}(X_5) = 1, \qquad h^{2,1}(X_5) = 101.
+$$
+The single Kahler modulus corresponds to the overall size of the quintic (inherited from the hyperplane class of $\mathbb{CP}^4$). The 101 complex structure moduli parametrize the choice of degree-5 polynomial: the space of such polynomials has dimension $\binom{5+4}{4} = 126$, modulo the $\dim PGL(5) = 24$ coordinate reparametrizations, giving $126 - 24 - 1 = 101$ independent deformations (the $-1$ accounts for overall rescaling). The Euler characteristic is $\chi = 2(1 - 101) = -200$.
+
+### The Greene--Plesser mirror construction
+
+The mirror of the quintic was constructed by Greene and Plesser (1990) using an orbifold procedure. Consider the special one-parameter subfamily (the **Fermat pencil**)
+$$
+X_\psi: \quad z_0^5 + z_1^5 + z_2^5 + z_3^5 + z_4^5 - 5\psi \, z_0 z_1 z_2 z_3 z_4 = 0,
+$$
+and define the group $G = (\mathbb{Z}_5)^3$, realized as the subgroup of $(\mathbb{Z}_5)^4$ acting by
+$$
+(z_0, z_1, z_2, z_3, z_4) \mapsto (\omega^{a_1} z_0, \omega^{a_2} z_1, \omega^{a_3} z_2, \omega^{a_4} z_3, z_4), \qquad \omega = e^{2\pi i/5},
+$$
+where $(a_1, a_2, a_3, a_4) \in (\mathbb{Z}_5)^4$ with $a_1 + a_2 + a_3 + a_4 \equiv 0 \pmod{5}$ (this condition ensures the polynomial $X_\psi$ is invariant), modulo the overall diagonal action $(1,1,1,1,1)$ which acts trivially on $\mathbb{CP}^4$. The mirror quintic is obtained as the crepant resolution of the quotient:
+$$
+\widetilde{X}_5 = \widehat{X_\psi / G}.
+$$
+The orbifold action collapses most of the complex structure moduli but introduces new Kahler moduli from the resolution of singularities. The result has Hodge numbers
+$$
+h^{1,1}(\widetilde{X}_5) = 101, \qquad h^{2,1}(\widetilde{X}_5) = 1,
+$$
+confirming the mirror exchange $h^{1,1} \leftrightarrow h^{2,1}$.
+
+### Periods and the Picard--Fuchs equation
+
+The single complex structure parameter $\psi$ of $\widetilde{X}_5$ maps to the complexified Kahler parameter of $X_5$. The holomorphic 3-form $\Omega(\psi)$ on $\widetilde{X}_5$ has periods $\Pi_i(\psi) = \int_{\gamma_i} \Omega$ over a symplectic basis $\{\gamma_i\}$ of $H_3(\widetilde{X}_5, \mathbb{Z})$. These periods satisfy a fourth-order Picard--Fuchs differential equation in the variable $z = (5\psi)^{-5}$:
+$$
+\left[ \theta^4 - 5z(5\theta + 1)(5\theta + 2)(5\theta + 3)(5\theta + 4) \right] \Pi(z) = 0, \qquad \theta = z\frac{d}{dz}.
+$$
+Near the **large complex structure point** $z = 0$ (equivalently $\psi \to \infty$), the four independent solutions have the structure $\Pi_0 = 1 + \mathcal{O}(z)$, $\Pi_1 = \Pi_0 \log z + \mathcal{O}(z)$, and two further solutions involving $(\log z)^2$ and $(\log z)^3$. The **mirror map** $t(z) = \Pi_1/\Pi_0$ identifies the flat coordinate $t$ on the Kahler moduli space of $X_5$, and the prepotential $\mathcal{F}(t)$ is extracted from the ratios of periods.
+
+---
+
+## Mirror Symmetry and Enumerative Geometry
+
+The deepest computational power of mirror symmetry lies in the relationship between the **A-model** on $X$ and the **B-model** on $\widetilde{X}$. These are two topologically twisted versions of the $\mathcal{N} = (2,2)$ worldsheet sigma model, each capturing different geometric information.
+
+### The A-model: Gromov--Witten invariants
+
+The **A-model** on a Calabi--Yau $X$ depends only on the Kahler (symplectic) structure of $X$, and its observables are the **Gromov--Witten invariants**. At genus zero, the relevant objects are holomorphic maps $f: \mathbb{CP}^1 \to X$ whose image represents a class $\beta \in H_2(X, \mathbb{Z})$. The genus-zero Gromov--Witten invariant $N_\beta$ (roughly) counts the number of such maps, weighted by signs from the obstruction theory.
+
+For the quintic with $h^{1,1} = 1$, the class $\beta$ is determined by the degree $d = \int_\beta \omega$, and the A-model genus-zero free energy takes the form
+$$
+\mathcal{F}_A(t) = \frac{5}{6}t^3 + \sum_{d=1}^{\infty} N_d \, q^d, \qquad q = e^{2\pi i t},
+$$
+where $t$ is the complexified Kahler parameter and $N_d$ is the genus-zero Gromov--Witten invariant at degree $d$. The cubic term $\frac{5}{6}t^3$ is the classical triple intersection number $\int_X \omega^3 = 5$ (divided by $3! = 6$). The instanton sum $\sum N_d q^d$ encodes the quantum corrections from holomorphic curves.
+
+The relation between the Gromov--Witten invariants $N_d$ and the "BPS numbers" $n_d$ (the rational curve counts appearing in the prepotential formula with the trilogarithm) is given by the multi-cover formula:
+$$
+N_d = \sum_{k | d} n_{d/k} \frac{1}{k^3}.
+$$
+The integers $n_d$ are the genuinely enumerative quantities, counting (in an appropriate sense) the number of isolated rational curves of degree $d$.
+
+### The B-model: periods and variation of Hodge structure
+
+The **B-model** on a Calabi--Yau $\widetilde{X}$ depends only on the complex structure of $\widetilde{X}$, and its observables are governed by the **variation of Hodge structure** (VHS) on the family of Calabi--Yau manifolds as the complex structure moduli vary. The central object is the holomorphic 3-form $\Omega$ and its periods $\Pi_i = \int_{\gamma_i} \Omega$.
+
+As the complex structure moduli vary, $\Omega$ traces out a path in the Hodge filtration $F^3 \subset F^2 \subset F^1 \subset H^3(\widetilde{X}, \mathbb{C})$, and the B-model free energy is determined by the **special geometry** relations among the periods. The crucial point is that B-model computations are **exact at tree level** --- there are no worldsheet instanton corrections on the B-model side. This is because the B-model path integral localizes on constant maps, and the moduli space of constant maps is just $\widetilde{X}$ itself.
+
+### The mirror map and computational power
+
+Mirror symmetry equates the A-model on $X$ with the B-model on $\widetilde{X}$:
+$$
+\mathcal{F}_A^{X}(t) = \mathcal{F}_B^{\widetilde{X}}(\psi(t)).
+$$
+The left side involves an infinite sum over worldsheet instantons (holomorphic curves), each of which is extremely difficult to compute directly on $X$. The right side is a classical period computation on $\widetilde{X}$, involving only ordinary differential equations (the Picard--Fuchs system). The **mirror map** $t(\psi)$ relates the natural coordinates on the two sides.
+
+This is the computational miracle: an infinite series of enumerative invariants, each requiring sophisticated algebraic geometry or symplectic topology to compute individually, is encoded in the solution of an ODE. For the quintic, this yields $n_1 = 2875$ (the classical result of Schubert calculus), $n_2 = 609{,}250$, $n_3 = 317{,}206{,}375$, $n_4 = 242{,}467{,}530{,}000$, and so on to arbitrarily high degree.
+
+---
+
+## D-Branes and Mirror Symmetry
+
+### Branes wrapping cycles
+
+D-branes are extended objects on which open strings can end. A D$p$-brane in type II string theory wraps a $(p+1)$-dimensional worldvolume. In a Calabi--Yau compactification:
+
+- **Type IIA** has D0, D2, D4, D6-branes wrapping **even-dimensional** cycles of $X$.
+- **Type IIB** has D(-1), D1, D3, D5, D7-branes wrapping **odd-dimensional** cycles of $X$.
+
+Mirror symmetry exchanges the even and odd cycles. More precisely, it exchanges the **A-branes** (Lagrangian submanifolds, natural for type IIA) with **B-branes** (holomorphic submanifolds, natural for type IIB). In the SYZ picture, a D0-brane (a point) on $X$ dualizes to a D3-brane wrapping the full $T^3$ fiber on $\widetilde{X}$, which is a special Lagrangian 3-cycle.
+
+### Calibrated geometry
+
+The conditions for a D-brane to preserve supersymmetry are captured by **calibrated geometry**. A $p$-form $\phi$ on a Riemannian manifold is a **calibration** if $d\phi = 0$ and $\phi|_{\Sigma} \leq \mathrm{vol}_\Sigma$ for every oriented $p$-dimensional submanifold $\Sigma$. A submanifold saturating the bound is **calibrated** and minimizes volume in its homology class.
+
+On a Calabi--Yau threefold, the relevant calibrations are:
+
+- $\omega$ (the Kahler form) for holomorphic curves,
+- $\frac{1}{2}\omega^2$ for holomorphic surfaces,
+- $\mathrm{Re}(\Omega)$ for special Lagrangian 3-cycles.
+
+Mirror symmetry exchanges the Kahler calibration data with the complex structure calibration data.
+
+---
+
+## Connections to Brane Tilings
+
+For **toric Calabi--Yau geometries** --- non-compact Calabi--Yau threefolds described by toric diagrams --- mirror symmetry has a particularly explicit realization. The mirror of a toric Calabi--Yau singularity $X$ can be written as a hypersurface
+$$
+uv = W(x, y)
+$$
+in $\mathbb{C}^2 \times (\mathbb{C}^*)^2$, where the curve $W(x,y) = 0$ is the **mirror curve** (or spectral curve). The toric data of $X$ is encoded in the Newton polygon of $W$.
+
+### From toric data to mirror curves
+
+A toric Calabi--Yau threefold singularity is specified by a convex lattice polygon $\Delta \subset \mathbb{Z}^2$ (the **toric diagram**). The mirror curve is a Riemann surface $\Sigma$ embedded in $(\mathbb{C}^*)^2$, defined by a Laurent polynomial
+$$
+W(x,y) = \sum_{(m,n) \in \Delta \cap \mathbb{Z}^2} a_{m,n} \, x^m y^n = 0,
+$$
+whose Newton polygon is precisely $\Delta$. The coefficients $a_{m,n}$ encode the complex structure moduli of the mirror, which by mirror symmetry correspond to the Kahler moduli (resolution parameters and $B$-field periods) of $X$. The genus of the mirror curve $\Sigma$ equals the number of interior lattice points of $\Delta$, which counts the number of compact 4-cycles in $X$.
+
+### Brane tilings and the Kasteleyn matrix
+
+**Brane tilings** (also called dimer models) provide a combinatorial bridge: a periodic bipartite graph $\mathcal{G}$ on $T^2$ encodes both the quiver gauge theory on D3-branes probing the toric singularity $X$, and the geometry of the mirror. The faces of $\mathcal{G}$ correspond to gauge group factors (nodes of the quiver), edges to bifundamental fields, and the bipartite structure determines the superpotential.
+
+The connection to the mirror curve proceeds through the **Kasteleyn matrix** $K(x,y)$. This is the weighted adjacency matrix of the bipartite graph, where each edge $e$ connecting a black vertex $b$ to a white vertex $w$ receives a weight that includes reference fugacities $x^{n_1(e)} y^{n_2(e)}$ tracking the homology class of the edge on $T^2$. The **characteristic polynomial** of the Kasteleyn matrix,
+$$
+P(x, y) = \det K(x, y),
+$$
+is a Laurent polynomial in $x$ and $y$ whose zero locus $P(x,y) = 0$ defines the mirror curve $\Sigma$. The Newton polygon of $P$ recovers the toric diagram $\Delta$ of $X$.
+
+This gives a concrete and computational pipeline: starting from a brane tiling (which can be constructed systematically for any toric singularity), one reads off the Kasteleyn matrix, computes its determinant, and obtains the mirror curve together with its embedding in $(\mathbb{C}^*)^2$. The zig-zag paths of the tiling --- oriented paths that turn maximally left at white vertices and maximally right at black vertices --- are in bijection with the external legs of the toric diagram, providing a direct combinatorial map between the tiling and the toric geometry.
+
+### Example: the conifold
+
+For the simplest non-trivial example, the **conifold** $\mathcal{O}(-1) \oplus \mathcal{O}(-1) \to \mathbb{CP}^1$, the toric diagram is a line segment with two interior points, and the brane tiling is a square lattice on $T^2$ with two faces. The Kasteleyn matrix is $2 \times 2$:
+$$
+K(x,y) = \begin{pmatrix} 1 + x \\ 1 + y \end{pmatrix}^T,
+$$
+giving the mirror curve $P(x,y) = 1 + x + y + xy = (1+x)(1+y)$. After a deformation by a complex structure parameter $z$, this becomes $P(x,y) = 1 + x + y + z\,xy$, a genus-0 curve whose periods encode the resolved conifold geometry.
+
+---
+
+## Homological Mirror Symmetry
+
+In 1994, Kontsevich proposed a far-reaching mathematical formulation of mirror symmetry:
+
+**Kontsevich's Homological Mirror Symmetry (HMS) Conjecture.** For a mirror pair $(X, \widetilde{X})$ of Calabi--Yau manifolds,
+$$
+D^b\mathrm{Coh}(X) \simeq D^\pi\mathrm{Fuk}(\widetilde{X}),
+$$
+where $D^b\mathrm{Coh}(X)$ is the bounded derived category of coherent sheaves on $X$ (encoding B-branes), and $D^\pi\mathrm{Fuk}(\widetilde{X})$ is the derived Fukaya category of $\widetilde{X}$ (encoding A-branes, i.e., Lagrangian submanifolds with flat $U(1)$ connections).
+
+HMS elevates mirror symmetry from a statement about numbers (Hodge numbers, curve counts) to an equivalence of categorical structures. It has been proven in a number of cases, including elliptic curves (Polishchuk and Zaslow), the quartic K3 surface (Seidel), and toric varieties (various authors). The general case for compact Calabi--Yau threefolds remains open.
+
+From the physics perspective, HMS is the statement that the open string sectors (D-brane categories) of the two mirror theories are equivalent, which is a natural consequence of the underlying string duality.
+
+---
+
+## Related Notes
+
+- [Brane Tilings and Dimer Models](brane-tilings.qmd) --- combinatorial aspects of toric Calabi--Yau geometries, quiver gauge theories, and their connection to mirror curves
+- [2D CFT, Orbifolding, and the Swampland](2d-cft-swampland.qmd) --- worldsheet CFT, orbifold constructions used in mirror symmetry (Greene--Plesser), and swampland constraints on the landscape
+
+---
+
+## References
+
+1. K. Hori, S. Katz, A. Klemm, R. Pandharipande, R. Thomas, C. Vafa, R. Vakil, and E. Zaslow, *Mirror Symmetry* (Clay Mathematics Monographs, Vol. 1, AMS, 2003). The comprehensive reference.
+
+2. A. Strominger, S.-T. Yau, and E. Zaslow, "Mirror symmetry is T-duality," *Nuclear Physics B* **479**, 243 (1996). [hep-th/9606040]
+
+3. M. Kontsevich, "Homological algebra of mirror symmetry," Proceedings of the International Congress of Mathematicians (Zurich, 1994), 120--139.
+
+4. P. Candelas, X. C. de la Ossa, P. S. Green, and L. Parkes, "A pair of Calabi--Yau manifolds as an exactly soluble superconformal theory," *Nuclear Physics B* **359**, 21 (1991).
+
+5. B. R. Greene and M. R. Plesser, "Duality in Calabi--Yau moduli space," *Nuclear Physics B* **338**, 15 (1990).
+
+6. A. Hanany and K. D. Kennaway, "Dimer models and toric diagrams," [hep-th/0503149].
+
+7. J. Polchinski, *String Theory*, Vols. 1 and 2 (Cambridge University Press, 1998).
+
+8. P. S. Aspinwall, "D-branes on Calabi--Yau manifolds," in *Progress in String Theory: TASI 2003*, [hep-th/0403166].

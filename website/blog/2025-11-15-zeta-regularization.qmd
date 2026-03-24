@@ -1,0 +1,106 @@
+---
+title: "Zeta Regularization and Vacuum Energy"
+date: 2025-11-15
+categories: ["string-theory", "QFT-CFT-MATH"]
+---
+
+## Riemann zeta and the “sum” $1 + 2 + 3 + \cdots = -\tfrac{1}{12}$
+
+The **Riemann zeta function** is defined for $\Re(s) > 1$ by the convergent series
+\[
+  \zeta(s) = \sum_{n=1}^{\infty} \frac{1}{n^s}.
+\]
+For $\Re(s) \le 1$ this series diverges, but $\zeta(s)$ has an **analytic continuation** to a meromorphic function on the whole complex plane, with a single pole at $s=1$.
+
+In particular, at $s = -1$ the analytic continuation gives
+\[
+  \zeta(-1) = -\frac{1}{12}.
+\]
+Formally,
+\[
+  \zeta(-1) = \sum_{n=1}^{\infty} n \quad \text{(zeta-regularized)}.
+\]
+This does **not** mean that the usual sum
+\[
+  1 + 2 + 3 + \cdots
+\]
+converges in the ordinary sense—it diverges to $+\infty$. But in many QFT/CFT/string-theory contexts we replace such divergent sums by their **zeta-regularized** values, and then
+\[
+  1 + 2 + 3 + \cdots \ \xrightarrow{\text{zeta reg.}} \ \zeta(-1) = -\frac{1}{12}.
+\]
+
+---
+
+## Ground-state energy in 2d CFT and the $-c/24$ shift
+
+Consider a 2d CFT on a **circle** of circumference $L$. The Hamiltonian on the cylinder is related to the Virasoro generators by
+\[
+  H = \frac{2\pi}{L}\Big(L_0 + \bar L_0 - \frac{c}{12}\Big),
+\]
+for a theory with left/right central charges $c$ and $\bar c$ (for a purely holomorphic theory you often see just $L_0 - \tfrac{c}{24}$).
+
+The key point is that the **vacuum** is not at zero energy; instead,
+\[
+  E_0 = - \frac{\pi c}{6L}.
+\]
+The term $-c/12$ or $-c/24$ arises from **normal ordering** the infinite sum of oscillator zero-point energies.
+
+For a single chiral boson, the modes are labeled by positive integers $n = 1,2,3,\dots$ and each mode contributes a zero-point energy $\tfrac{1}{2}\hbar \omega_n$. On a circle, $\omega_n \propto n$, so schematically
+\[
+  E_{\text{zero-point}} \propto \frac{1}{2} \sum_{n=1}^{\infty} n.
+\]
+This sum diverges, but using zeta-regularization
+\[
+  \sum_{n=1}^{\infty} n \ \xrightarrow{\text{zeta reg.}} \ \zeta(-1) = -\frac{1}{12},
+\]
+we obtain a **finite** negative vacuum energy. That’s the origin of the familiar shifts like
+\[
+  L_0 \to L_0 - \frac{c}{24},
+\]
+and the factor $q^{-c/24}$ in the torus partition function
+\[
+  Z(\tau) = \mathrm{Tr}\,\big(q^{L_0 - c/24} \bar q^{\bar L_0 - c/24}\big),
+  \quad q = e^{2\pi i \tau}.
+\]
+
+---
+
+## Bosonic string and the critical dimension
+
+In the **bosonic string**, we have $D$ spacetime coordinates $X^\mu$, but in light-cone gauge only $D-2$ transverse coordinates are physical oscillators. For each transverse direction, the normal ordering constant is proportional to
+\[
+  a_{\text{1 boson}} = -\frac{1}{24},
+\]
+coming again from
+\[
+  \sum_{n=1}^{\infty} n \xrightarrow{\text{zeta reg.}} -\frac{1}{12},
+\]
+with an extra factor $\tfrac{1}{2}$ from $\tfrac{1}{2}\hbar\omega$.
+
+So for $D-2$ transverse bosons, the total intercept is
+\[
+  a = -\frac{D-2}{24}.
+\]
+The mass formula for an open bosonic string is (in units with $\alpha' = 1$)
+\[
+  m^2 = N - a,
+\]
+where $N$ is the number operator. To have the **first excited state** be massless (and to get a consistent spectrum), we require
+\[
+  a = 1 \quad \Rightarrow \quad -\frac{D-2}{24} = -1
+  \quad \Rightarrow \quad D-2 = 24 \quad \Rightarrow \quad D = 26.
+\]
+Thus the famous result:
+
+> The critical dimension of the bosonic string is $D = 26$,
+
+and the value $-1/12$ from $\zeta(-1)$ is hiding inside the **zero-point energy** of the string oscillators.
+
+---
+
+## Takeaway
+
+- The identity $1 + 2 + 3 + \cdots = -\tfrac{1}{12}$ is a **regularized** statement via the analytic continuation of $\zeta(s)$.
+- In 2d CFT, this regularization gives the finite vacuum energy shift $-c/24$ (or $-c/12$ for $L_0 + \bar L_0$), which controls the ground-state energy on the cylinder and the modular properties of the partition function.
+- In bosonic string theory, the same zeta-regularized sum over oscillator modes leads to the intercept $a = (D-2)/24$ and the critical dimension $D=26$.
+

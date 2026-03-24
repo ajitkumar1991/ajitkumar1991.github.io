@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(quarto render:*)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/ajitkumarsorout/Documents/My_website/website/**)",
+      "Bash(done)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(quarto --version)",
+      "Bash(curl -s -o /dev/null -w %{http_code} http://localhost:4200/)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:indico.fysik.su.se)",
+      "WebSearch",
+      "Bash(grep -n \"$$\" /Users/ajitkumarsorout/Documents/My_website/website/research.qmd)",
+      "Bash(grep -n \"Art of Brane Bending\\\\|Brane Bending\" /Users/ajitkumarsorout/Documents/My_website/website/*.qmd)"
+    ]
+  }
+}

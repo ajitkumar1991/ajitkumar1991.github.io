@@ -1,0 +1,646 @@
+---
+title: "Machine Learning and Neural Networks"
+subtitle: "A physicist's guide to modern machine learning"
+description: "Neural networks, transformers, diffusion models, normalizing flows, grokking, and manifold learning — with a focus on connections to physics."
+author: "Ajit Kumar Sorout"
+date: 2024-12-20
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+Machine learning has become an indispensable tool in physics research. But unlike much of the ML literature, which emphasizes benchmarks and engineering, physicists benefit from understanding these methods at the level of mathematical structure — the same way we understand statistical mechanics or quantum field theory. These notes develop the core ideas of modern machine learning with an emphasis on mathematical precision and connections to physics. We start from the foundations of neural networks, work through transformers and attention mechanisms, and then treat generative models (diffusion models and normalizing flows) in detail, drawing on their deep connections to statistical physics. We also cover grokking and manifold learning, two topics where physics intuition provides genuine insight.
+
+## Neural Network Fundamentals
+
+### The Universal Approximation Theorem
+
+The theoretical foundation for using neural networks as function approximators rests on the **universal approximation theorem**. The precise statement (Cybenko, 1989; Hornik, 1991) is:
+
+**Theorem.** Let $\sigma: \mathbb{R} \to \mathbb{R}$ be a continuous, non-constant, bounded, monotonically increasing function (e.g., the sigmoid). Let $I_d = [0, 1]^d$ be the $d$-dimensional unit cube, and let $C(I_d)$ denote the space of continuous functions on $I_d$ equipped with the supremum norm. Then for any $f \in C(I_d)$ and any $\varepsilon > 0$, there exist $N \in \mathbb{N}$, real constants $w_i, b_i, \alpha_i$ such that the function
+$$
+g(x) = \sum_{i=1}^{N} \alpha_i \, \sigma\!\left(\sum_{j=1}^{d} w_{ij} x_j + b_i\right)
+$$
+satisfies $\sup_{x \in I_d} |f(x) - g(x)| < \varepsilon$.
+
+In other words, a single hidden layer with sufficiently many neurons can approximate any continuous function on a compact set to arbitrary accuracy. This is an existence theorem: it says nothing about how to *find* the right weights, nor about how many neurons are needed. The gap between existence and constructive efficiency is where the real difficulty of machine learning lies.
+
+Modern practice uses deep networks (many layers) rather than wide shallow ones, because depth provides exponential efficiency gains for certain function classes. The analogy in physics is the renormalization group: deep networks can implement hierarchical feature extraction, composing simple operations into complex transformations — much as RG coarse-grains short-distance degrees of freedom into effective long-distance descriptions.
+
+### Gradient Descent and Backpropagation
+
+Given a parameterized model $f_\theta(x)$ and a loss function $\mathcal{L}(\theta)$ measuring the discrepancy between predictions and data, we seek to minimize $\mathcal{L}$ over parameters $\theta$. **Gradient descent** updates:
+$$
+\theta_{t+1} = \theta_t - \eta \, \nabla_\theta \mathcal{L}(\theta_t)
+$$
+where $\eta$ is the learning rate. In practice, we use **stochastic gradient descent** (SGD), computing gradients on random mini-batches of the data. The stochastic noise in mini-batch gradients turns out to be beneficial — it helps escape shallow local minima and saddle points.
+
+**Backpropagation** is simply the chain rule applied systematically through the computational graph. For a network with layers $h_1, h_2, \ldots, h_L$, each computing $h_\ell = \sigma(W_\ell h_{\ell-1} + b_\ell)$, the gradient of the loss with respect to parameters in layer $\ell$ involves the product of Jacobians:
+$$
+\frac{\partial \mathcal{L}}{\partial W_\ell} = \frac{\partial \mathcal{L}}{\partial h_L} \cdot \frac{\partial h_L}{\partial h_{L-1}} \cdots \frac{\partial h_{\ell+1}}{\partial h_\ell} \cdot \frac{\partial h_\ell}{\partial W_\ell}
+$$
+
+The computational cost of backpropagation is $O(1)$ times the cost of a forward pass — this is the key efficiency result that makes training large networks feasible.
+
+### Loss Landscapes and Optimization
+
+The loss function $\mathcal{L}(\theta)$ defines a landscape in the high-dimensional parameter space. Understanding this landscape is essential and connects directly to statistical physics.
+
+In high dimensions, **saddle points** vastly outnumber local minima. For a random function in $d$ dimensions, the expected number of saddle points with $k$ negative eigenvalues grows as $\binom{d}{k}$, while the number of local minima ($k = d$) is exponentially suppressed. This was formalized by Bray and Dean (2007) using random matrix theory and the Kac-Rice formula, connecting directly to the statistical mechanics of disordered systems.
+
+Modern neural networks are typically **overparameterized**: they have far more parameters than training examples. In this regime, the loss landscape has qualitatively different properties:
+
+- Many global minima exist, forming connected low-loss manifolds
+- Gradient descent finds solutions that generalize well, even without explicit regularization
+- The implicit bias of SGD favors flat minima (large-volume regions of parameter space), which tend to generalize better
+
+The connection to statistical physics is direct: flat minima correspond to high-entropy regions of parameter space, and SGD acts like a Langevin dynamics at finite temperature, preferentially sampling these regions.
+
+### Regularization
+
+To prevent overfitting (memorizing training data noise), several regularization techniques are used:
+
+- **$L^2$ regularization** (weight decay): Add $\lambda \|\theta\|^2$ to the loss. This penalizes large weights and acts as a Gaussian prior on parameters in a Bayesian interpretation.
+- **Dropout**: Randomly zero out neurons during training. This can be interpreted as training an ensemble of sub-networks and is related to model averaging.
+- **Early stopping**: Halt training before the model has fully fit the training data. The number of gradient steps acts as an implicit regularization parameter.
+- **Batch normalization**: Normalize layer activations to have zero mean and unit variance. This smooths the loss landscape and stabilizes training.
+
+From a physics perspective, regularization controls the effective complexity of the model, much as a UV cutoff controls the number of degrees of freedom in a field theory.
+
+## Transformers and Attention
+
+The transformer architecture, introduced by Vaswani et al. (2017), has become the dominant architecture in natural language processing and increasingly in scientific applications. Its key innovation is the **self-attention mechanism**, which allows the model to capture long-range dependencies without the sequential bottleneck of recurrent networks.
+
+### The Self-Attention Mechanism
+
+Given an input sequence of $n$ tokens, each represented by a $d_{\text{model}}$-dimensional vector $x_i$, self-attention computes three sets of vectors through learned linear projections:
+
+- **Queries**: $Q = XW^Q$, where $W^Q \in \mathbb{R}^{d_{\text{model}} \times d_k}$
+- **Keys**: $K = XW^K$, where $W^K \in \mathbb{R}^{d_{\text{model}} \times d_k}$
+- **Values**: $V = XW^V$, where $W^V \in \mathbb{R}^{d_{\text{model}} \times d_v}$
+
+Here $X \in \mathbb{R}^{n \times d_{\text{model}}}$ is the matrix of input embeddings stacked as rows. The attention output is:
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V
+$$
+
+The matrix $A = \text{softmax}(QK^T / \sqrt{d_k})$ has entries:
+$$
+A_{ij} = \frac{\exp(q_i \cdot k_j / \sqrt{d_k})}{\sum_{\ell=1}^{n} \exp(q_i \cdot k_\ell / \sqrt{d_k})}
+$$
+
+Each entry $A_{ij}$ is a **soft attention weight** measuring how much token $i$ attends to token $j$. The scaling by $\sqrt{d_k}$ prevents the dot products from becoming large (which would push the softmax into saturation), maintaining stable gradients. This scaling factor is not arbitrary — it ensures the variance of $q_i \cdot k_j$ is $O(1)$ when the query and key components are i.i.d. with unit variance.
+
+The physical interpretation is suggestive: the attention matrix $A$ is a Boltzmann-like distribution. If we write $E_{ij} = -q_i \cdot k_j$, then $A_{ij} \propto \exp(-E_{ij}/T)$ with effective temperature $T = \sqrt{d_k}$. Each token selects what information to gather based on a soft energy minimization.
+
+### Multi-Head Attention
+
+Rather than computing a single attention function, multi-head attention runs $h$ parallel attention heads with different projections:
+$$
+\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h) \, W^O
+$$
+where each head is:
+$$
+\text{head}_i = \text{Attention}(XW_i^Q, XW_i^K, XW_i^V)
+$$
+with separate projection matrices $W_i^Q \in \mathbb{R}^{d_{\text{model}} \times d_k}$, $W_i^K \in \mathbb{R}^{d_{\text{model}} \times d_k}$, $W_i^V \in \mathbb{R}^{d_{\text{model}} \times d_v}$ for each head, and an output projection $W^O \in \mathbb{R}^{hd_v \times d_{\text{model}}}$.
+
+Typically $d_k = d_v = d_{\text{model}} / h$, so the total computational cost is similar to single-head attention with full dimensionality. Different heads can learn to attend to different aspects of the input — positional relationships, semantic similarity, syntactic structure — in parallel.
+
+### Positional Encoding
+
+Since attention is permutation-equivariant (the output is independent of token ordering, up to the reordering itself), positional information must be injected explicitly. Vaswani et al. (2017) used sinusoidal positional encodings:
+$$
+\text{PE}(pos, 2k) = \sin\!\left(\frac{pos}{10000^{2k/d_{\text{model}}}}\right), \qquad \text{PE}(pos, 2k+1) = \cos\!\left(\frac{pos}{10000^{2k/d_{\text{model}}}}\right)
+$$
+
+This encoding has a geometric interpretation: each frequency component defines a circle in 2D, and the position is encoded as a point on these circles at different scales. The model can learn to compute relative positions because $\text{PE}(pos + \Delta)$ is a linear function of $\text{PE}(pos)$ for any fixed offset $\Delta$. Modern architectures often use learned positional encodings or relative position representations (e.g., rotary position embeddings), but the sinusoidal encoding illustrates the core idea.
+
+### Why Transformers Work for Long-Range Dependencies
+
+Recurrent networks process tokens sequentially: information from token 1 must pass through $O(n)$ operations to reach token $n$, leading to vanishing or exploding gradients. Transformers, by contrast, provide $O(1)$ path length between any pair of tokens through attention. Every token can directly attend to every other token, enabling the model to capture long-range correlations without the information bottleneck of sequential processing.
+
+The computational cost is $O(n^2 d)$ per layer (due to the $n \times n$ attention matrix), which limits the sequence length. This is analogous to a mean-field interaction: every spin interacts with every other spin. Various sparse attention patterns (local, strided, learned) reduce this to $O(n \log n)$ or $O(n)$, analogous to introducing locality or hierarchy.
+
+### Implementation: Self-Attention in PyTorch
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class MultiHeadSelfAttention(nn.Module):
+    """Multi-head self-attention mechanism (Vaswani et al., 2017)."""
+
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        assert d_model % n_heads == 0
+        self.d_model = d_model
+        self.n_heads = n_heads
+        self.d_k = d_model // n_heads
+
+        # Projection matrices for Q, K, V and output
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        self.W_o = nn.Linear(d_model, d_model)
+
+    def forward(self, x, mask=None):
+        """
+        Args:
+            x: (batch, seq_len, d_model) input embeddings
+            mask: optional (batch, seq_len, seq_len) attention mask
+        Returns:
+            (batch, seq_len, d_model) attention output
+        """
+        batch_size, seq_len, _ = x.shape
+
+        # Project to queries, keys, values
+        Q = self.W_q(x)  # (batch, seq_len, d_model)
+        K = self.W_k(x)
+        V = self.W_v(x)
+
+        # Reshape for multi-head: (batch, n_heads, seq_len, d_k)
+        Q = Q.view(batch_size, seq_len, self.n_heads, self.d_k).transpose(1, 2)
+        K = K.view(batch_size, seq_len, self.n_heads, self.d_k).transpose(1, 2)
+        V = V.view(batch_size, seq_len, self.n_heads, self.d_k).transpose(1, 2)
+
+        # Scaled dot-product attention
+        # scores: (batch, n_heads, seq_len, seq_len)
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
+
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, float('-inf'))
+
+        attn_weights = F.softmax(scores, dim=-1)
+
+        # Weighted sum of values
+        # output: (batch, n_heads, seq_len, d_k)
+        output = torch.matmul(attn_weights, V)
+
+        # Concatenate heads and project
+        output = output.transpose(1, 2).contiguous().view(batch_size, seq_len, self.d_model)
+        return self.W_o(output)
+
+
+# Example usage
+d_model, n_heads, seq_len, batch = 64, 8, 20, 4
+attn = MultiHeadSelfAttention(d_model, n_heads)
+x = torch.randn(batch, seq_len, d_model)
+out = attn(x)
+print(f"Input shape:  {x.shape}")
+print(f"Output shape: {out.shape}")
+# Input shape:  torch.Size([4, 20, 64])
+# Output shape: torch.Size([4, 20, 64])
+```
+
+## Grokking: Delayed Generalization
+
+### The Phenomenon
+
+Power et al. (2022) discovered a surprising phenomenon in neural network training: on small algorithmic datasets (e.g., modular arithmetic, $a \circ b \pmod{p}$), networks first memorize the training data perfectly — achieving 100% training accuracy — and then, after many more steps of training, suddenly generalize to the test set. The generalization happens long after the training loss has reached zero, and the transition is sharp: test accuracy jumps from chance level to near-perfect over a narrow window of training steps.
+
+This is **grokking**: the model memorizes first, then groks (deeply understands) the underlying structure with a dramatic delay.
+
+### The Setup
+
+The original experiments used small transformers trained on binary operations in modular arithmetic:
+
+- Training data: a fraction (e.g., 50%) of all pairs $(a, b)$ with $a, b \in \mathbb{Z}_p$
+- Task: predict $a \circ b \pmod{p}$ for operations $\circ \in \{+, -, \times, /\}$
+- The model is trained well past zero training loss with weight decay regularization
+
+The key observation is that without weight decay, the model memorizes and never generalizes. Weight decay is essential — it applies a continuous pressure toward simpler (lower-norm) solutions.
+
+### The Mechanistic Interpretability Perspective
+
+Nanda et al. (2023) reverse-engineered what the network learns in the case of modular addition. The network implements a discrete Fourier transform: it learns to represent inputs $a$ and $b$ via sinusoidal features $\cos(2\pi k a/p)$ and $\sin(2\pi k a/p)$ for various frequencies $k$. The addition $a + b \pmod{p}$ is then computed using the trigonometric identity:
+$$
+\cos\!\left(\frac{2\pi k(a+b)}{p}\right) = \cos\!\left(\frac{2\pi k a}{p}\right)\cos\!\left(\frac{2\pi k b}{p}\right) - \sin\!\left(\frac{2\pi k a}{p}\right)\sin\!\left(\frac{2\pi k b}{p}\right)
+$$
+
+The network discovers the Fourier representation through training, even though nothing in the architecture or loss function explicitly encourages it.
+
+### Connection to Phase Transitions in Learning
+
+The sharp transition from memorization to generalization is strongly reminiscent of a **phase transition**. The analogy can be made precise:
+
+- **Order parameter**: Test accuracy (or, more precisely, the mutual information between the learned representation and the true algorithmic structure).
+- **Control parameter**: The effective regularization strength, which is a combination of weight decay, training time, and dataset fraction.
+- **Symmetry breaking**: The transition from a memorization solution (high-entropy, unstructured) to an algorithmic solution (low-entropy, structured) resembles a symmetry-breaking transition.
+
+Liu et al. (2022) showed that the grokking transition can be understood as a competition between two phases in the loss landscape: a memorization phase with many more solutions (high entropy but high test loss) and a generalization phase with fewer solutions (low entropy but low test loss). Weight decay acts as an effective temperature that tilts the free energy balance. At long training times, the regularization pressure eventually drives the system from the memorization basin to the generalization basin — analogous to a first-order phase transition with a nucleation barrier.
+
+This physics perspective suggests that grokking is not a peculiarity of small algorithmic datasets but a general phenomenon that should occur whenever the generalizing solution is simpler (lower parameter norm) than the memorizing solution.
+
+## Manifold Learning
+
+### The Manifold Hypothesis
+
+High-dimensional data — images, molecular configurations, field theory samples — typically lie on or near a low-dimensional manifold embedded in the ambient space. This is the **manifold hypothesis**. An image of a face in $\mathbb{R}^{256 \times 256 \times 3}$ is specified by a handful of continuous parameters (pose, lighting, expression, identity), placing it on a manifold of dimension perhaps $\sim 50$, embedded in a space of dimension $\sim 200{,}000$.
+
+For physicists, this is familiar: the configuration space of a physical system is constrained by symmetries and conservation laws, and the relevant degrees of freedom are the **order parameters** — collective coordinates that parameterize the low-dimensional manifold of physically relevant configurations.
+
+### Intrinsic Dimension
+
+The **intrinsic dimension** of a dataset is the dimension of the manifold on which the data concentrates. Estimating it is a nontrivial statistical problem. Common approaches include:
+
+- **Correlation dimension**: Measure how the number of pairs within distance $r$ scales: $C(r) \sim r^d$. The exponent $d$ estimates the intrinsic dimension. This is the same method used to estimate the fractal dimension of strange attractors in dynamical systems.
+- **Maximum likelihood estimation**: Levina and Bickel (2004) derived an MLE estimator based on nearest-neighbor distances. For a point $x_i$ with $k$-th nearest neighbor distance $r_k(x_i)$, the estimator is:
+$$
+\hat{d} = \left[\frac{1}{k-1} \sum_{j=1}^{k-1} \log \frac{r_k(x_i)}{r_j(x_i)}\right]^{-1}
+$$
+
+In physics, the intrinsic dimension of Monte Carlo samples near a phase transition is related to the number of relevant operators — the critical manifold has a specific dimension determined by the universality class.
+
+### PCA as a Baseline
+
+**Principal Component Analysis** is the simplest dimensionality reduction method. Given data matrix $X \in \mathbb{R}^{n \times d}$ (centered), PCA computes the eigendecomposition of the covariance matrix $C = X^T X / n$ and projects onto the top $k$ eigenvectors.
+
+PCA finds the linear subspace that captures maximum variance. It is exact when the data lies on a linear manifold. For nonlinear manifolds, PCA provides a useful baseline: the spectrum of eigenvalues (the scree plot) indicates how many dimensions are needed for a linear approximation, and a gap in the spectrum suggests low intrinsic dimensionality.
+
+In physics, PCA of Monte Carlo configurations can identify the order parameter. For the Ising model, the first principal component of spin configurations near $T_c$ is highly correlated with the magnetization.
+
+### Autoencoders
+
+An **autoencoder** learns a nonlinear generalization of PCA. It consists of:
+
+- An **encoder** $f_\theta: \mathbb{R}^d \to \mathbb{R}^k$ mapping data to a low-dimensional latent space
+- A **decoder** $g_\phi: \mathbb{R}^k \to \mathbb{R}^d$ mapping back to data space
+
+trained to minimize reconstruction error $\|x - g_\phi(f_\theta(x))\|^2$. The bottleneck dimension $k$ forces the network to learn a compressed representation that captures the essential structure.
+
+When applied to physics data (e.g., Ising configurations at various temperatures), the latent variables often discover physically meaningful order parameters without supervision. This connects to the information bottleneck principle: the autoencoder retains the information most relevant for reconstruction while discarding noise.
+
+### Visualization: t-SNE and UMAP
+
+For visualizing high-dimensional data in 2D or 3D, two popular methods are:
+
+- **t-SNE** (van der Maaten and Hinton, 2008): Constructs probability distributions over pairs of points in both high-dimensional and low-dimensional spaces, using Gaussian kernels in the original space and Student-t kernels in the embedding. It minimizes the KL divergence between these distributions. t-SNE excels at preserving local structure but can distort global geometry.
+
+- **UMAP** (McInnes et al., 2018): Constructs a fuzzy simplicial set representation of the data and optimizes a low-dimensional embedding that preserves this topological structure. UMAP better preserves global structure than t-SNE and is faster.
+
+Both methods are nonparametric: they produce an embedding of the training points but do not define a mapping for new data. They are visualization tools, not generative models — a distinction that matters when the goal is sampling or density estimation.
+
+### Connection to Physics
+
+The manifold hypothesis connects to several ideas in physics:
+
+- **Configuration space**: The physically accessible configurations of a system form a manifold. Constraints (conservation laws, gauge invariance) reduce its dimension.
+- **Order parameters**: In Landau theory, the free energy is a function of a few order parameters. These are coordinates on the low-dimensional manifold of macroscopic states.
+- **Slow manifolds**: In dynamical systems, the long-time dynamics is confined to a low-dimensional attracting manifold. Learning this manifold from trajectory data is a form of manifold learning.
+- **Latent variables in statistical mechanics**: The partition function $Z = \sum_{\text{micro}} e^{-\beta H}$ can be thought of as integrating out fast modes, leaving only the slow (relevant) variables that parameterize the manifold.
+
+## Diffusion Models and Score-Based Generative Modeling
+
+Diffusion models are generative models that learn to reverse a noise-adding process. For physicists, they are Langevin dynamics in disguise — a connection that provides both intuition and computational advantages.
+
+### The Physics of Diffusion
+
+Consider a particle undergoing Brownian motion in a potential $U(x)$. The overdamped Langevin equation is:
+$$
+dx = -\nabla U(x)\, dt + \sqrt{2T}\, dW_t
+$$
+
+The particle drifts toward lower potential while being kicked by thermal noise. The stationary distribution is the Boltzmann distribution:
+$$
+p_{\text{eq}}(x) \propto e^{-U(x)/T}
+$$
+
+### Score Functions and Time Reversal
+
+The **score function** is defined as:
+$$
+s(x) = \nabla_x \log p(x)
+$$
+
+For the Boltzmann distribution, $s(x) = -\nabla U(x)/T$ — it points in the direction of increasing probability. Anderson (1982) showed that the time-reversed diffusion satisfies:
+$$
+dx = \bigl[s(x, t) + \nabla \cdot D\bigr]\, dt + \sqrt{2T}\, d\bar{W}_t
+$$
+where $\bar{W}_t$ is a backward Wiener process. If we know the score at each time, we can run the diffusion backward — transforming noise into samples from the data distribution.
+
+### The Diffusion Model Recipe
+
+Song et al. (2020) formalized this into a general framework for generative modeling:
+
+1. **Forward process**: Gradually add noise to data samples through a stochastic differential equation:
+$$
+x_t = \sqrt{\alpha_t}\, x_0 + \sqrt{1 - \alpha_t}\, \epsilon, \qquad \epsilon \sim \mathcal{N}(0, I)
+$$
+where $\alpha_t$ is a noise schedule decreasing from 1 to 0. At $t = 0$, we have clean data; at $t = T$, we have approximately pure Gaussian noise.
+
+2. **Learn the score**: Train a neural network $s_\theta(x_t, t)$ to approximate $\nabla_x \log p_t(x)$ at each noise level $t$.
+
+3. **Reverse process**: Start from Gaussian noise and iteratively denoise using the learned score.
+
+The training objective (denoising score matching) takes a simple form:
+$$
+\mathcal{L} = \mathbb{E}_{t, x_0, \epsilon}\!\left[\bigl\|s_\theta(x_t, t) + \epsilon / \sqrt{1 - \alpha_t}\bigr\|^2\right]
+$$
+
+The network learns to predict the noise that was added — the score and the noise prediction are related by $s_\theta(x_t, t) = -\epsilon_\theta(x_t, t) / \sqrt{1-\alpha_t}$.
+
+### Physics Applications
+
+#### Lattice Field Theory
+
+In lattice QCD, we need to sample field configurations from $p[\phi] \propto e^{-S[\phi]}$, where $S$ is the lattice action. Standard algorithms like HMC suffer from critical slowing down near the continuum limit and topology freezing (inability to change the topological charge). Diffusion models offer an alternative: learn to directly sample from the target distribution, bypassing Markov chain autocorrelation entirely.
+
+The challenge is that the score function involves the functional derivative $\delta S / \delta \phi(x)$, and the neural network must respect gauge invariance and other symmetries of the theory.
+
+#### Spin Systems
+
+For the Ising model $p(\sigma) \propto \exp(\beta J \sum_{\langle ij \rangle} \sigma_i \sigma_j)$, cluster algorithms are efficient near the critical point. But for frustrated systems (spin glasses, triangular antiferromagnets), where cluster algorithms fail, diffusion models may provide a viable sampling strategy. The approach requires a continuous relaxation of the discrete spin variables.
+
+#### Molecular Systems
+
+For molecular simulations, diffusion models can generate equilibrium configurations of atomic coordinates directly from the Boltzmann distribution. They can propose collective moves that molecular dynamics misses and learn the free energy landscape. Equivariant architectures respecting SE(3) symmetry are essential for this application.
+
+### Implementation: Score Network for 2D Configurations
+
+```python
+import torch
+import torch.nn as nn
+
+class ScoreNetwork(nn.Module):
+    """Score network for 2D lattice configurations.
+
+    Uses a ConvNet to respect translation invariance.
+    The network predicts the score s(x_t, t) = nabla_x log p_t(x).
+    """
+
+    def __init__(self, L, hidden_dim=128, n_layers=4):
+        super().__init__()
+        self.L = L
+
+        layers = [nn.Conv2d(2, hidden_dim, 3, padding=1), nn.GELU()]
+        for _ in range(n_layers - 2):
+            layers += [nn.Conv2d(hidden_dim, hidden_dim, 3, padding=1), nn.GELU()]
+        layers.append(nn.Conv2d(hidden_dim, 1, 3, padding=1))
+        self.net = nn.Sequential(*layers)
+
+    def forward(self, x, t):
+        # x: (batch, L, L) configuration
+        # t: (batch,) diffusion time
+        t_embed = t.view(-1, 1, 1, 1).expand(-1, 1, self.L, self.L)
+        inp = torch.cat([x.unsqueeze(1), t_embed], dim=1)
+        return self.net(inp).squeeze(1)
+
+
+def linear_noise_schedule(t, beta_min=0.1, beta_max=20.0):
+    """Linear noise schedule: alpha_t = exp(-0.5 * integral of beta(s) ds)."""
+    beta_t = beta_min + t * (beta_max - beta_min)
+    log_alpha = -0.5 * t * (beta_min + 0.5 * t * (beta_max - beta_min))
+    return torch.exp(log_alpha)
+
+
+def diffusion_loss(model, x0, noise_schedule):
+    """Denoising score matching loss."""
+    batch_size = x0.shape[0]
+
+    # Sample random diffusion times uniformly
+    t = torch.rand(batch_size, device=x0.device)
+    alpha_t = noise_schedule(t)
+
+    # Forward process: add noise
+    noise = torch.randn_like(x0)
+    x_t = torch.sqrt(alpha_t).view(-1, 1, 1) * x0 + \
+          torch.sqrt(1 - alpha_t).view(-1, 1, 1) * noise
+
+    # Predict score
+    score_pred = model(x_t, t)
+
+    # Target score: -noise / sqrt(1 - alpha_t)
+    target = -noise / torch.sqrt(1 - alpha_t).view(-1, 1, 1)
+
+    return ((score_pred - target) ** 2).mean()
+
+
+@torch.no_grad()
+def sample_langevin(model, noise_schedule, L, n_steps=500, batch_size=16, device='cpu'):
+    """Generate samples by running the reverse diffusion (Langevin dynamics)."""
+    x = torch.randn(batch_size, L, L, device=device)
+    dt = 1.0 / n_steps
+
+    for i in reversed(range(n_steps)):
+        t = torch.full((batch_size,), (i + 0.5) * dt, device=device)
+        score = model(x, t)
+
+        # Reverse SDE Euler-Maruyama step
+        noise = torch.randn_like(x) if i > 0 else torch.zeros_like(x)
+        x = x + (score) * dt + torch.sqrt(torch.tensor(2.0 * dt)) * noise
+
+    return x
+```
+
+## Normalizing Flows
+
+While diffusion models learn the score function and generate samples iteratively, **normalizing flows** learn an explicit invertible map $f: \mathcal{Z} \to \mathcal{X}$ from a simple base distribution (e.g., Gaussian) to the target distribution. The density is given exactly by the change of variables formula:
+$$
+p_X(x) = p_Z\!\left(f^{-1}(x)\right) \left|\det \frac{\partial f^{-1}}{\partial x}\right|
+$$
+
+This is the same change-of-variables formula from classical mechanics and thermodynamics — the Jacobian determinant accounts for the volume distortion of the map.
+
+### Advantages for Physics
+
+Normalizing flows have specific advantages for physics applications:
+
+- **Exact density evaluation**: The log-probability $\log p_X(x)$ can be computed exactly, enabling importance sampling and reweighting. This is crucial for computing expectation values $\langle O \rangle = \int O(x) p(x) dx$ using samples from the flow.
+- **Explicit samples**: No iterative denoising is needed; a single forward pass through $f$ generates a sample.
+- **Tractable KL divergence**: The flow can be trained by minimizing the KL divergence to the target distribution $\pi(x) \propto e^{-S(x)}$ directly, without requiring training data:
+$$
+D_{\text{KL}}(p_X \| \pi) = \mathbb{E}_{z \sim p_Z}\!\left[\log p_X(f(z)) - \log \pi(f(z))\right]
+$$
+
+This self-training approach is particularly powerful for physics, where we know the target distribution (the Boltzmann weight) but cannot easily sample from it.
+
+### RealNVP Architecture
+
+**RealNVP** (Real-valued Non-Volume Preserving transformations; Dinh et al., 2017) is a widely used flow architecture, especially for lattice field theory. Each coupling layer splits the input $x$ into two groups using a binary mask $b$:
+
+$$
+y_A = x_A, \qquad y_B = x_B \odot \exp\!\left(s(x_A)\right) + t(x_A)
+$$
+
+where $x_A = b \odot x$ and $x_B = (1-b) \odot x$ are the masked and unmasked components, and $s$ and $t$ are arbitrary neural networks (scale and translation). The Jacobian is triangular, so its determinant is simply:
+$$
+\log \left|\det \frac{\partial y}{\partial x}\right| = \sum_{i \in B} s_i(x_A)
+$$
+
+This is $O(d)$ to compute, avoiding the $O(d^3)$ cost of a general Jacobian determinant.
+
+```python
+class AffineCouplingLayer(nn.Module):
+    """Affine coupling layer (RealNVP) for lattice field configurations."""
+
+    def __init__(self, mask, hidden_dim=64):
+        super().__init__()
+        self.register_buffer('mask', mask)
+
+        self.s_net = nn.Sequential(
+            nn.Conv2d(1, hidden_dim, 3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(hidden_dim, hidden_dim, 3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(hidden_dim, 1, 3, padding=1),
+            nn.Tanh(),  # Bounded scale for stability
+        )
+        self.t_net = nn.Sequential(
+            nn.Conv2d(1, hidden_dim, 3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(hidden_dim, hidden_dim, 3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(hidden_dim, 1, 3, padding=1),
+        )
+
+    def forward(self, x):
+        """Forward pass: z -> x direction."""
+        x_masked = x * self.mask
+        s = self.s_net(x_masked.unsqueeze(1)).squeeze(1)
+        t = self.t_net(x_masked.unsqueeze(1)).squeeze(1)
+
+        y = x_masked + (1 - self.mask) * (x * torch.exp(s) + t)
+        log_det = ((1 - self.mask) * s).sum(dim=(1, 2))
+
+        return y, log_det
+
+    def inverse(self, y):
+        """Inverse pass: x -> z direction."""
+        y_masked = y * self.mask
+        s = self.s_net(y_masked.unsqueeze(1)).squeeze(1)
+        t = self.t_net(y_masked.unsqueeze(1)).squeeze(1)
+
+        x = y_masked + (1 - self.mask) * (y - t) * torch.exp(-s)
+        log_det = -((1 - self.mask) * s).sum(dim=(1, 2))
+
+        return x, log_det
+
+
+class NormalizingFlow(nn.Module):
+    """Stack of coupling layers with alternating masks."""
+
+    def __init__(self, L, n_layers=8, hidden_dim=64):
+        super().__init__()
+        self.layers = nn.ModuleList()
+        for i in range(n_layers):
+            # Checkerboard mask, alternating between layers
+            mask = self._checkerboard_mask(L, parity=i % 2)
+            self.layers.append(AffineCouplingLayer(mask, hidden_dim))
+
+    def _checkerboard_mask(self, L, parity=0):
+        mask = torch.zeros(L, L)
+        mask[::2, ::2] = 1
+        mask[1::2, 1::2] = 1
+        if parity:
+            mask = 1 - mask
+        return mask
+
+    def forward(self, z):
+        """Map from base distribution to target."""
+        log_det_total = 0
+        x = z
+        for layer in self.layers:
+            x, log_det = layer(x)
+            log_det_total += log_det
+        return x, log_det_total
+```
+
+### Flows for Lattice Field Theory
+
+Albergo et al. (2019) demonstrated that normalizing flows can generate independent samples for lattice $\phi^4$ theory, completely eliminating autocorrelation. The approach trains a flow to map a Gaussian base distribution to the Boltzmann distribution $p[\phi] \propto e^{-S[\phi]}$, using the known action $S[\phi]$ to compute the KL divergence loss without needing pre-generated training data.
+
+Noe et al. (2019) introduced **Boltzmann generators**, applying normalizing flows to sample equilibrium configurations of molecular systems. By training on short MD trajectories and the known energy function, the flow learns to generate diverse configurations that bridge between metastable states — a task that would require prohibitively long MD simulations.
+
+The key challenge for flows in physics is the invertibility constraint, which limits architectural expressiveness. Continuous normalizing flows (neural ODEs) relax this constraint somewhat but introduce other computational costs.
+
+## Physics-ML Connections
+
+The connections between machine learning and statistical physics run deeper than analogy. Several precise mappings exist.
+
+### Loss Landscapes as Energy Landscapes
+
+The loss function $\mathcal{L}(\theta)$ defines an energy landscape over parameter space. The training dynamics seek low-loss configurations, just as physical systems relax to low-energy states. The correspondence is:
+
+| Machine Learning | Statistical Physics |
+|:---|:---|
+| Parameters $\theta$ | Microscopic configuration |
+| Loss $\mathcal{L}(\theta)$ | Energy $E(\mathcal{C})$ |
+| Learning rate $\eta$ | Inverse temperature $\beta$ |
+| Mini-batch noise | Thermal fluctuations |
+| Flat minima | High-entropy states |
+| Sharp minima | Low-entropy states |
+
+This correspondence is not merely metaphorical. The PAC-Bayesian generalization bound states that the generalization gap is controlled by the KL divergence between the learned distribution and a prior — which, in the statistical mechanics formulation, is the free energy difference. Flat minima occupy more volume in parameter space (higher entropy), leading to lower free energy and better generalization.
+
+### SGD as Langevin Dynamics
+
+Stochastic gradient descent with mini-batch noise obeys:
+$$
+\theta_{t+1} = \theta_t - \eta \nabla \mathcal{L}(\theta_t) + \sqrt{\eta}\, \xi_t
+$$
+where $\xi_t$ is the noise from mini-batch sampling. In the continuous-time limit, this is an overdamped Langevin equation:
+$$
+d\theta = -\nabla \mathcal{L}(\theta)\, dt + \sqrt{2T_{\text{eff}}}\, dW_t
+$$
+with an effective temperature $T_{\text{eff}} \propto \eta \cdot \text{(gradient noise covariance)}$. The learning rate controls the temperature: large learning rates explore more of the landscape (high temperature), while learning rate annealing corresponds to simulated annealing.
+
+This connection has been made rigorous by Mandt et al. (2017), who showed that SGD with constant learning rate converges to a stationary distribution that approximates a Gibbs distribution $p(\theta) \propto \exp(-\mathcal{L}(\theta)/T_{\text{eff}})$.
+
+### Phase Transitions in Learning
+
+Learning dynamics exhibit phase transitions as hyperparameters or dataset properties change:
+
+- **Double descent**: Test error first decreases (classical bias-variance trade-off), then increases at the interpolation threshold (where the model just fits the training data), then decreases again as the model becomes increasingly overparameterized. This non-monotonic behavior resembles a phase transition at the interpolation threshold, where the system changes from underfitting to overfitting to implicit regularization regimes.
+
+- **Feature learning transitions**: As network width, depth, or training time increases, there can be sharp transitions where the network discovers structure in the data. The grokking phenomenon discussed above is one example. Another is the transition from lazy (kernel) regime to rich (feature-learning) regime as network width varies.
+
+- **Scaling laws**: The loss of large language models scales as a power law in model size, dataset size, and compute: $\mathcal{L} \sim N^{-\alpha}$. Power-law scaling is characteristic of systems near criticality, and recent work has explored whether neural scaling laws can be understood through the lens of critical phenomena and renormalization group theory.
+
+### Information Geometry
+
+The parameter space of a statistical model carries a natural Riemannian metric, the **Fisher information metric**:
+$$
+g_{ij} = \mathbb{E}\!\left[\frac{\partial \log p(x|\theta)}{\partial \theta_i} \frac{\partial \log p(x|\theta)}{\partial \theta_j}\right]
+$$
+
+Natural gradient descent uses this metric to move in the steepest direction in distribution space (not parameter space):
+$$
+\theta_{t+1} = \theta_t - \eta \, g^{-1}(\theta_t) \nabla \mathcal{L}(\theta_t)
+$$
+
+The Fisher metric is the unique metric (up to scaling) that is invariant under reparameterization. In physics terms, it is the metric on the space of probability distributions induced by the KL divergence, just as the metric on configuration space is induced by the action. This geometric perspective connects optimization in ML to the geometry of thermodynamic state spaces.
+
+## Summary and Outlook
+
+The ideas in these notes share a common thread: *machine learning methods become most transparent and most powerful when understood through the lens of physics*. Diffusion models are Langevin dynamics. SGD is a thermal process exploring an energy landscape. Grokking is a phase transition. The manifold hypothesis is a statement about the effective dimensionality of configuration space.
+
+For a physicist learning ML, the recommendation is: do not treat these methods as black boxes. The mathematical structures — stochastic processes, statistical mechanics, differential geometry, information theory — are the same ones that appear throughout physics. Understanding them deeply, as these notes attempt to do, is the path to both using ML methods effectively and contributing new ideas to the field.
+
+---
+
+## Related Notes
+
+- [Monte Carlo and Computational Statistical Physics](monte-carlo.qmd) — MCMC sampling methods that diffusion models and normalizing flows aim to improve upon
+- [Tensor Networks](tensor-networks.qmd) — Complementary approach to representing high-dimensional functions with controlled approximations
+
+---
+
+## References
+
+- A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, I. Polosukhin, "Attention Is All You Need," NeurIPS (2017). [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)
+- A. Power, Y. Burda, H. Edwards, I. Babuschkin, V. Misra, "Grokking: Generalization Beyond Overfitting on Small Algorithmic Datasets," ICLR (2022). [arXiv:2201.02177](https://arxiv.org/abs/2201.02177)
+- Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, B. Poole, "Score-Based Generative Modeling through Stochastic Differential Equations," ICLR (2021). [arXiv:2011.13456](https://arxiv.org/abs/2011.13456)
+- M. S. Albergo, G. Kanwar, P. E. Shanahan, "Flow-based generative models for Markov chain Monte Carlo in lattice field theory," Phys. Rev. D **100**, 034515 (2019). [arXiv:1904.12072](https://arxiv.org/abs/1904.12072)
+- F. Noe, S. Olsson, J. Kohler, H. Wu, "Boltzmann Generators: Sampling Equilibrium States of Many-Body Systems with Deep Learning," Science **365**, 6457 (2019)
+- G. Cybenko, "Approximation by superpositions of a sigmoidal function," Mathematics of Control, Signals and Systems **2**, 303 (1989)
+- K. Hornik, "Approximation capabilities of multilayer feedforward networks," Neural Networks **4**, 251 (1991)
+- N. Nanda, L. Chan, T. Lieberum, J. Smith, J. Steinhardt, "Progress measures for grokking via mechanistic interpretability," ICLR (2023). [arXiv:2301.05217](https://arxiv.org/abs/2301.05217)
+- L. Dinh, J. Sohl-Dickstein, S. Bengio, "Density estimation using Real-NVP," ICLR (2017). [arXiv:1605.08803](https://arxiv.org/abs/1605.08803)
+- S. Mandt, M. D. Hoffman, D. M. Blei, "Stochastic Gradient Descent as Approximate Bayesian Inference," JMLR **18**, 1 (2017). [arXiv:1704.04289](https://arxiv.org/abs/1704.04289)
+- A. J. Bray and D. S. Dean, "Statistics of critical points of Gaussian fields on large-dimensional spaces," Phys. Rev. Lett. **98**, 150201 (2007)
+- B. Anderson, "Reverse-time diffusion equation models," Stochastic Processes and their Applications **12**, 313 (1982)

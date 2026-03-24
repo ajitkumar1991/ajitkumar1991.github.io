@@ -1,0 +1,325 @@
+---
+title: "Monte Carlo Error Analysis"
+subtitle: "Bootstrap, jackknife, and blocking"
+description: "Practical implementations of bootstrap, jackknife, and blocking methods for estimating statistical errors in correlated Monte Carlo data."
+author: "Ajit Kumar Sorout"
+date: 2026-03-23
+date-modified: last-modified
+sidebar: tools-sidebar
+toc: true
+toc-depth: 3
+code-fold: false
+---
+
+Reliable error bars are essential for any Monte Carlo study. These methods handle the correlations inherent in Markov chain data. For the physics context, see [Monte Carlo and Computational Statistical Physics](../notes/monte-carlo.qmd).
+
+## The Problem: Correlated Data
+
+Monte Carlo generates a time series $O_1, O_2, \ldots, O_M$ where consecutive measurements are correlated. The naive standard error $\sigma/\sqrt{M}$ **underestimates** the true error by a factor of $\sqrt{2\tau_{\mathrm{int}}}$, where $\tau_{\mathrm{int}}$ is the integrated autocorrelation time.
+
+All three methods below handle this correctly, but in different ways.
+
+## Blocking (Binning) Method
+
+The simplest approach: group measurements into blocks large enough that block averages are approximately independent.
+
+### Python Implementation
+
+```python
+import numpy as np
+
+def blocking_analysis(data, max_block_size=None):
+    """
+    Blocking analysis for correlated data.
+
+    Returns block sizes and corresponding error estimates.
+    The error stabilizes (plateaus) when the block size
+    exceeds the autocorrelation time.
+    """
+    n = len(data)
+    if max_block_size is None:
+        max_block_size = n // 10
+
+    block_sizes = []
+    errors = []
+
+    for B in range(1, max_block_size + 1):
+        n_blocks = n // B
+        if n_blocks < 4:  # Need enough blocks for a meaningful estimate
+            break
+        # Reshape and average within blocks
+        trimmed = data[:n_blocks * B]
+        blocks = trimmed.reshape(n_blocks, B).mean(axis=1)
+        err = np.std(blocks, ddof=1) / np.sqrt(n_blocks)
+        block_sizes.append(B)
+        errors.append(err)
+
+    return np.array(block_sizes), np.array(errors)
+
+
+def estimate_error_blocking(data, block_size):
+    """Estimate error with a specific block size."""
+    n = len(data)
+    n_blocks = n // block_size
+    trimmed = data[:n_blocks * block_size]
+    blocks = trimmed.reshape(n_blocks, block_size).mean(axis=1)
+    return np.mean(blocks), np.std(blocks, ddof=1) / np.sqrt(n_blocks)
+```
+
+### Julia Implementation
+
+```julia
+function blocking_analysis(data::Vector{Float64}; max_block_size=nothing)
+    n = length(data)
+    if max_block_size === nothing
+        max_block_size = n ÷ 10
+    end
+
+    block_sizes = Int[]
+    errors = Float64[]
+
+    for B in 1:max_block_size
+        n_blocks = n ÷ B
+        n_blocks < 4 && break
+
+        blocks = [mean(data[(k-1)*B+1 : k*B]) for k in 1:n_blocks]
+        err = std(blocks) / sqrt(n_blocks)
+        push!(block_sizes, B)
+        push!(errors, err)
+    end
+
+    return block_sizes, errors
+end
+```
+
+### How to Use
+
+1. Run `blocking_analysis` on your data.
+2. Plot error vs. block size.
+3. The error increases and then **plateaus** — the plateau value is your error estimate.
+4. The block size where the plateau begins is approximately $2\tau_{\mathrm{int}}$.
+
+If the error never plateaus, your data may not have enough independent samples. Run longer.
+
+## Bootstrap Method
+
+The bootstrap constructs an empirical sampling distribution by resampling with replacement. For correlated data, resample **blocks** rather than individual measurements.
+
+### Python Implementation
+
+```python
+def block_bootstrap(data, block_size, n_bootstrap=2000, statistic=np.mean):
+    """
+    Block bootstrap for correlated data.
+
+    Parameters
+    ----------
+    data : array
+        Time series of measurements.
+    block_size : int
+        Size of blocks (should be >= 2 * tau_int).
+    n_bootstrap : int
+        Number of bootstrap resamples.
+    statistic : callable
+        Function to compute on each resample (default: mean).
+
+    Returns
+    -------
+    estimate : float
+        Mean of bootstrap estimates.
+    error : float
+        Standard deviation of bootstrap estimates.
+    bootstrap_samples : array
+        All bootstrap estimates (for confidence intervals).
+    """
+    n = len(data)
+    n_blocks = n // block_size
+    blocks = data[:n_blocks * block_size].reshape(n_blocks, block_size)
+
+    estimates = np.zeros(n_bootstrap)
+    for b in range(n_bootstrap):
+        # Resample blocks with replacement
+        idx = np.random.randint(0, n_blocks, size=n_blocks)
+        resampled = blocks[idx].flatten()
+        estimates[b] = statistic(resampled)
+
+    return np.mean(estimates), np.std(estimates, ddof=1), estimates
+
+
+def bootstrap_confidence_interval(bootstrap_samples, confidence=0.95):
+    """Compute confidence interval from bootstrap samples."""
+    alpha = 1 - confidence
+    lower = np.percentile(bootstrap_samples, 100 * alpha / 2)
+    upper = np.percentile(bootstrap_samples, 100 * (1 - alpha / 2))
+    return lower, upper
+```
+
+### When to Use Bootstrap
+
+- When you need errors on **nonlinear functions** of the data (ratios, Binder cumulants, fitted parameters).
+- When you want **confidence intervals** rather than just standard errors.
+- When the distribution of your estimator may be non-Gaussian.
+
+The main disadvantage: you need to choose the block size. Use blocking analysis first to determine $\tau_{\mathrm{int}}$, then set the block size to $\geq 2\tau_{\mathrm{int}}$.
+
+## Jackknife Method
+
+The jackknife systematically removes one block at a time to estimate bias and variance. It is particularly clean for error propagation through nonlinear functions.
+
+### Python Implementation
+
+```python
+def jackknife(data, block_size, statistic=np.mean):
+    """
+    Jackknife error estimation for correlated data.
+
+    Parameters
+    ----------
+    data : array
+        Time series of measurements.
+    block_size : int
+        Size of blocks (should be >= 2 * tau_int).
+    statistic : callable
+        Function to compute on each leave-one-out sample.
+
+    Returns
+    -------
+    estimate : float
+        Jackknife estimate (bias-corrected).
+    error : float
+        Jackknife error.
+    """
+    n = len(data)
+    n_blocks = n // block_size
+    blocks = data[:n_blocks * block_size].reshape(n_blocks, block_size)
+
+    # Full estimate
+    theta_full = statistic(blocks.flatten())
+
+    # Leave-one-out estimates
+    theta_jack = np.zeros(n_blocks)
+    for k in range(n_blocks):
+        # Remove block k
+        remaining = np.delete(blocks, k, axis=0).flatten()
+        theta_jack[k] = statistic(remaining)
+
+    # Jackknife estimate and error
+    theta_bar = np.mean(theta_jack)
+    error = np.sqrt((n_blocks - 1) / n_blocks *
+                     np.sum((theta_jack - theta_bar)**2))
+
+    # Bias-corrected estimate
+    bias = (n_blocks - 1) * (theta_bar - theta_full)
+    estimate = theta_full - bias
+
+    return estimate, error
+
+
+def jackknife_ratio(num_data, den_data, block_size):
+    """
+    Jackknife error for a ratio <A>/<B>.
+
+    This is where jackknife really shines — error propagation
+    through nonlinear functions is automatic.
+    """
+    def ratio_statistic(data_pair):
+        n = len(data_pair) // 2
+        return np.mean(data_pair[:n]) / np.mean(data_pair[n:])
+
+    combined = np.concatenate([num_data, den_data])
+    return jackknife(combined, block_size * 2, ratio_statistic)
+```
+
+### Julia Implementation
+
+```julia
+using Statistics
+
+function jackknife(data::Vector{Float64}, block_size::Int;
+                   statistic::Function=mean)
+    n = length(data)
+    n_blocks = n ÷ block_size
+    blocks = [data[(k-1)*block_size+1 : k*block_size] for k in 1:n_blocks]
+
+    # Full estimate
+    all_data = vcat(blocks...)
+    theta_full = statistic(all_data)
+
+    # Leave-one-out estimates
+    theta_jack = zeros(n_blocks)
+    for k in 1:n_blocks
+        remaining = vcat(blocks[1:k-1]..., blocks[k+1:end]...)
+        theta_jack[k] = statistic(remaining)
+    end
+
+    theta_bar = mean(theta_jack)
+    error = sqrt((n_blocks - 1) / n_blocks * sum((theta_jack .- theta_bar).^2))
+
+    # Bias correction
+    bias = (n_blocks - 1) * (theta_bar - theta_full)
+    estimate = theta_full - bias
+
+    return estimate, error
+end
+```
+
+## Worked Example: Ising Model Binder Cumulant
+
+The Binder cumulant $U_4 = 1 - \langle m^4 \rangle / (3\langle m^2 \rangle^2)$ is a ratio of moments — exactly where jackknife excels.
+
+```python
+def binder_cumulant_with_error(magnetization_timeseries, block_size):
+    """
+    Compute Binder cumulant with jackknife error.
+
+    The Binder cumulant is a nonlinear function of <m^2> and <m^4>,
+    so naive error propagation is unreliable.
+    """
+    m2 = magnetization_timeseries**2
+    m4 = magnetization_timeseries**4
+
+    n = len(m2)
+    n_blocks = n // block_size
+    m2_blocks = m2[:n_blocks * block_size].reshape(n_blocks, block_size)
+    m4_blocks = m4[:n_blocks * block_size].reshape(n_blocks, block_size)
+
+    def binder(m2_data, m4_data):
+        return 1 - np.mean(m4_data) / (3 * np.mean(m2_data)**2)
+
+    # Full estimate
+    U4_full = binder(m2_blocks.flatten(), m4_blocks.flatten())
+
+    # Jackknife
+    U4_jack = np.zeros(n_blocks)
+    for k in range(n_blocks):
+        m2_remaining = np.delete(m2_blocks, k, axis=0).flatten()
+        m4_remaining = np.delete(m4_blocks, k, axis=0).flatten()
+        U4_jack[k] = binder(m2_remaining, m4_remaining)
+
+    U4_bar = np.mean(U4_jack)
+    error = np.sqrt((n_blocks - 1) / n_blocks *
+                     np.sum((U4_jack - U4_bar)**2))
+
+    return U4_full, error
+```
+
+## Choosing a Method
+
+| Situation | Recommended Method |
+|---|---|
+| Quick error estimate | Blocking |
+| Nonlinear function of data | Jackknife |
+| Confidence intervals needed | Bootstrap |
+| Ratio of observables | Jackknife |
+| Error on fitted parameters | Bootstrap |
+| First pass / sanity check | Blocking |
+
+In practice, all three should give consistent results. If they disagree, your block size is probably too small.
+
+## Determining Block Size
+
+The block size should be at least $2\tau_{\mathrm{int}}$. To estimate $\tau_{\mathrm{int}}$, see [Data Analysis for Monte Carlo](data-analysis.qmd). A quick rule of thumb: run blocking analysis, find where the error plateaus, and use that block size (or larger) for bootstrap and jackknife.
+
+---
+
+*See also:* [Monte Carlo and Computational Statistical Physics](../notes/monte-carlo.qmd) for the physics context, and [Data Analysis for Monte Carlo](data-analysis.qmd) for autocorrelation estimation.

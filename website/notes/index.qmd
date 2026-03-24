@@ -1,0 +1,68 @@
+---
+title: "Notes & Expositions"
+subtitle: "Technical notes on physics, computation, and mathematics"
+sidebar: notes-sidebar
+toc: false
+---
+
+These are extended technical notes on topics I work with or find interesting. They are written at a level between a textbook and a research paper — rigorous enough to be useful as references, but with enough motivation and context to serve as introductions for graduate students entering the subject.
+
+Each note is tagged with a difficulty level:
+
+- **Introductory**: Accessible to advanced undergraduates and beginning graduate students
+- **Advanced**: Assumes graduate-level background in the relevant area
+- **Research-level**: Touches on open problems and current research
+
+Use the sidebar to navigate between topics.
+
+---
+
+## String Theory & Geometry
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Brane Tilings and 4D Supersymmetric Field Theory](brane-tilings.qmd) {.unnumbered}
+*Advanced / Research-level* — Brane tilings, orientifold projections, geometric engineering of $\mathcal{N}=1$ SCFTs, brane bending, and S-duality.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Mirror Symmetry and T-Duality](mirror-symmetry.qmd) {.unnumbered}
+*Advanced* — Calabi-Yau mirror pairs, T-duality, the SYZ conjecture, and connections to brane constructions.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [2D CFT, Orbifolding, and the Swampland](2d-cft-swampland.qmd) {.unnumbered}
+*Advanced / Research-level* — Virasoro algebra, modular invariance, orbifolds, zeta regularization, and swampland conjectures.
+:::
+
+---
+
+## Many-Body & Computation
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Tensor Networks](tensor-networks.qmd) {.unnumbered}
+*Advanced* — MPS, DMRG, entanglement entropy, correlation functions, TCI, quantics methods, and connections to holography.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Monte Carlo and Computational Statistical Physics](monte-carlo.qmd) {.unnumbered}
+*Advanced* — Metropolis algorithm, cluster and worm algorithms, error analysis (bootstrap, jackknife, blocking), autocorrelation.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Quantum Information and Computation](quantum-information.qmd) {.unnumbered}
+*Advanced* — No-cloning theorem, quantum state discrimination, entanglement, and connections to tensor networks.
+:::
+
+---
+
+## Methods & Foundations
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Machine Learning and Neural Networks](machine-learning.qmd) {.unnumbered}
+*Advanced* — Neural networks, transformers, diffusion models, normalizing flows, grokking, and manifold learning.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Group Theory in Quantum Mechanics](group-theory-qm.qmd) {.unnumbered}
+*Introductory / Advanced* — Representations, symmetry and degeneracy, Clebsch-Gordan coefficients, and worked examples.
+:::

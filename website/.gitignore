@@ -32,3 +32,6 @@ node_modules/
 
 # Freeze directory (optional - some prefer to commit this)
 # _freeze/
+
+/.quarto/
+**/*.quarto_ipynb

@@ -1,0 +1,46 @@
+---
+title: "Publications"
+subtitle: "Papers, preprints, and presentations"
+toc: true
+---
+
+## Published
+
+1. B. Heidenreich, I. García-Etxebarria, M. Lotito, **A. K. Sorout**. *Lagrangian Descriptions of $\mathcal{N}=2$ SCFTs from Orientifolded Toric Singularities*. [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX)
+
+---
+
+## To Be Submitted
+
+2. B. Heidenreich, M. Lotito, **A. K. Sorout**. *$\mathcal{N}=1$ Flavor Orientifolds: Wilson Lines, Discrete Torsion, and S-Duality*. To be submitted.
+
+3. X. Wang, R. Zhang, **A. K. Sorout**. *Symmetry-Enriched Criticality and Boundary RG Flows in Interacting Majorana Chains*. To be submitted.
+
+---
+
+## In Preparation
+
+4. B. Heidenreich, **A. K. Sorout**. *Quad-CFTs and Infrared Phases of Theories with Tensor Matter*. In preparation.
+
+5. B. Heidenreich, A. Pittman, **A. K. Sorout**. *Mirror Geometry and Moduli Structure of Quad-CFTs*. In preparation.
+
+6. B. Heidenreich, A. Pittman, **A. K. Sorout**. *Discrete Gaugings of 2D CFTs and the Weak Gravity Conjecture*. In preparation.
+
+7. N. Prokof'ev, W. Wei, **A. K. Sorout**. *Worm-Algorithm Monte Carlo for 3D Bose Gases with Long-Range Interactions*. In preparation.
+
+---
+
+## Talks & Presentations
+
+- **Boundary RG Flows in Interacting Majorana Chains**
+  APS New England Section Meeting, October 2024
+
+- **Geometric Engineering of $\mathcal{N}=2$ SCFTs from Orientifolded Singularities**
+  Amherst Center for Fundamental Interactions seminar
+
+---
+
+## Profiles
+
+- [Google Scholar](https://scholar.google.com/citations?user=mjxdcyMAAAAJ&hl=en)
+- [GitHub](https://github.com/ajitkumar1991)

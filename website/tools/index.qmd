@@ -1,0 +1,27 @@
+---
+title: "Computational Tools"
+subtitle: "Practical guides for scientific computing"
+sidebar: tools-sidebar
+toc: false
+---
+
+These pages are practical references for computational methods I use regularly. They are organized as cookbooks: concrete algorithms, working code, and guidance on when and how to use each technique. The emphasis is on getting correct results with reliable error estimates.
+
+For the underlying physics and mathematical context, see the corresponding [Notes & Expositions](../notes/index.qmd).
+
+---
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Julia Tensor Network Workflows](julia-tensor-networks.qmd) {.unnumbered}
+Setting up ITensor.jl, building Hamiltonians, running DMRG, and measuring observables. A practical guide to tensor network calculations in Julia.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Monte Carlo Error Analysis](monte-carlo-errors.qmd) {.unnumbered}
+Bootstrap, jackknife, and blocking methods for estimating statistical errors in Monte Carlo data. Implementations in Python and Julia.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Data Analysis for Monte Carlo](data-analysis.qmd) {.unnumbered}
+Autocorrelation estimation, binning analysis, and the practical workflow from raw simulation data to publication-quality error bars.
+:::

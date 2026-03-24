@@ -1,69 +1,143 @@
 ---
 title: "Ajit Kumar Sorout"
-subtitle: "Physics PhD Student"
-about:
-  template: trestles
-  image: images/profile.jpg
-  image-width: 12em
-  image-shape: rounded
-  links:
-    - icon: envelope
-      text: Email
-      href: mailto:YOUR_EMAIL@umass.edu
-    - icon: github
-      text: GitHub
-      href: https://github.com/YOUR_GITHUB_USERNAME
-    - icon: mortarboard
-      text: Google Scholar
-      href: https://scholar.google.com/citations?user=YOUR_ID
-    - icon: file-earmark-pdf
-      text: CV
-      href: assets/cv.pdf
+subtitle: "Physics PhD Student — University of Massachusetts Amherst"
 page-layout: full
 toc: false
 ---
 
 ::: {.column-page}
 
-## Welcome
+::: {.grid}
 
-I am a PhD student in physics at the University of Massachusetts Amherst, working at the intersection of **string theory**, **condensed matter physics**, and **machine learning**. My research spans geometric engineering of supersymmetric gauge theories, Monte Carlo simulations of quantum many-body systems, and applications of modern generative models to physics problems.
+::: {.g-col-12 .g-col-md-3}
 
-I am particularly interested in how mathematical structures—from Calabi-Yau manifolds to tensor networks—illuminate the physics of strongly coupled systems. Whether through the geometry of brane tilings or the entanglement structure of critical systems, I seek unifying perspectives that connect seemingly disparate areas of physics.
+![](images/profile.jpg){.rounded width="100%" style="max-width: 180px; display: block; margin: 0 auto;"}
+
+::: {style="text-align: center; font-size: 0.85em; margin-top: 0.8em;"}
+[Email](mailto:ajitkumar@umass.edu) | [GitHub](https://github.com/ajitkumar1991) | [Scholar](https://scholar.google.com/citations?user=mjxdcyMAAAAJ&hl=en) | [CV](assets/cv.pdf)
+:::
+
+:::
+
+::: {.g-col-12 .g-col-md-9}
+
+I develop theoretical and computational tools to understand **strongly coupled quantum field theories**. On the high-energy side, I use string theory and geometric engineering to construct and analyze four-dimensional superconformal field theories — building Lagrangian descriptions of non-Lagrangian theories, organizing IR phase diagrams, and classifying S-dual families. On the condensed-matter side, I investigate symmetry-enriched criticality and superfluidity with long-range interactions using tensor networks and Monte Carlo methods.
+
+A unifying thread is the use of string-theoretic and conformal-field-theoretic structures — generalized symmetries, dualities, and categorical data — to illuminate physics in both domains.
+
+:::
+
+:::
 
 ---
 
-## Research Highlights
+## Research
 
-::: {.callout-note appearance="minimal" icon=false}
-### String Theory & Geometric Engineering
-Constructing 4d $\mathcal{N}=1$ SCFTs via toric Calabi-Yau orientifolds, exploring the interplay of D-branes, orientifold planes, and discrete torsion.
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+
+### The Art of Brane Bending
+
+**Lagrangians for non-Lagrangian $\mathcal{N}=2$ SCFTs** — including the $E_6$ Minahan-Nemeschansky and Argyres-Wittig theories — via D3-branes at orientifolded toric $Y^{2,0}$ singularities. Partial resolutions flow to $\mathcal{N}=2$ fixed points, producing the $R_{2,k}$ series. Published with Heidenreich, García-Etxebarria, and Lotito.
+
+- [Research details →](research.qmd#high-energy)
+- [Brane Tilings background →](notes/brane-tilings.qmd)
+
 :::
 
-::: {.callout-tip appearance="minimal" icon=false}
-### Condensed Matter & Many-Body Physics
-Studying boundary RG flows in interacting Majorana chains using DMRG, and developing efficient Monte Carlo algorithms for long-range Coulomb interactions.
+::: {.g-col-12 .g-col-md-6}
+
+### Flavor Orientifolds and S-Duality
+
+New $\mathcal{N}=1$ SCFTs from D3-branes at orientifolded singularities with **non-compact O7-planes and flavor branes**. Discrete torsion and Wilson lines yield distinct SCFTs: five inequivalent classes for $\mathbb{C}^3/\mathbb{Z}_3$, S-dual pairs for the conifold. With Heidenreich and Lotito.
+
+- [Research details →](research.qmd#high-energy)
+
 :::
 
-::: {.callout-important appearance="minimal" icon=false}
-### Machine Learning & Generative Models
-Exploring diffusion models and normalizing flows for sampling complex distributions in statistical physics and quantum field theory.
+::: {.g-col-12 .g-col-md-6}
+
+### IR Dynamics of $\mathcal{N}=1$ Theories via Quad-CFTs
+
+Mapping the **IR phase diagram of $SU(N)$ theories with symmetric and antisymmetric tensor matter** using quad-CFTs — strongly coupled building blocks from D5/NS5 brane tilings with an O5-plane. Resolves inconsistencies in naive deconfinement. With Heidenreich.
+
+- [Research details →](research.qmd#high-energy)
+
 :::
+
+::: {.g-col-12 .g-col-md-6}
+
+### Topological Symmetry and Boundary RG Flow
+
+**Protected edge modes persisting at bulk Ising critical points** in interacting Majorana chains. DMRG studies of boundary RG flows across three phases with symmetry-enriched and trivial Ising transitions. Universal scaling functions for boundary flows. With Wang and Zhang.
+
+- [Research details →](research.qmd#condensed-matter)
+- [Tensor Networks background →](notes/tensor-networks.qmd)
+
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+### Worm & Cluster Algorithms for Long-Range Interactions
+
+New **worm and cluster Monte Carlo algorithms** for lattice models with Coulomb interactions. A mixed representation bypasses the $Q(k)$-function breakdown; Wolff reflections exploit density invariance. Both achieve $z \lesssim 0.2$ even with $1/r$ interactions. With Prokof'ev and Wei.
+
+- [Research details →](research.qmd#condensed-matter)
+- [Monte Carlo background →](notes/monte-carlo.qmd)
+
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+### Mirror Symmetry in Quad-CFTs
+
+The quad-CFT framework from the perspective of **type IIA mirror geometry** with D6/O6-branes. How symmetry enhancement and moduli-space structure are encoded in the mirror Calabi-Yau, providing a global geometric picture organizing field-theoretic dualities. With Pittman and Heidenreich.
+
+- [Research details →](research.qmd#high-energy)
+- [Mirror Symmetry background →](notes/mirror-symmetry.qmd)
+
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+### 2D CFTs & the Weak Gravity Conjecture
+
+**Discrete gaugings of WZW models** and orbifold CFTs: how twisted sectors reorganize the charge lattice and constrain lattice versions of the Weak Gravity Conjecture. With Heidenreich and Pittman.
+
+- [Research details →](research.qmd#high-energy)
+- [2D CFT background →](notes/2d-cft-swampland.qmd)
+
+:::
+
+:::
+
+---
+
+## Featured Notes
+
+Technical expositions on the methods and frameworks underlying my research:
+
+| | |
+|:--|:--|
+| **[Brane Tilings](notes/brane-tilings.qmd)** | Orientifolds, geometric engineering, brane bending, Seiberg duality |
+| **[Tensor Networks](notes/tensor-networks.qmd)** | MPS, DMRG, entanglement entropy, TCI, quantics, holography |
+| **[Monte Carlo Methods](notes/monte-carlo.qmd)** | Metropolis, cluster, worm algorithms, bootstrap, jackknife, blocking |
+| **[2D CFT & Swampland](notes/2d-cft-swampland.qmd)** | Virasoro algebra, modular invariance, orbifolds, swampland conjectures |
+| **[Mirror Symmetry](notes/mirror-symmetry.qmd)** | Calabi-Yau pairs, T-duality, SYZ, enumerative geometry |
+| **[Machine Learning](notes/machine-learning.qmd)** | Transformers, diffusion models, normalizing flows, grokking |
+
+: {tbl-colwidths="[35,65]"}
+
+Browse [all notes](notes/index.qmd) or explore the [Computational Tools](tools/index.qmd).
 
 ---
 
 ## Latest from the Blog
 
-::: {#blog-listing}
-:::
+- **[Zeta Regularization and Vacuum Energy](blog/2025-11-15-zeta-regularization.qmd)** (Nov 2025) — How $\zeta(-1) = -1/12$ controls the vacuum energy in 2D CFT and determines $D=26$.
 
-```{=html}
-<style>
-#blog-listing {
-  margin-top: 1em;
-}
-</style>
-```
+- **[On Being an Interdisciplinary Physicist](blog/2024-12-01-interdisciplinary.qmd)** (Dec 2024) — Reflections on working across string theory, condensed matter, and computation.
 
 [See all posts →](blog/index.qmd)
 

@@ -1,0 +1,499 @@
+---
+title: "Group Theory in Quantum Mechanics"
+subtitle: "Symmetry, representations, and degeneracy"
+description: "A pedagogical introduction to group representation theory in quantum mechanics: irreducible representations, Schur's lemma, symmetry-enforced degeneracies, and worked examples."
+author: "Ajit Kumar Sorout"
+date: 2026-03-23
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+## Introduction
+
+The connection between symmetry and quantum mechanics is one of the deepest ideas in physics. When a system possesses a symmetry --- rotational, translational, or something more exotic --- the consequences are immediate and powerful: conserved quantities, selection rules, and (most strikingly) exact degeneracies in the energy spectrum that persist even when we cannot solve the Schrodinger equation analytically.
+
+The mathematical language for symmetry is **group theory**, and the specific tool we need is **representation theory**: the study of how abstract groups act on vector spaces. These notes develop the key ideas from the ground up, with an emphasis on physical applications. We assume familiarity with linear algebra and basic quantum mechanics, but not with abstract algebra.
+
+---
+
+## Groups: Definitions and Examples
+
+A **group** $G$ is a set equipped with a binary operation $\cdot : G \times G \to G$ satisfying:
+
+1. **Associativity:** $(g_1 \cdot g_2) \cdot g_3 = g_1 \cdot (g_2 \cdot g_3)$ for all $g_1, g_2, g_3 \in G$.
+2. **Identity:** There exists $e \in G$ such that $e \cdot g = g \cdot e = g$ for all $g$.
+3. **Inverses:** For every $g \in G$, there exists $g^{-1} \in G$ with $g \cdot g^{-1} = g^{-1} \cdot g = e$.
+
+If additionally $g_1 \cdot g_2 = g_2 \cdot g_1$ for all elements, the group is **abelian**.
+
+**Examples in physics:**
+
+- $\mathbb{Z}_n$: cyclic group of order $n$; discrete rotational symmetry of a regular polygon.
+- $S_n$: the symmetric group on $n$ objects; permutation symmetry of identical particles.
+- $SO(3)$: the rotation group in three dimensions; symmetry of rotationally invariant Hamiltonians.
+- $SU(2)$: the double cover of $SO(3)$; the natural symmetry group for spin.
+- $SU(3)$: the gauge group of QCD; its representation theory organizes the hadron spectrum.
+
+### Homomorphisms
+
+A **group homomorphism** $\phi: G \to H$ is a map respecting the group structure: $\phi(g_1 \cdot g_2) = \phi(g_1) \cdot \phi(g_2)$. An **isomorphism** is a bijective homomorphism. The kernel $\ker(\phi) = \{g \in G : \phi(g) = e_H\}$ is always a normal subgroup of $G$.
+
+---
+
+## Representations
+
+### Definition
+
+A **representation** of a group $G$ on a vector space $V$ is a homomorphism
+$$
+D: G \to GL(V),
+$$
+where $GL(V)$ is the group of invertible linear maps on $V$. That is, to each group element $g$ we assign an invertible matrix $D(g)$ such that
+$$
+D(g_1) D(g_2) = D(g_1 g_2), \qquad D(e) = \mathbb{I}.
+$$
+
+The **dimension** of the representation is $\dim V$.
+
+**Unitary representations.** In quantum mechanics, we want the symmetry transformations to preserve inner products, so we require $D(g)$ to be unitary: $D(g)^\dagger D(g) = \mathbb{I}$. For compact groups and finite groups, every representation is equivalent to a unitary one (by averaging over the group).
+
+### Reducible and irreducible representations
+
+A representation $D$ on $V$ is **reducible** if there exists a proper subspace $W \subset V$ that is invariant under all $D(g)$: $D(g)W \subseteq W$ for all $g \in G$. If no such subspace exists, the representation is **irreducible** (an **irrep**).
+
+For unitary representations, reducibility implies **complete reducibility**: if $W$ is invariant, then so is $W^\perp$, and the representation decomposes as $V = W \oplus W^\perp$. Iterating, any unitary representation of a finite or compact group decomposes into a direct sum of irreps:
+$$
+V = \bigoplus_{\alpha} n_\alpha \, V_\alpha,
+$$
+where $V_\alpha$ ranges over the distinct irreps and $n_\alpha$ is the multiplicity of $V_\alpha$.
+
+---
+
+## Schur's Lemma
+
+Schur's lemma is the single most important result in representation theory. It comes in two parts.
+
+### Statement
+
+**Part 1.** Let $D_1: G \to GL(V_1)$ and $D_2: G \to GL(V_2)$ be irreducible representations, and let $A: V_1 \to V_2$ be a linear map satisfying
+$$
+A \, D_1(g) = D_2(g) \, A \qquad \text{for all } g \in G.
+$$
+Then either $A = 0$ or $A$ is an isomorphism (and in particular $\dim V_1 = \dim V_2$).
+
+**Part 2.** If $D: G \to GL(V)$ is an irreducible representation over $\mathbb{C}$, and $A: V \to V$ satisfies $A \, D(g) = D(g) \, A$ for all $g$, then $A = \lambda \mathbb{I}$ for some $\lambda \in \mathbb{C}$.
+
+### Proof sketch
+
+**Part 1.** Consider $\ker(A) \subseteq V_1$. For any $v \in \ker(A)$ and any $g \in G$:
+$$
+A(D_1(g)v) = D_2(g)(Av) = D_2(g) \cdot 0 = 0,
+$$
+so $D_1(g)v \in \ker(A)$. Thus $\ker(A)$ is a $G$-invariant subspace of $V_1$. Since $V_1$ is irreducible, either $\ker(A) = V_1$ (so $A = 0$) or $\ker(A) = \{0\}$ (so $A$ is injective).
+
+Similarly, $\mathrm{im}(A) \subseteq V_2$ is $G$-invariant. Since $V_2$ is irreducible, either $\mathrm{im}(A) = \{0\}$ (so $A = 0$) or $\mathrm{im}(A) = V_2$ (so $A$ is surjective).
+
+Combining: $A$ is either zero or an isomorphism. $\blacksquare$
+
+**Part 2.** Since we are over $\mathbb{C}$, $A$ has at least one eigenvalue $\lambda$. The operator $A - \lambda\mathbb{I}$ commutes with all $D(g)$ (since $A$ and $\mathbb{I}$ both do) and has a non-trivial kernel (the $\lambda$-eigenspace). By Part 1, $A - \lambda\mathbb{I}$ must be zero. Hence $A = \lambda\mathbb{I}$. $\blacksquare$
+
+### Physical consequence: why symmetry implies degeneracy
+
+Part 2 of Schur's lemma has an immediate and profound physical consequence. Suppose the Hamiltonian $H$ commutes with all elements of a symmetry group $G$:
+$$
+[H, D(g)] = 0 \qquad \text{for all } g \in G.
+$$
+
+Consider an energy eigenspace $V_E = \{|\psi\rangle : H|\psi\rangle = E|\psi\rangle\}$. Since $[H, D(g)] = 0$, the eigenspace $V_E$ is $G$-invariant and carries a representation of $G$. If this representation is irreducible with dimension $d$, then Schur's lemma tells us:
+
+> Any operator commuting with all $D(g)$ acts as a scalar on $V_E$.
+
+In particular, $H$ acts as the scalar $E$ on the entire $d$-dimensional space. **The degeneracy of the energy level $E$ is at least the dimension of the irreducible representation.** This degeneracy is exact and does not require any perturbative or approximate reasoning --- it follows purely from the symmetry.
+
+Conversely, if we observe a $d$-fold degeneracy in a system with symmetry group $G$, we know the degenerate states must transform as an irrep of $G$ with dimension $d$. This is why representation theory is the natural language for organizing quantum mechanical spectra.
+
+---
+
+## SU(2) and Angular Momentum
+
+### The algebra
+
+The group $SU(2)$ is the most important symmetry group in quantum mechanics. Its Lie algebra $\mathfrak{su}(2)$ is spanned by the angular momentum operators $J_x, J_y, J_z$ satisfying
+$$
+[J_i, J_j] = i \epsilon_{ijk} J_k.
+$$
+
+The **Casimir operator** $\mathbf{J}^2 = J_x^2 + J_y^2 + J_z^2$ commutes with all $J_i$ and therefore, by Schur's lemma, acts as a scalar on each irrep.
+
+### Irreducible representations
+
+The irreps of $SU(2)$ are labeled by $j = 0, \frac{1}{2}, 1, \frac{3}{2}, 2, \ldots$ and have dimension $2j+1$. Within the irrep labeled by $j$, the states are $|j, m\rangle$ with $m = -j, -j+1, \ldots, j-1, j$, and the operators act as:
+$$
+\mathbf{J}^2 |j,m\rangle = j(j+1)|j,m\rangle, \qquad J_z |j,m\rangle = m|j,m\rangle,
+$$
+$$
+J_\pm |j,m\rangle = \sqrt{j(j+1) - m(m \pm 1)} \, |j, m \pm 1\rangle,
+$$
+where $J_\pm = J_x \pm iJ_y$ are the raising and lowering operators.
+
+**Integer $j$:** These correspond to genuine representations of $SO(3)$ (the rotation group). They describe orbital angular momentum.
+
+**Half-integer $j$:** These are **projective representations** of $SO(3)$ (or equivalently, genuine representations of $SU(2)$, the double cover). They describe spin. Under a $2\pi$ rotation, a state with half-integer $j$ picks up a factor of $(-1)$, which is invisible in expectation values but detectable in interference experiments.
+
+### Angular momentum addition
+
+The problem of adding angular momenta --- combining two systems with spins $j_1$ and $j_2$ --- is the problem of decomposing the tensor product $j_1 \otimes j_2$ into irreps.
+
+**Clebsch--Gordan decomposition:**
+$$
+j_1 \otimes j_2 = |j_1 - j_2| \;\oplus\; (|j_1 - j_2| + 1) \;\oplus\; \cdots \;\oplus\; (j_1 + j_2).
+$$
+
+The total angular momentum $J$ ranges from $|j_1 - j_2|$ to $j_1 + j_2$ in integer steps, and each value appears exactly once. The change-of-basis coefficients are the **Clebsch--Gordan coefficients**:
+$$
+|J, M\rangle = \sum_{m_1 + m_2 = M} \langle j_1, m_1; j_2, m_2 | J, M\rangle \, |j_1, m_1\rangle \otimes |j_2, m_2\rangle.
+$$
+
+**Dimension check:** $\sum_{J=|j_1-j_2|}^{j_1+j_2}(2J+1) = (2j_1+1)(2j_2+1)$, confirming the decomposition accounts for all states.
+
+**Example:** Two spin-$1/2$ particles. $\frac{1}{2} \otimes \frac{1}{2} = 0 \oplus 1$. The triplet ($J=1$, three states: $|1,1\rangle, |1,0\rangle, |1,-1\rangle$) and the singlet ($J=0$, one state: $|0,0\rangle = \frac{1}{\sqrt{2}}(|\!\uparrow\downarrow\rangle - |\!\downarrow\uparrow\rangle)$). The $4 = 3 + 1$ decomposition is the starting point for understanding the helium atom, the deuteron, and countless other two-particle systems.
+
+---
+
+## The Wigner-Eckart Theorem
+
+The Wigner-Eckart theorem is one of the most powerful consequences of rotational symmetry in quantum mechanics. It factorizes the matrix elements of any operator that transforms in a definite way under rotations into a geometric part (a Clebsch-Gordan coefficient that encodes the angular momentum coupling) and a dynamical part (a reduced matrix element that encodes the physics specific to the system).
+
+### Spherical tensor operators
+
+An operator $T^{(k)}_q$ (with $q = -k, -k+1, \ldots, k$) is called a **spherical tensor operator of rank $k$** if it transforms under rotations in the same way as the angular momentum eigenstates $|k, q\rangle$. Precisely, this means it satisfies the commutation relations
+$$
+[J_z, T^{(k)}_q] = q \, T^{(k)}_q, \qquad [J_\pm, T^{(k)}_q] = \sqrt{k(k+1) - q(q \pm 1)} \; T^{(k)}_{q \pm 1}.
+$$
+
+These relations say that the $(2k+1)$ components $\{T^{(k)}_q\}$ transform among themselves under rotations exactly as an irrep of spin $k$. Equivalently, under a finite rotation $R$ implemented by the unitary operator $\mathcal{D}(R)$,
+$$
+\mathcal{D}(R) \, T^{(k)}_q \, \mathcal{D}(R)^\dagger = \sum_{q'} D^{(k)}_{q'q}(R) \; T^{(k)}_{q'},
+$$
+where $D^{(k)}_{q'q}(R)$ are the Wigner $D$-matrix elements.
+
+**Examples of spherical tensor operators:**
+
+- **Rank 0 ($k=0$):** A scalar operator, e.g., $\mathbf{J}^2$ or the Hamiltonian of a rotationally invariant system. It has a single component $T^{(0)}_0$ that commutes with all $J_i$.
+- **Rank 1 ($k=1$):** A vector operator, e.g., the position operator $\hat{\mathbf{r}}$ or the electric dipole operator. The spherical components are $T^{(1)}_0 = z$ and $T^{(1)}_{\pm 1} = \mp(x \pm iy)/\sqrt{2}$.
+- **Rank 2 ($k=2$):** The electric quadrupole moment. Its five components are formed from the symmetric traceless combinations of the position coordinates.
+
+### Statement of the theorem
+
+The Wigner-Eckart theorem states that the matrix element of a spherical tensor operator between angular momentum eigenstates takes the factored form
+$$
+\langle j', m' | T^{(k)}_q | j, m \rangle = \langle j, m; k, q | j', m' \rangle \; \langle j' \| T^{(k)} \| j \rangle.
+$$
+
+Here $\langle j, m; k, q | j', m' \rangle$ is a Clebsch-Gordan coefficient and $\langle j' \| T^{(k)} \| j \rangle$ is the **reduced matrix element**. The key point is:
+
+> The reduced matrix element $\langle j' \| T^{(k)} \| j \rangle$ is independent of $m$, $m'$, and $q$.
+
+All dependence on the magnetic quantum numbers is carried entirely by the Clebsch-Gordan coefficient, which is a purely kinematic quantity determined by the geometry of angular momentum coupling. The reduced matrix element encodes the dynamical information specific to the physical system --- the radial wavefunctions, the interaction strength, and so forth.
+
+### Physical consequences
+
+**Separation of geometry from dynamics.** The theorem tells us that among the $(2j+1)(2k+1)$ matrix elements $\langle j', m' | T^{(k)}_q | j, m \rangle$ (for fixed $j$, $j'$, and $k$ but varying $m$, $m'$, $q$), all are proportional to a single number: the reduced matrix element. The relative magnitudes of different matrix elements are fixed by group theory alone. Only the overall scale requires a dynamical calculation.
+
+**Selection rules.** The Clebsch-Gordan coefficient $\langle j, m; k, q | j', m' \rangle$ vanishes unless two conditions are met:
+
+1. **Magnetic selection rule:** $m' = m + q$, i.e., $\Delta m = q$.
+2. **Triangle rule:** $|j - k| \leq j' \leq j + k$.
+
+If either condition fails, the matrix element is exactly zero regardless of the dynamics. These selection rules are a direct consequence of the representation theory of $SU(2)$.
+
+### Example: electric dipole transitions in hydrogen
+
+The electric dipole operator is the position vector $\hat{\mathbf{r}}$, which is a rank-1 spherical tensor: $\hat{\mathbf{r}} \sim T^{(1)}$. The transition amplitude for a photon-induced transition between hydrogen states $|n, \ell, m\rangle$ and $|n', \ell', m'\rangle$ is proportional to
+$$
+\langle n', \ell', m' | T^{(1)}_q | n, \ell, m \rangle = \langle \ell, m; 1, q | \ell', m' \rangle \; \langle n', \ell' \| T^{(1)} \| n, \ell \rangle.
+$$
+
+The triangle rule for $k = 1$ requires $|\ell - 1| \leq \ell' \leq \ell + 1$, which gives the celebrated **electric dipole selection rule** $\Delta \ell = 0, \pm 1$. However, the case $\Delta \ell = 0$ is further excluded by parity (since $\hat{\mathbf{r}}$ is odd under parity and the parity of $|n, \ell, m\rangle$ is $(-1)^\ell$), leaving
+$$
+\Delta \ell = \pm 1, \qquad \Delta m = 0, \pm 1.
+$$
+
+The reduced matrix element $\langle n', \ell' \| T^{(1)} \| n, \ell \rangle$ involves the radial integral $\int_0^\infty R_{n'\ell'}(r) \, r \, R_{n\ell}(r) \, r^2 \, dr$, which must be computed from the hydrogen wavefunctions. But the selection rules on $\ell$ and $m$ --- which dictate which transitions are allowed at all --- follow from the Wigner-Eckart theorem without any knowledge of the radial wavefunctions.
+
+---
+
+## Selection Rules from Symmetry
+
+The Wigner-Eckart theorem provides selection rules for angular momentum. But the idea of deriving selection rules from representation theory is far more general and applies to any symmetry group.
+
+### The general principle
+
+Consider a matrix element $\langle f | \hat{O} | i \rangle$, where $|i\rangle$ transforms as an irrep $\Gamma_i$ of a symmetry group $G$, $|f\rangle$ transforms as $\Gamma_f$, and the operator $\hat{O}$ transforms as $\Gamma_O$. The integrand (more precisely, the quantity whose expectation value we compute) transforms as the tensor product representation
+$$
+\Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i.
+$$
+
+The matrix element vanishes unless this tensor product contains the **trivial (identity) representation** $\Gamma_0$ of $G$:
+$$
+\langle f | \hat{O} | i \rangle = 0 \quad \text{unless} \quad \Gamma_0 \subseteq \Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i.
+$$
+
+Equivalently, $\langle f | \hat{O} | i \rangle$ can be nonzero only if $\Gamma_f$ appears in the decomposition of $\Gamma_O \otimes \Gamma_i$. This is the **master selection rule** of representation theory. All concrete selection rules (for angular momentum, parity, crystal symmetry, and so on) are special cases.
+
+The reasoning is straightforward: if the integrand transforms nontrivially under some symmetry of the system, then the integral is mapped to a multiple of itself by that symmetry transformation. If the representation has no trivial component, the only consistent value for the integral is zero.
+
+### Parity selection rules
+
+**Parity** is the simplest example beyond angular momentum. The parity group $\mathbb{Z}_2 = \{e, P\}$ has two irreps: the even representation $\Gamma_+ $ (with $P \to +1$) and the odd representation $\Gamma_-$ (with $P \to -1$).
+
+An operator $\hat{O}$ has definite parity: $P \hat{O} P^{-1} = \pm \hat{O}$. Then $\hat{O}$ transforms as $\Gamma_+$ if it is even (a scalar or pseudovector under parity) or as $\Gamma_-$ if it is odd (a polar vector).
+
+The tensor product rule for $\mathbb{Z}_2$ is simply the multiplication of signs: $\Gamma_+ \otimes \Gamma_+ = \Gamma_+$, $\Gamma_+ \otimes \Gamma_- = \Gamma_-$, $\Gamma_- \otimes \Gamma_- = \Gamma_+$. The matrix element $\langle f | \hat{O} | i \rangle$ is nonzero only if $\Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i = \Gamma_+$ (the trivial representation). Since all irreps of $\mathbb{Z}_2$ are real, $\Gamma_f^* = \Gamma_f$. Therefore:
+
+- If $\hat{O}$ is **even** ($\Gamma_O = \Gamma_+$): the matrix element is nonzero only if $|i\rangle$ and $|f\rangle$ have the **same** parity.
+- If $\hat{O}$ is **odd** ($\Gamma_O = \Gamma_-$): the matrix element is nonzero only if $|i\rangle$ and $|f\rangle$ have **opposite** parity.
+
+For the electric dipole operator $\hat{\mathbf{r}}$, which is odd under parity, this immediately gives the parity selection rule: electric dipole transitions connect states of opposite parity. In atomic physics, this means $\Delta \ell = \text{odd}$, which (combined with the angular momentum triangle rule) restricts us to $\Delta \ell = \pm 1$.
+
+### Combining selection rules
+
+In practice, multiple symmetries act simultaneously, and the matrix element must satisfy the selection rules from each symmetry independently. For a rotationally invariant system with parity, the full selection rule for electric dipole transitions is:
+
+- From $SU(2)$: $|j - 1| \leq j' \leq j + 1$ and $\Delta m = q$.
+- From parity: $(-1)^{\ell'} = -(-1)^{\ell}$, i.e., $\Delta \ell = \text{odd}$.
+
+The intersection of these constraints gives the complete selection rule. The power of the representation-theoretic approach is that it reduces the question "which transitions are allowed?" to a problem of decomposing tensor products of representations --- a purely algebraic computation that requires no knowledge of wavefunctions or matrix elements.
+
+---
+
+## Character Theory
+
+### Characters as class functions
+
+The **character** of a representation $D$ evaluated at $g \in G$ is the trace:
+$$
+\chi_D(g) = \mathrm{Tr}[D(g)].
+$$
+
+Characters are **class functions**: they depend only on the conjugacy class of $g$, since $\mathrm{Tr}[D(hgh^{-1})] = \mathrm{Tr}[D(g)]$. Two representations are equivalent if and only if they have the same character.
+
+### Orthogonality relations
+
+For a finite group $G$, the characters of irreps satisfy the **great orthogonality theorem**:
+$$
+\frac{1}{|G|}\sum_{g \in G} \chi_\alpha(g)^* \, \chi_\beta(g) = \delta_{\alpha\beta},
+$$
+where $\alpha, \beta$ label irreps. This is an orthonormality relation on the space of class functions, with the inner product $\langle f_1, f_2\rangle = \frac{1}{|G|}\sum_g f_1(g)^* f_2(g)$.
+
+The number of distinct irreps equals the number of conjugacy classes. Their dimensions $d_\alpha$ satisfy
+$$
+\sum_\alpha d_\alpha^2 = |G|.
+$$
+
+**Example: $\mathbb{Z}_3$.** The group $\mathbb{Z}_3 = \{e, r, r^2\}$ (with $r^3 = e$) has three conjugacy classes (each element is its own class, since the group is abelian) and three one-dimensional irreps. Setting $\omega = e^{2\pi i/3}$, the characters are:
+
+| | $e$ | $r$ | $r^2$ |
+|---|---|---|---|
+| $\chi_0$ | $1$ | $1$ | $1$ |
+| $\chi_1$ | $1$ | $\omega$ | $\omega^2$ |
+| $\chi_2$ | $1$ | $\omega^2$ | $\omega$ |
+
+The orthogonality relations are easily verified. The decomposition formula tells us how many times irrep $\alpha$ appears in a given representation: $n_\alpha = \frac{1}{|G|}\sum_g \chi_\alpha(g)^* \chi(g)$.
+
+### Character table for $S_3$
+
+A more substantial example is the symmetric group $S_3$ on three objects, which is isomorphic to the point group $C_{3v}$ (the symmetry group of an equilateral triangle). This is the smallest non-abelian group and has order $|S_3| = 6$.
+
+**Conjugacy classes.** The six elements fall into three conjugacy classes:
+
+- $\{e\}$: the identity (1 element).
+- $\{(123), (132)\}$: the two 3-cycles, i.e., rotations by $120°$ and $240°$ (2 elements).
+- $\{(12), (13), (23)\}$: the three transpositions, i.e., reflections (3 elements).
+
+Since there are three conjugacy classes, there are exactly three irreducible representations. Their dimensions $d_1, d_2, d_3$ must satisfy $d_1^2 + d_2^2 + d_3^2 = 6$, which has the unique solution (up to ordering) $d_1 = 1, d_2 = 1, d_3 = 2$.
+
+The three irreps are:
+
+- $\Gamma_{\text{triv}}$ (dimension 1): the **trivial** representation, where every element maps to $+1$.
+- $\Gamma_{\text{sign}}$ (dimension 1): the **sign** (alternating) representation, where even permutations map to $+1$ and odd permutations map to $-1$.
+- $\Gamma_{\text{std}}$ (dimension 2): the **standard** representation, obtained from the natural 3-dimensional permutation representation by restricting to the 2-dimensional subspace orthogonal to the vector $(1, 1, 1)$.
+
+The complete character table is:
+
+| | $e$ (1) | $(123)$ (2) | $(12)$ (3) |
+|---|---|---|---|
+| $\Gamma_{\text{triv}}$ | $1$ | $1$ | $1$ |
+| $\Gamma_{\text{sign}}$ | $1$ | $1$ | $-1$ |
+| $\Gamma_{\text{std}}$ | $2$ | $-1$ | $0$ |
+
+The numbers in parentheses in the header row indicate the size of each conjugacy class.
+
+**Verifying orthogonality.** The orthogonality relation $\frac{1}{|G|}\sum_C |C| \, \chi_\alpha(C)^* \chi_\beta(C) = \delta_{\alpha\beta}$ can be checked explicitly. For example, taking $\alpha = \Gamma_{\text{sign}}$ and $\beta = \Gamma_{\text{std}}$:
+$$
+\frac{1}{6}\left[1 \cdot 1 \cdot 2 + 2 \cdot 1 \cdot (-1) + 3 \cdot (-1) \cdot 0\right] = \frac{1}{6}(2 - 2 + 0) = 0. \quad \checkmark
+$$
+
+**Decomposing a representation.** Suppose we have a 6-dimensional representation whose character is $\chi(e) = 6$, $\chi(123) = 0$, $\chi(12) = 2$. The multiplicity of each irrep is:
+$$
+n_{\text{triv}} = \frac{1}{6}(1 \cdot 6 + 2 \cdot 0 + 3 \cdot 2) = 2,
+$$
+$$
+n_{\text{sign}} = \frac{1}{6}(1 \cdot 6 + 2 \cdot 0 + 3 \cdot (-1) \cdot 2) = 0,
+$$
+$$
+n_{\text{std}} = \frac{1}{6}(1 \cdot 2 \cdot 6 + 2 \cdot (-1) \cdot 0 + 3 \cdot 0 \cdot 2) = 2.
+$$
+So the representation decomposes as $2\,\Gamma_{\text{triv}} \oplus 2\,\Gamma_{\text{std}}$, with total dimension $2 \cdot 1 + 2 \cdot 2 = 6$. $\checkmark$
+
+This procedure --- computing multiplicities via the decomposition formula using the character table --- works for any finite group representation and is the standard method for predicting how energy levels split when symmetry is reduced.
+
+---
+
+## Worked Examples
+
+### The hydrogen atom: SO(3) and accidental SO(4) symmetry
+
+The Coulomb Hamiltonian
+$$
+H = \frac{\mathbf{p}^2}{2m} - \frac{e^2}{r}
+$$
+is invariant under $SO(3)$ rotations. Therefore, by the representation theory of $SO(3)$, each energy level must form an irrep (or direct sum of irreps) of $SO(3)$. The angular momentum quantum number $\ell$ labels the irrep, and states with a given $\ell$ are $(2\ell+1)$-fold degenerate.
+
+But the hydrogen atom has a larger degeneracy than $SO(3)$ alone requires. For principal quantum number $n$, the states with $\ell = 0, 1, \ldots, n-1$ are **all degenerate**, giving a total degeneracy of $n^2$ (ignoring spin). This is not explained by rotational symmetry --- it is an **accidental degeneracy** arising from a hidden **SO(4) symmetry**.
+
+The additional symmetry is generated by the **Laplace--Runge--Lenz vector**
+$$
+\mathbf{A} = \frac{1}{2m}(\mathbf{p} \times \mathbf{L} - \mathbf{L} \times \mathbf{p}) - \frac{e^2 \mathbf{r}}{r},
+$$
+which satisfies $[H, \mathbf{A}] = 0$. Together with $\mathbf{L}$, the components of $\mathbf{A}$ (suitably normalized on a fixed energy shell) generate an $\mathfrak{so}(4) \cong \mathfrak{su}(2) \oplus \mathfrak{su}(2)$ algebra. The bound states at energy $E_n$ transform as the $(j, j)$ representation of $SU(2) \times SU(2)$ with $j = (n-1)/2$, which has dimension $(2j+1)^2 = n^2$. This completely explains the observed degeneracy.
+
+This is a beautiful example of how group theory reveals hidden structure: the "accidental" degeneracy is not accidental at all, but a consequence of an enhanced symmetry specific to the $1/r$ potential.
+
+### The harmonic oscillator: SU(N) symmetry
+
+The $N$-dimensional isotropic harmonic oscillator
+$$
+H = \frac{\mathbf{p}^2}{2m} + \frac{1}{2}m\omega^2 \mathbf{r}^2 = \sum_{i=1}^{N}\hbar\omega\left(a_i^\dagger a_i + \frac{1}{2}\right)
+$$
+has energy levels $E_n = \hbar\omega(n + N/2)$. The degeneracy of the $n$-th level is $\binom{n+N-1}{N-1}$, which grows as a polynomial in $n$.
+
+The symmetry group is $SU(N)$. The generators are the $N^2 - 1$ bilinear operators $a_i^\dagger a_j - \frac{1}{N}\delta_{ij}\hat{n}$ (traceless combinations), which all commute with $H$. The states at level $n$ transform as the **completely symmetric** representation of $SU(N)$ with $n$ indices, which has dimension $\binom{n+N-1}{N-1}$.
+
+For $N = 3$, this is $SU(3)$, and the level-$n$ degeneracy is $\frac{1}{2}(n+1)(n+2)$: 1, 3, 6, 10, 15, $\ldots$ The decomposition under the $SO(3)$ subgroup gives $\ell = n, n-2, n-4, \ldots, 0 \text{ or } 1$, recovering the familiar angular momentum content.
+
+### Crystal field splitting: branching rules from $SO(3)$ to $O_h$
+
+When an atom is placed in a crystal, the full $SO(3)$ rotational symmetry is broken to the **point group** $G$ of the crystal site. An atomic level that transformed as an irrep of $SO(3)$ with angular momentum $\ell$ (and degeneracy $2\ell+1$) now splits into irreps of $G$.
+
+The splitting is determined by **restricting** the $SO(3)$ representation to $G$ and decomposing it into irreps of $G$. This is called **subduction** or **branching**. The tool for computing these branching rules is the character: we evaluate the $SO(3)$ character $\chi^{(\ell)}(\theta) = \frac{\sin((2\ell+1)\theta/2)}{\sin(\theta/2)}$ on the conjugacy classes of $G$, then use the decomposition formula with the character table of $G$.
+
+**The octahedral group $O_h$.** The full octahedral group $O_h = O \times \{e, i\}$ includes inversions. The proper rotation subgroup $O$ has order 24, with five conjugacy classes: $\{e\}$, $\{6C_4\}$ (rotations by $\pm 90°$ about cube axes), $\{3C_4^2 = 3C_2\}$ (rotations by $180°$ about cube axes), $\{8C_3\}$ (rotations by $\pm 120°$ about body diagonals), and $\{6C_2'\}$ (rotations by $180°$ about face diagonals). Including inversion doubles the group to order 48 and introduces the gerade ($g$) and ungerade ($u$) labels.
+
+The irreps of $O$ (and their dimensions) are: $A_1$ (1), $A_2$ (1), $E$ (2), $T_1$ (3), $T_2$ (3). With inversion, each acquires a $g/u$ subscript.
+
+**Branching rules for $\ell = 0, 1, 2, 3$:**
+
+For **$\ell = 0$** ($s$-orbital, dimension 1): The $SO(3)$ character is $\chi^{(0)} = 1$ for all rotations. The only matching irrep of $O_h$ is the trivial representation:
+$$
+D^{(0)} \downarrow O_h = A_{1g}.
+$$
+The $s$-orbital is unsplit, as expected --- it is a singlet.
+
+For **$\ell = 1$** ($p$-orbital, dimension 3): The character values are $\chi^{(1)}(e) = 3$, $\chi^{(1)}(C_4) = 1$, $\chi^{(1)}(C_2) = -1$, $\chi^{(1)}(C_3) = 0$, $\chi^{(1)}(C_2') = -1$. Comparing with the $O$ character table, this matches $T_1$ exactly. Since $p$-orbitals are odd under parity ($(-1)^\ell = -1$):
+$$
+D^{(1)} \downarrow O_h = T_{1u}.
+$$
+The $p$-orbital remains unsplit in an octahedral field --- the three $p$-orbitals transform as a single irreducible triplet.
+
+For **$\ell = 2$** ($d$-orbital, dimension 5): The character values are $\chi^{(2)}(e) = 5$, $\chi^{(2)}(C_4) = -1$, $\chi^{(2)}(C_2) = 1$, $\chi^{(2)}(C_3) = -1$, $\chi^{(2)}(C_2') = 1$. Applying the decomposition formula:
+$$
+D^{(2)} \downarrow O_h = E_g \oplus T_{2g},
+$$
+where $E_g$ is 2-dimensional and $T_{2g}$ is 3-dimensional ($2 + 3 = 5$). This is the famous **$e_g$--$t_{2g}$ splitting** of crystal field theory.
+
+Physically, the $e_g$ orbitals are $d_{z^2}$ and $d_{x^2-y^2}$, which point directly toward the six ligands along the coordinate axes in an octahedral complex. The $t_{2g}$ orbitals are $d_{xy}$, $d_{xz}$, and $d_{yz}$, which point between the ligands. The electrostatic repulsion from the ligands raises the energy of the $e_g$ orbitals relative to $t_{2g}$. The energy splitting $\Delta_{\text{oct}} = 10Dq$ depends on the ligand field strength, but the pattern of splitting into a doublet and a triplet is dictated purely by group theory.
+
+For **$\ell = 3$** ($f$-orbital, dimension 7): The character values are $\chi^{(3)}(e) = 7$, $\chi^{(3)}(C_4) = -1$, $\chi^{(3)}(C_2) = -1$, $\chi^{(3)}(C_3) = 1$, $\chi^{(3)}(C_2') = 1$. Decomposing:
+$$
+D^{(3)} \downarrow O_h = A_{2u} \oplus T_{1u} \oplus T_{2u},
+$$
+giving $1 + 3 + 3 = 7$. The $f$-shell splits into a singlet and two triplets.
+
+**Summary of branching rules:**
+
+| $\ell$ | $SO(3)$ dim | $O_h$ decomposition | Dimensions |
+|---|---|---|---|
+| 0 | 1 | $A_{1g}$ | 1 |
+| 1 | 3 | $T_{1u}$ | 3 |
+| 2 | 5 | $E_g \oplus T_{2g}$ | 2 + 3 |
+| 3 | 7 | $A_{2u} \oplus T_{1u} \oplus T_{2u}$ | 1 + 3 + 3 |
+
+These branching rules are computed using the character tables of $O_h$ and the decomposition formula. They are tabulated in standard references and are essential tools in spectroscopy, transition metal chemistry, and condensed matter physics. The $e_g$--$t_{2g}$ splitting of $d$-orbitals, in particular, governs the electronic structure and magnetic properties of transition metal complexes: it determines the crystal field stabilization energy, controls whether a complex is high-spin or low-spin, and explains the colors of coordination compounds through $d$--$d$ transitions.
+
+---
+
+## Point Groups and Space Groups
+
+### Point groups
+
+A **point group** is a finite subgroup of $O(3)$ that leaves at least one point fixed. The crystallographic point groups --- those compatible with a lattice --- number 32 in three dimensions. They are classified as:
+
+- **Cyclic groups** $C_n$: $n$-fold rotation axis.
+- **Dihedral groups** $D_n$: $n$-fold axis plus $n$ perpendicular 2-fold axes.
+- **Cubic groups** $T$, $O$, $T_d$, $T_h$, $O_h$: the symmetries of the tetrahedron and octahedron/cube.
+- Various extensions with improper rotations (reflections, inversions).
+
+The representation theory of these finite groups is well-developed: each has a finite character table, and all irreps can be explicitly constructed. The branching rules from $SO(3)$ to any point group are tabulated and allow immediate prediction of crystal field splittings.
+
+### Beyond point groups: space groups and band theory
+
+In a periodic solid, the full symmetry is a **space group**: a point group combined with translations. The representation theory of space groups leads to **Bloch's theorem** (states are labeled by crystal momentum $\mathbf{k}$) and the classification of **band structures**. The irreps of the little group at each high-symmetry point in the Brillouin zone determine the allowed band degeneracies and crossings. This is the group-theoretic foundation of topological band theory.
+
+---
+
+## Summary
+
+The key takeaways:
+
+1. **Symmetries of $H$ organize the spectrum.** If $[H, D(g)] = 0$ for all $g \in G$, energy eigenspaces carry representations of $G$.
+
+2. **Schur's lemma implies degeneracy.** Irreducible representations cannot be split by any operator commuting with $G$, so the dimension of the irrep is a lower bound on the degeneracy.
+
+3. **$SU(2)$ irreps** are labeled by $j$ with dimension $2j+1$. This explains the $2\ell+1$ degeneracy of angular momentum multiplets and the rules for adding angular momenta.
+
+4. **The Wigner-Eckart theorem** factorizes matrix elements into geometry (Clebsch-Gordan coefficients) and dynamics (reduced matrix elements), yielding selection rules from representation theory alone.
+
+5. **Selection rules from symmetry** follow from the general principle: $\langle f | \hat{O} | i \rangle = 0$ unless $\Gamma_f^* \otimes \Gamma_O \otimes \Gamma_i$ contains the trivial representation. This unifies angular momentum and parity selection rules.
+
+6. **Accidental degeneracies** signal hidden symmetries: $SO(4)$ in hydrogen, $SU(N)$ in the isotropic oscillator.
+
+7. **Symmetry breaking** (e.g., by a crystal field) splits multiplets according to branching rules that are determined entirely by the group-subgroup relationship. The $e_g$--$t_{2g}$ splitting of $d$-orbitals in an octahedral field is a prime example.
+
+---
+
+## Related Notes
+
+- [Quantum Information and Computation](quantum-information.qmd) --- entanglement, quantum channels, and the role of symmetry in quantum error correction
+- [2D CFT, Orbifolding, and the Swampland](2d-cft-swampland.qmd) --- representation theory of the Virasoro algebra, modular symmetry, and orbifolding by discrete groups
+
+---
+
+## References
+
+1. H. Georgi, *Lie Algebras in Particle Physics: From Isospin to Unified Theories*, 2nd edition (Westview Press, 1999). An excellent physics-oriented treatment of representation theory.
+
+2. M. Tinkham, *Group Theory and Quantum Mechanics* (McGraw-Hill, 1964; Dover reprint, 2003). The classic reference for point groups, crystal field theory, and molecular symmetry.
+
+3. J. J. Sakurai and J. Napolitano, *Modern Quantum Mechanics*, 3rd edition (Cambridge University Press, 2021). Chapters 3 and 4 cover angular momentum and symmetry in quantum mechanics.
+
+4. W. Miller, *Symmetry Groups and Their Applications* (Academic Press, 1972).
+
+5. M. S. Dresselhaus, G. Dresselhaus, and A. Jorio, *Group Theory: Application to the Physics of Condensed Matter* (Springer, 2008). Comprehensive treatment of point groups, space groups, and applications to solid-state physics.
+
+6. R. Gilmore, *Lie Groups, Lie Algebras, and Some of Their Applications* (Dover, 2005). Accessible introduction to continuous groups with many physics applications.
+
+7. B. G. Wybourne, *Classical Groups for Physicists* (Wiley, 1974). Detailed treatment of the representation theory of classical Lie groups.

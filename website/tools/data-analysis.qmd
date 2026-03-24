@@ -1,0 +1,269 @@
+---
+title: "Data Analysis for Monte Carlo"
+subtitle: "Autocorrelation, binning, and practical workflows"
+description: "Estimating autocorrelation times, binning analysis, and the practical workflow from raw Monte Carlo data to publication-quality results."
+author: "Ajit Kumar Sorout"
+date: 2026-03-23
+date-modified: last-modified
+sidebar: tools-sidebar
+toc: true
+toc-depth: 3
+code-fold: false
+---
+
+This page covers the practical workflow for analyzing Monte Carlo simulation data: estimating autocorrelation times, determining thermalization, and producing reliable results with error bars. For error estimation methods (bootstrap, jackknife, blocking), see [Monte Carlo Error Analysis](monte-carlo-errors.qmd).
+
+## Thermalization
+
+The first task after running a simulation is determining how much of the initial data to discard. The Markov chain needs time to "forget" its initial configuration and reach equilibrium.
+
+### Visual Inspection
+
+Plot the time series of energy (or other observables) and look for the initial transient:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_thermalization(data, observable_name="Energy"):
+    """Plot time series to identify thermalization."""
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
+
+    # Full time series
+    ax1.plot(data, linewidth=0.5)
+    ax1.set_xlabel("MC step")
+    ax1.set_ylabel(observable_name)
+    ax1.set_title("Full time series")
+
+    # Running mean
+    window = max(len(data) // 100, 10)
+    running_mean = np.convolve(data, np.ones(window)/window, mode='valid')
+    ax2.plot(running_mean)
+    ax2.set_xlabel("MC step")
+    ax2.set_ylabel(f"Running mean ({window}-step window)")
+    ax2.set_title("Running mean")
+
+    plt.tight_layout()
+    return fig
+```
+
+**Rule of thumb**: discard at least $10\tau_{\mathrm{int}}$ steps from the beginning. If in doubt, discard more — the cost of throwing away good data is small compared to the bias from including non-equilibrated data.
+
+### Quantitative Test
+
+Compare the mean of the first half of the (post-thermalization) data to the second half. If they differ by more than $2\sigma$, you may not have thermalized.
+
+## Autocorrelation Function
+
+The normalized autocorrelation function quantifies how quickly the Markov chain decorrelates:
+$$
+C(t) = \frac{\langle O_i O_{i+t} \rangle - \langle O \rangle^2}{\langle O^2 \rangle - \langle O \rangle^2}
+$$
+
+By definition, $C(0) = 1$ and $C(t) \to 0$ as $t \to \infty$.
+
+### Python Implementation
+
+```python
+def autocorrelation_function(data, max_lag=None):
+    """
+    Compute the normalized autocorrelation function.
+
+    Uses numpy's correlate for efficiency.
+    """
+    n = len(data)
+    if max_lag is None:
+        max_lag = n // 4
+
+    # Center the data
+    d = data - np.mean(data)
+    var = np.var(data)
+
+    if var < 1e-15:
+        return np.zeros(max_lag)
+
+    # Compute autocorrelation using FFT (much faster for large datasets)
+    # Pad to avoid circular correlation artifacts
+    padded = np.zeros(2 * n)
+    padded[:n] = d
+    fft_d = np.fft.fft(padded)
+    acf_full = np.fft.ifft(fft_d * np.conj(fft_d)).real[:n]
+
+    # Normalize
+    acf = acf_full / acf_full[0]
+
+    return acf[:max_lag]
+```
+
+### Julia Implementation
+
+```julia
+using FFTW, Statistics
+
+function autocorrelation_function(data::Vector{Float64}; max_lag=nothing)
+    n = length(data)
+    if max_lag === nothing
+        max_lag = n ÷ 4
+    end
+
+    d = data .- mean(data)
+    v = var(data)
+    v < 1e-15 && return zeros(max_lag)
+
+    # FFT-based autocorrelation
+    padded = zeros(2n)
+    padded[1:n] = d
+    fft_d = fft(padded)
+    acf_full = real.(ifft(fft_d .* conj.(fft_d)))[1:n]
+    acf = acf_full ./ acf_full[1]
+
+    return acf[1:min(max_lag, n)]
+end
+```
+
+## Integrated Autocorrelation Time
+
+The **integrated autocorrelation time** determines the effective number of independent measurements:
+$$
+\tau_{\mathrm{int}} = \frac{1}{2} + \sum_{t=1}^{\infty} C(t)
+$$
+
+The true error of the mean is:
+$$
+\sigma_{\bar{O}} = \sqrt{\frac{2\tau_{\mathrm{int}} \cdot \mathrm{Var}(O)}{M}}
+$$
+
+### Automatic Windowing
+
+The sum for $\tau_{\mathrm{int}}$ must be truncated because $C(t)$ becomes noisy at large $t$. The standard approach (Madras & Sokal, 1988) is to cut off when $t > c \cdot \tau_{\mathrm{int}}$, with $c \approx 6$:
+
+```python
+def integrated_autocorrelation_time(data, c=6.0, max_lag=None):
+    """
+    Estimate the integrated autocorrelation time with automatic windowing.
+
+    Uses the Madras-Sokal automatic windowing procedure:
+    truncate the sum when t > c * tau_int(t).
+
+    Parameters
+    ----------
+    data : array
+        Time series of measurements.
+    c : float
+        Windowing constant (default 6.0, following Wolff 2004).
+
+    Returns
+    -------
+    tau_int : float
+        Integrated autocorrelation time.
+    tau_int_err : float
+        Estimated error on tau_int.
+    """
+    acf = autocorrelation_function(data, max_lag=max_lag)
+
+    tau = 0.5
+    for t in range(1, len(acf)):
+        tau += acf[t]
+        # Automatic windowing: stop when t > c * tau
+        if t >= c * tau:
+            break
+
+    # Error estimate (from Wolff 2004)
+    n = len(data)
+    tau_err = tau * np.sqrt((2 * (2*t + 1)) / n)
+
+    return tau, tau_err
+```
+
+### What $\tau_{\mathrm{int}}$ Tells You
+
+- **Effective independent measurements**: $M_{\mathrm{eff}} = M / (2\tau_{\mathrm{int}})$
+- **Block size for error analysis**: Use blocks of size $\geq 2\tau_{\mathrm{int}}$
+- **Algorithm quality**: $\tau_{\mathrm{int}} \sim L^z$ near criticality. Smaller $z$ = better algorithm.
+- **Comparison**: For the 2D Ising model near $T_c$ on an $L=64$ lattice:
+  - Metropolis: $\tau_{\mathrm{int}} \sim 10^3$–$10^4$
+  - Wolff cluster: $\tau_{\mathrm{int}} \sim 1$–$10$
+
+## Complete Analysis Workflow
+
+Here is the full workflow from raw data to a final result with error bars:
+
+```python
+def full_mc_analysis(raw_data, thermalization_fraction=0.1, c_window=6.0):
+    """
+    Complete Monte Carlo data analysis pipeline.
+
+    Parameters
+    ----------
+    raw_data : array
+        Raw time series from simulation.
+    thermalization_fraction : float
+        Fraction of data to discard for thermalization.
+
+    Returns
+    -------
+    result : dict
+        Dictionary with mean, error, tau_int, n_eff, etc.
+    """
+    # Step 1: Discard thermalization
+    n_therm = int(len(raw_data) * thermalization_fraction)
+    data = raw_data[n_therm:]
+    n = len(data)
+
+    # Step 2: Estimate autocorrelation time
+    tau_int, tau_err = integrated_autocorrelation_time(data, c=c_window)
+    n_eff = n / (2 * tau_int)
+
+    # Step 3: Determine block size
+    block_size = max(int(np.ceil(2 * tau_int)), 1)
+
+    # Step 4: Compute mean and error via blocking
+    n_blocks = n // block_size
+    blocks = data[:n_blocks * block_size].reshape(n_blocks, block_size)
+    block_means = blocks.mean(axis=1)
+
+    mean_val = np.mean(block_means)
+    error = np.std(block_means, ddof=1) / np.sqrt(n_blocks)
+
+    return {
+        'mean': mean_val,
+        'error': error,
+        'tau_int': tau_int,
+        'tau_int_err': tau_err,
+        'n_total': n,
+        'n_effective': n_eff,
+        'block_size': block_size,
+        'n_blocks': n_blocks,
+        'thermalization_discarded': n_therm,
+    }
+
+
+# Usage example
+result = full_mc_analysis(energy_timeseries)
+print(f"Energy = {result['mean']:.6f} ± {result['error']:.6f}")
+print(f"tau_int = {result['tau_int']:.1f} ± {result['tau_int_err']:.1f}")
+print(f"Effective samples: {result['n_effective']:.0f} / {result['n_total']}")
+```
+
+## Finite-Size Scaling
+
+For studies near phase transitions, the final step is finite-size scaling analysis across multiple system sizes.
+
+### Binder Cumulant Crossing
+
+The Binder cumulant $U_4(T, L) = 1 - \langle m^4 \rangle / (3\langle m^2 \rangle^2)$ is dimensionless and crosses at $T_c$ for different system sizes. The crossing point gives $T_c$; the slope gives the exponent $\nu$.
+
+### Data Collapse
+
+Near $T_c$, observables satisfy scaling forms:
+$$
+O(T, L) = L^{x/\nu} f\left(L^{1/\nu}(T - T_c)\right)
+$$
+
+Plotting $L^{-x/\nu} O$ vs. $L^{1/\nu}(T - T_c)$ for the correct exponents should collapse data from all system sizes onto a single curve. The quality of collapse provides a check on both $T_c$ and the critical exponents.
+
+---
+
+*See also:* [Monte Carlo Error Analysis](monte-carlo-errors.qmd) for bootstrap, jackknife, and blocking implementations, and [Monte Carlo and Computational Statistical Physics](../notes/monte-carlo.qmd) for the physics background.
+
+*Reference:* U. Wolff, "Monte Carlo errors with less errors," Comp. Phys. Comm. **156**, 143 (2004) — the standard reference for autocorrelation time estimation.
