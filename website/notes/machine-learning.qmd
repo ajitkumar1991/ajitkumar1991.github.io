@@ -197,6 +197,26 @@ print(f"Output shape: {out.shape}")
 # Output shape: torch.Size([4, 20, 64])
 ```
 
+### Attention Variants
+
+The original scaled dot-product attention has spawned a family of variants, each addressing specific limitations:
+
+**Cross-attention** uses queries from one sequence and keys/values from another. In an encoder-decoder transformer, the decoder attends to encoder outputs via cross-attention: $Q$ comes from the decoder, while $K$ and $V$ come from the encoder. This is how the model routes information across modalities in vision-language models.
+
+**Sparse attention** (Child et al., 2019) restricts each token to attend only to a subset of other tokens — local windows, strided patterns, or learned patterns. This reduces the $O(n^2)$ cost to $O(n\sqrt{n})$ or $O(n \log n)$. The physics analogy: replacing an all-to-all (mean-field) interaction with a structured, local interaction — like going from an infinite-range Ising model to a finite-range one.
+
+**Linear attention** (Katharopoulos et al., 2020) rewrites $\text{softmax}(QK^T)V$ using the kernel trick. If $\text{softmax}(q \cdot k) \approx \phi(q) \cdot \phi(k)$ for some feature map $\phi$, then $\text{Attention} = \phi(Q)(\phi(K)^T V)$, which can be computed in $O(nd^2)$ instead of $O(n^2 d)$ by changing the order of multiplication. The cost is that the approximation is not exact.
+
+**FlashAttention** (Dao et al., 2022) does not change the mathematical operation — it computes exact attention — but restructures the computation to minimize memory transfers between GPU HBM and SRAM. By tiling the attention computation and fusing the softmax with the matrix multiply, it achieves 2-4x speedups. This is a hardware-aware optimization, analogous to how computational physicists restructure lattice calculations for cache efficiency.
+
+**Rotary position embeddings** (RoPE; Su et al., 2021) encode positions by rotating the query and key vectors in 2D subspaces:
+$$
+\text{RoPE}(x_m, m) = R_m x_m, \quad \text{where} \quad R_m = \begin{pmatrix} \cos m\theta & -\sin m\theta \\ \sin m\theta & \cos m\theta \end{pmatrix}
+$$
+applied blockwise to pairs of dimensions with geometrically spaced frequencies $\theta_i = 10000^{-2i/d}$. The dot product $\text{RoPE}(q_m) \cdot \text{RoPE}(k_n)$ depends only on $m - n$, naturally encoding relative positions. The rotation structure means positions are encoded on circles at different scales — the same geometric idea as sinusoidal encodings, but applied multiplicatively.
+
+For a comprehensive treatment of the architectures that preceded and led to the transformer, see [Deep Learning Architectures: From RNNs to Transformers](deep-learning-architectures.qmd). For how transformers are scaled to large language models, see [Large Language Models](large-language-models.qmd).
+
 ## Grokking: Delayed Generalization
 
 ### The Phenomenon
@@ -625,8 +645,12 @@ For a physicist learning ML, the recommendation is: do not treat these methods a
 
 ## Related Notes
 
+- [Deep Learning Architectures: From RNNs to Transformers](deep-learning-architectures.qmd) — The architectural evolution from perceptrons to transformers, including CNNs, RNNs, LSTMs, and attention variants
+- [Large Language Models](large-language-models.qmd) — Scaling laws, RLHF, emergent abilities, and the structure of modern LLMs
+- [Reinforcement Learning](reinforcement-learning.qmd) — Policy gradients, Q-learning, PPO, and the connection to RLHF
 - [Monte Carlo and Computational Statistical Physics](monte-carlo.qmd) — MCMC sampling methods that diffusion models and normalizing flows aim to improve upon
 - [Tensor Networks](tensor-networks.qmd) — Complementary approach to representing high-dimensional functions with controlled approximations
+- [Computational Methods Across Disciplines](computational-applications.qmd) — How ML and physics methods transfer to finance and data science
 
 ---
 

@@ -1,42 +1,118 @@
 ---
-title: "Publications"
-subtitle: "Papers, preprints, and presentations"
+title: "Publications & Presentations"
+subtitle: "Papers, talks, conferences, and schools"
 toc: true
+toc-depth: 2
 ---
 
-## Published
+## Refereed Publications
 
-1. B. Heidenreich, I. García-Etxebarria, M. Lotito, **A. K. Sorout**. *Lagrangian Descriptions of $\mathcal{N}=2$ SCFTs from Orientifolded Toric Singularities*. [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX)
+1. I. Garcia Etxebarria, B. Heidenreich, M. Lotito, **A. K. Sorout**.
+   *Deconfining $\mathcal{N}=2$ SCFTs, or the Art of Brane Bending.*
+   JHEP **03** (2022) 140.
+   [arXiv:2111.08022](https://arxiv.org/abs/2111.08022)
 
----
-
-## To Be Submitted
-
-2. B. Heidenreich, M. Lotito, **A. K. Sorout**. *$\mathcal{N}=1$ Flavor Orientifolds: Wilson Lines, Discrete Torsion, and S-Duality*. To be submitted.
-
-3. X. Wang, R. Zhang, **A. K. Sorout**. *Symmetry-Enriched Criticality and Boundary RG Flows in Interacting Majorana Chains*. To be submitted.
-
----
-
-## In Preparation
-
-4. B. Heidenreich, **A. K. Sorout**. *Quad-CFTs and Infrared Phases of Theories with Tensor Matter*. In preparation.
-
-5. B. Heidenreich, A. Pittman, **A. K. Sorout**. *Mirror Geometry and Moduli Structure of Quad-CFTs*. In preparation.
-
-6. B. Heidenreich, A. Pittman, **A. K. Sorout**. *Discrete Gaugings of 2D CFTs and the Weak Gravity Conjecture*. In preparation.
-
-7. N. Prokof'ev, W. Wei, **A. K. Sorout**. *Worm-Algorithm Monte Carlo for 3D Bose Gases with Long-Range Interactions*. In preparation.
+2. **A. K. Sorout**, S. Sarkar, S. Gangadharaiah.
+   *Dynamics of Impurity in the Sea of Dirac Fermions.*
+   Journal of Physics: Condensed Matter **32**, 415604 (2020).
 
 ---
 
-## Talks & Presentations
+## Manuscripts in Preparation
 
-- **Boundary RG Flows in Interacting Majorana Chains**
-  APS New England Section Meeting, October 2024
+3. **A. K. Sorout**, K. Wang, J. Zhang.
+   *Boundary RG Flow in Symmetry-Enriched Ising CFTs.*
+   Manuscript in preparation. Results presented at APS New England Meeting, Brown University (2025).
 
-- **Geometric Engineering of $\mathcal{N}=2$ SCFTs from Orientifolded Singularities**
-  Amherst Center for Fundamental Interactions seminar
+4. B. Heidenreich, **A. K. Sorout**.
+   *Deciphering IR Phases in 4d $\mathcal{N}=1$ $SU(N)$ Gauge Theories Using Quad-CFTs.*
+   Manuscript in preparation. Results presented at String Phenomenology 2025, Northeastern University, and at Prospects in Theoretical Physics, IAS Princeton (2023).
+
+5. B. Heidenreich, M. Lotito, **A. K. Sorout**.
+   *Flavor Orientifolds and S-Duality in 4d $\mathcal{N}=1$ SCFTs.*
+   Manuscript in preparation. Partial results presented at Strings, Fields, and Deep Learning (2024).
+
+6. **A. K. Sorout**, C. Wei, N. Prokof'ev *et al.*
+   *Superfluid Transition in a 3D Bose Gas with Long-Range Interactions.*
+   Manuscript in preparation.
+
+7. **A. K. Sorout**, C. Wei, N. Prokof'ev.
+   *Worm and Cluster Monte Carlo Algorithms for Long-Range Interactions.*
+   Manuscript in preparation.
+
+8. B. Heidenreich, N. Pittman, H. Rathanayak, **A. K. Sorout**.
+   *Orbifolding / Gauging Discrete Symmetries in 2d CFTs.*
+   Work in progress.
+
+9. B. Heidenreich, N. Pittman, **A. K. Sorout**.
+   *Quad-CFTs and Mirror Symmetry.*
+   Work in progress.
+
+---
+
+## Exploratory Research Directions
+
+These are emerging computational and theoretical interests at various stages of development --- not finished papers.
+
+- **Diffusion models and normalizing flows for sampling problems** --- exploring physics-informed generative models for lattice field theory and statistical mechanics, building on connections between score-based methods and Langevin dynamics.
+- **Symmetry-aware ML architectures** --- investigating how gauge invariance, translation symmetry, and other physical symmetries can be built into neural network architectures for physics applications.
+- **Tensor cross-interpolation** --- developing and applying TCI methods for efficient function approximation in high-dimensional spaces, particularly for quantum many-body observables.
+- **Measurement-induced phase transitions** --- early-stage computational investigations of entanglement transitions in monitored quantum circuits, connecting quantum information, error correction, and condensed matter physics.
+
+---
+
+## Talks and Presentations
+
+**String Phenomenology 2025**, Northeastern University, Boston, MA (2025)
+: *Deciphering IR Phases of $\mathcal{N}=1$ $SU(N)$ Gauge Theories Using Quad-CFTs.*
+  This talk focused on the infrared structure of supersymmetric gauge theories and the use of quad-CFT building blocks to understand strongly coupled phases, dual descriptions, and symmetry structure in 4d $\mathcal{N}=1$ theories.
+
+**APS New England Meeting**, Brown University, Providence, RI (2025)
+: *Boundary RG Flow in Symmetry-Enriched Ising CFTs.*
+  This talk presented work on boundary renormalization-group flow in symmetry-enriched Ising critical systems, with emphasis on universal scaling behavior, critical boundary physics, and numerical many-body methods.
+
+**Strings, Fields, and Deep Learning** (2024)
+: *Flavor Orientifolds and S-Duality in 4d $\mathcal{N}=1$ SCFTs.*
+  This talk discussed flavor orientifolds in string-theoretic constructions of 4d $\mathcal{N}=1$ superconformal field theories, and how discrete data, flavor branes, and duality structures organize families of strongly coupled theories.
+
+**Prospects in Theoretical Physics: Understanding Confinement**, IAS / Princeton, NJ (2023)
+: *Deciphering IR Phases of $\mathcal{N}=1$ $SU(N)$ Gauge Theories.*
+  This talk examined confinement, infrared dynamics, and phase structure in supersymmetric gauge theories, with a focus on how strongly coupled sectors help clarify nontrivial IR behavior.
+
+**APS April Meeting** (High Energy Physics), New York City, NY (2022)
+: *Deconfining $\mathcal{N}=2$ SCFTs, or the Art of Brane Bending.*
+  This talk presented work on strongly coupled $\mathcal{N}=2$ superconformal field theories, including brane constructions and deconfinement-inspired methods for obtaining useful Lagrangian descriptions.
+
+---
+
+## Conferences, Workshops, and Schools Attended
+
+**QNumerics: Numerical Methods in Quantum Information Science**, UMass Amherst (2025)
+: This program focused on modern numerical methods for quantum many-body and quantum information problems, including tensor-network methods, simulation tools, and computational approaches relevant to contemporary theoretical physics.
+
+**QNumerics: Numerical Methods in Quantum Information Science**, UMass Amherst, Mount Ida Campus (2024)
+: This school provided training in practical computational methods for quantum systems, including numerical simulation techniques, algorithmic methods, and modern computational workflows.
+
+**IAIFI Summer School and Workshop**, Cambridge, MA (2024)
+: This program explored the interface of artificial intelligence, machine learning, and fundamental physics, with exposure to data-driven methods and computational tools relevant to high-energy and theoretical physics.
+
+**Physics Summer Workshop**, Simons Center for Geometry and Physics (2024)
+: This workshop covered current topics in theoretical physics, including string theory, quantum field theory, geometry, and related mathematical structures.
+
+**IAIFI Summer School and Workshop**, Cambridge, MA (2023)
+: This school emphasized emerging machine-learning methods in fundamental physics, especially the growing interaction between AI tools and theoretical or high-energy physics problems.
+
+**Physics Summer Workshop**, Simons Center for Geometry and Physics (2023)
+: This workshop provided exposure to current problems in high-energy and mathematical physics through lectures and discussions with researchers across related areas.
+
+**String Data Workshop** (2023)
+: This workshop focused on computational and data-driven approaches in string theory and related fields, including modern machine-learning ideas applied to theoretical physics.
+
+**5d $\mathcal{N}=1$ SCFTs and Gauge Theories on Brane Webs**, Simons Center for Geometry and Physics (2022)
+: This focused workshop examined five-dimensional superconformal field theories, brane-web constructions, gauge-theory realizations, and associated geometric structures.
+
+**Theoretical Tests of the Swampland**, UMass Amherst (2019, 2024)
+: These workshops centered on swampland ideas, quantum gravity constraints, and consistency conditions for effective field theories arising from string theory.
 
 ---
 
@@ -44,3 +120,4 @@ toc: true
 
 - [Google Scholar](https://scholar.google.com/citations?user=mjxdcyMAAAAJ&hl=en)
 - [GitHub](https://github.com/ajitkumar1991)
+- [INSPIRE-HEP](https://inspirehep.net/authors/1831447)

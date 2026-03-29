@@ -1,7 +1,8 @@
 ---
 title: "On Being an Interdisciplinary Physicist"
-description: "Reflections on working at the intersection of string theory, condensed matter, and computation."
+description: "Reflections on working at the intersection of string theory, condensed matter, computation, machine learning, and quantum foundations."
 date: 2024-12-01
+date-modified: 2026-03-29
 categories: [personal]
 draft: false
 ---
@@ -12,11 +13,11 @@ I didn't have a good answer then. I'm not sure I have one now. But I've come to 
 
 ## The Traditional View
 
-Physics departments have tribes. String theorists talk to string theorists. Condensed matter folks go to their own conferences. Computational people are sometimes viewed as "merely" doing numerics rather than "real" theory.
+Physics departments have tribes. String theorists talk to string theorists. Condensed matter folks go to their own conferences. Computational people are sometimes viewed as "merely" doing numerics rather than "real" theory. Machine learning people are in a department down the hall. Quantum foundations is something you're supposed to get over by the end of your first year.
 
 These divisions made more sense historically. A PhD program was supposed to make you an expert in one thing. Depth over breadth. Master the tools of your subfield, make contributions, and eventually you'd be the world expert on some narrow topic.
 
-This still works—but I think the most exciting physics often happens at the boundaries.
+This still works --- but I think the most exciting physics often happens at the boundaries.
 
 ## Why I Wander
 
@@ -27,62 +28,67 @@ My path has been unusual:
 - Got curious about systems where we *can* compute and compare
 - Discovered that condensed matter has beautiful mathematical structures too
 - Found that numerical methods force you to really understand what's going on
-- Now interested in how ML connects to all of this
+- Started learning machine learning and found the same mathematical structures appearing: Langevin dynamics in diffusion models, phase transitions in learning (grokking), information geometry in optimization
+- Circled back to quantum foundations when measurement-induced phase transitions connected entanglement, error correction, and conformal field theory in a single problem
 
 Each transition felt like starting over. New literature, new conferences, new jargon. It's inefficient if your goal is maximizing publications.
 
-But I've found that ideas *transfer*. The RG ideas in string theory (holography, emergent space) connect to tensor networks and entanglement in condensed matter. Monte Carlo techniques from particle physics apply to quantum spin systems. And machine learning is injecting new ideas everywhere.
+But I've found that ideas *transfer*. The RG ideas in string theory (holography, emergent space) connect to tensor networks and entanglement in condensed matter. Monte Carlo techniques from particle physics apply to quantum spin systems. The same variational principles that underlie tensor network methods appear in normalizing flows and diffusion models. And the measurement problem --- which most physicists treat as settled philosophy --- turns out to generate genuine phase transitions when you take it seriously in many-body systems.
 
 ## Concrete Examples
 
 Some connections I've found valuable:
 
-**Brane tilings ↔ Dimer models**: Brane tilings in string theory are mathematically identical to dimer models studied in statistical mechanics. The string theorist's "perfect matching" is the condensed matter physicist's "dimer covering." Different motivation, same math.
+**Brane tilings ↔ Dimer models**: Brane tilings in string theory are mathematically identical to dimer models studied in statistical mechanics. The string theorist's "perfect matching" is the condensed matter physicist's "dimer covering." Different motivation, same math. I've used both perspectives in my [research on geometric engineering](../research.qmd).
 
-**Conformal field theory**: CFT appears everywhere—at critical points in condensed matter, on the worldsheet in string theory, as the boundary theory in AdS/CFT. Learning it once pays dividends across subfields.
+**Conformal field theory**: CFT appears everywhere --- at critical points in condensed matter, on the worldsheet in string theory, as the boundary theory in AdS/CFT, at the measurement-induced phase transition in monitored quantum circuits. Learning it once pays dividends across subfields.
 
-**Entanglement**: Originally a quantum information concept, now central to understanding holography, area laws, and topological order. It bridges communities.
+**Entanglement**: Originally a quantum information concept, now central to understanding holography, area laws, topological order, and the structure of quantum error-correcting codes. The [tensor network](../notes/tensor-networks.qmd) formalism makes the connection between entanglement structure and computational tractability explicit.
 
-**Numerical methods**: String theorists are often allergic to numerics. But even "exact" string theory calculations require understanding what you're calculating and why. Numerics builds intuition.
+**Machine learning as statistical physics**: The loss landscape of a neural network *is* an energy landscape. SGD *is* Langevin dynamics at finite temperature. Grokking *is* a first-order phase transition. These aren't metaphors --- they're [precise mathematical mappings](../notes/machine-learning.qmd). Understanding them changes how you think about both fields.
+
+**Quantum foundations**: The [quantum eraser](../notes/quantum-foundations.qmd) and delayed-choice experiments are not just pedagogical curiosities. They reveal the information-theoretic structure of quantum mechanics. And when you put measurements and unitary evolution in competition in a many-body system, you get [measurement-induced phase transitions](../notes/measurement-induced-transitions.qmd) --- a genuine new universality class that connects quantum information, condensed matter, and statistical mechanics.
+
+**Numerical methods**: String theorists are often allergic to numerics. But even "exact" string theory calculations require understanding what you're calculating and why. Numerics builds intuition. And the computational methods themselves --- Monte Carlo, tensor networks, variational optimization --- have applications far beyond physics, in [finance, data science, and quantitative research](../notes/computational-applications.qmd).
 
 ## The Downsides
 
 I won't pretend it's all rosy:
 
 - **Jack of all trades**: I'm not the best at any single technique
-- **Publication pressure**: Interdisciplinary work can be harder to publish—it falls between stools
+- **Publication pressure**: Interdisciplinary work can be harder to publish --- it falls between stools
 - **Job market**: Search committees want to categorize you
 - **Impostor syndrome**: Always feeling like you don't know enough
+- **Keeping up**: When your reading list spans hep-th, cond-mat, stat-mech, cs.LG, and quant-ph, you are always behind
 
-The job market concern is real. When I apply for postdocs, I worry about being seen as unfocused. A string theory position wants someone who can hit the ground running on string amplitudes. A condensed matter position wants someone who knows DMRG inside out.
+The job market concern is real. When I apply for postdocs, I worry about being seen as unfocused. A string theory position wants someone who can hit the ground running on string amplitudes. A condensed matter position wants someone who knows DMRG inside out. A machine learning position wants publication records at NeurIPS.
 
-My hope is that there are PIs who value breadth, who want someone who can bridge subfields and bring fresh perspectives. They exist—I've met them. But they're not the majority.
+My hope is that there are PIs who value breadth, who want someone who can bridge subfields and bring fresh perspectives. They exist --- I've met them. But they're not the majority.
 
 ## Advice (to My Past Self)
 
 If you're a grad student contemplating an interdisciplinary path:
 
-1. **Have a home base**: Pick one area where you go deep. You need *some* expertise that's undeniable. Mine is probably geometric engineering—I know the string theory construction well.
+1. **Have a home base**: Pick one area where you go deep. You need *some* expertise that's undeniable. Mine is probably geometric engineering --- I know the string theory construction well.
 
-2. **Learn to translate**: Every subfield has jargon. Learning to speak multiple languages is valuable, but you have to actually learn them, not just hand-wave.
+2. **Learn to translate**: Every subfield has jargon. Learning to speak multiple languages is valuable, but you have to actually learn them, not just hand-wave. When I say "the MIPT is in a different universality class from percolation," that sentence needs to mean something precise to me.
 
-3. **Find bridges**: Look for problems where multiple perspectives help. Not "I'll do string theory on Monday and condensed matter on Tuesday" but genuine synthesis.
+3. **Find bridges**: Look for problems where multiple perspectives help. Not "I'll do string theory on Monday and condensed matter on Tuesday" but genuine synthesis. Generalized symmetries bridging high-energy and condensed matter is one such bridge. The physics of machine learning is another.
 
-4. **Don't apologize**: "I'm interested in many things" sounds weak. "I work on quantum systems using geometric and computational methods" sounds stronger. Frame your breadth as coherence.
+4. **Don't apologize**: "I'm interested in many things" sounds weak. "I work on strongly coupled quantum systems using geometric, computational, and machine learning methods" sounds stronger. Frame your breadth as coherence.
 
 5. **Find your people**: Interdisciplinary work is lonely if you're isolated. Find collaborators who appreciate boundary-crossing. They're out there.
+
+6. **Write it down**: Maintain technical notes on what you learn. It forces precision and creates a reference you'll use later. My [notes section](../notes/index.qmd) started as a way to organize my own understanding --- now it's a public resource.
 
 ## What I'm Excited About
 
 Looking forward, I see several areas where boundaries are blurring:
 
-- **Holography and condensed matter**: The tensor network / AdS connection is still mysterious
-- **ML and physics**: Not just "ML for simulations" but ML as a lens on physics
-- **Quantum information and high-energy**: Entanglement, complexity, and quantum gravity
-- **Mathematical physics**: Rigorous connections (not just analogies) between areas
+- **Generalized symmetries**: Higher-form, non-invertible, and categorical symmetries provide a common language for string theorists and condensed matter physicists. I want to realize these structures on the lattice using tensor networks.
+- **The physics of machine learning**: Not just "ML for simulations" but ML as a lens on physics --- and physics as a lens on ML. Scaling laws, phase transitions in learning, information geometry. This goes both ways.
+- **Measurement-induced phase transitions**: A topic that sits at the intersection of quantum information, condensed matter, and conformal field theory. The fact that monitoring a quantum system can drive a phase transition is profound and not yet fully understood.
+- **Quantum information and high-energy**: Entanglement, complexity, the black hole information problem, and the emerging role of quantum error correction in understanding spacetime.
+- **Computational methods beyond physics**: The skills we develop --- Monte Carlo sampling, tensor decomposition, variational optimization --- have applications in quantitative finance, drug discovery, and materials science. These aren't "lesser" applications; they're where the methods meet the world.
 
 Whether I end up in a traditional subfield or carve out a niche at the intersection, I'm grateful for the wandering. Physics is one subject, after all, even if we've divided it up.
-
----
-
-*Next post back to technical content, I promise. But occasionally I need to reflect on the meta-level.*

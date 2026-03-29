@@ -310,6 +310,65 @@ Under renormalization group flow, $g$ decreases monotonically — this is the $g
 
 By tuning boundary parameters in the Hamiltonian, one can drive RG flows between different conformally invariant boundary conditions. DMRG is ideal for this: we can compute $g$ as a function of boundary coupling and map out the phase diagram. The tricritical Ising model ($c = 7/10$) has a particularly rich boundary structure, with multiple relevant boundary operators and flows between distinct boundary conditions.
 
+## Tree Tensor Networks (TTN)
+
+### Beyond One-Dimensional Chains
+
+The MPS/tensor train structure is optimized for one-dimensional systems, where the entanglement structure is naturally captured by a linear chain of tensors. For systems with different geometries --- hierarchical structures, higher-dimensional lattices, or data with multi-scale features --- **tree tensor networks** (TTN) provide a natural generalization.
+
+A tree tensor network organizes tensors in a hierarchical tree graph rather than a linear chain. The simplest example is a **binary tree**: pairs of physical sites are contracted into a single tensor at the first level, pairs of those tensors contract at the second level, and so on, until a single root tensor remains. For a system of $N$ sites, the tree has $O(\log N)$ levels.
+
+### Structure and Entanglement
+
+For a binary TTN with bond dimension $\chi$, the entanglement entropy of a contiguous block of $\ell$ sites in a chain of $N$ satisfies:
+$$
+S(\ell) \leq O(\log \ell) \cdot \log \chi
+$$
+
+This makes TTNs well-suited for systems at **criticality**, where the entanglement entropy scales logarithmically: $S(\ell) \sim \frac{c}{3} \log \ell$. An MPS requires bond dimension $\chi \sim \ell^{c/3}$ (polynomial in subsystem size) to capture this scaling, while a TTN needs only $\chi \sim \text{poly}(c)$ (independent of system size at each level of the tree).
+
+### MERA
+
+The **Multiscale Entanglement Renormalization Ansatz** (MERA), introduced by Vidal (2007), extends the tree tensor network by adding **disentangler** tensors between levels of the tree. These disentanglers remove short-range entanglement before the coarse-graining step, allowing the tree structure to efficiently capture the remaining long-range correlations.
+
+MERA has a natural interpretation as a **real-space renormalization group**: each layer of the network coarse-grains the system by a factor of 2, and the disentanglers implement the removal of short-distance degrees of freedom. The causal structure of MERA is identical to a discrete anti-de Sitter (AdS) geometry, which has led to deep connections between tensor networks and holography (Swingle 2012).
+
+### Applications
+
+- **Critical systems**: MERA provides the most natural tensor network description of critical ground states, capturing the logarithmic entanglement scaling with modest bond dimensions.
+- **Hierarchical data**: TTNs are used in machine learning for hierarchical feature extraction, where the tree structure mirrors the multi-scale organization of the data.
+- **Quantum chemistry**: TTNs adapted to the orbital structure of molecular systems can be more efficient than linear MPS for molecules with branching connectivity.
+
+## Random Tensor Networks
+
+### What Random Tensors Encode
+
+Random tensor networks --- tensor networks whose individual tensors are drawn from random distributions (typically Haar-random or Gaussian) --- have become a powerful theoretical tool for understanding the generic behavior of quantum many-body systems, quantum gravity, and quantum error correction.
+
+The central question is: **what properties of a tensor network are universal (independent of the specific tensors) versus fine-tuned?** Random tensor networks provide the baseline --- they tell us what to expect generically.
+
+### Entanglement in Random States
+
+For a random MPS with bond dimension $\chi$ on $N$ sites with local Hilbert space dimension $d$, the entanglement entropy of a subsystem of $\ell$ sites is:
+$$
+S(\ell) = \min(\ell, N-\ell) \cdot \log d - O(1/\chi^2)
+$$
+for $\chi$ sufficiently large. This is the **Page curve** result (Page 1993): a random state has near-maximal entanglement, following a volume law. The correction $O(1/\chi^2)$ quantifies how the finite bond dimension limits entanglement.
+
+### Random Tensor Networks and Holography
+
+Hayden, Nezami, Qi, Thomas, Walter, and Yang (2016) showed that random tensor networks on hyperbolic geometries reproduce key features of holographic duality:
+
+- **Ryu-Takayanagi formula**: The entanglement entropy of a boundary region $A$ in a random tensor network on a hyperbolic lattice equals the minimal cut through the bulk network separating $A$ from its complement --- precisely the Ryu-Takayanagi formula of holographic entanglement entropy.
+- **Quantum error correction**: The bulk-to-boundary map of the random tensor network is an approximate quantum error-correcting code, consistent with the interpretation of AdS/CFT as quantum error correction (Almheiri, Dong, Harlow 2015).
+- **Entanglement wedge reconstruction**: Information in the bulk can be reconstructed from the boundary region whose entanglement wedge contains it.
+
+These results do not depend on the specific random tensors chosen --- they follow from the statistical properties of random unitaries. This universality is what makes the connection to holography robust.
+
+### Random Tensors and Measurement-Induced Phase Transitions
+
+The measurement-induced phase transition (discussed in the [MIPT notes](measurement-induced-transitions.qmd)) can be understood through the lens of random tensor networks. A monitored quantum circuit with measurement rate $p$ produces a random tensor network where the bond dimension at each measurement site is reduced. The MIPT corresponds to a geometric transition in the minimal cut of this network: below $p_c$, the minimal cut scales with volume; above $p_c$, it scales with area.
+
 ## Tensor Cross Interpolation (TCI)
 
 Tensor Cross Interpolation (TCI) is a more recent development that extends the reach of tensor network methods beyond quantum states. The idea: given a function $f(x_1, \ldots, x_N)$ that is not known analytically but can be evaluated pointwise, TCI constructs a tensor train (TT) approximation by adaptively selecting which entries to evaluate.

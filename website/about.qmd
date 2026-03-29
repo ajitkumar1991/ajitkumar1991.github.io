@@ -6,40 +6,63 @@ toc: true
 
 ## Bio
 
-I am a physics PhD student at the **University of Massachusetts Amherst**, working with Prof. Benjamin Heidenreich at the Amherst Center for Fundamental Interactions. My research develops theoretical and computational tools to understand strongly coupled quantum field theories, drawing on string theory, conformal field theory, and numerical methods.
+I am a physics PhD student at the **University of Massachusetts Amherst**, working with Prof. Benjamin Heidenreich at the Amherst Center for Fundamental Interactions. My research develops theoretical and computational tools to understand strongly coupled quantum field theories, drawing on string theory, conformal field theory, tensor networks, and Monte Carlo methods.
 
-My path to physics was shaped by a fascination with the mathematical structures underlying nature — from the geometry of extra dimensions to the entanglement patterns of quantum matter.
+I work across three areas: high-energy theory (geometric engineering, superconformal field theories, S-duality, brane constructions), condensed matter theory (boundary RG flows, superfluidity, symmetry-enriched criticality), and computational physics (DMRG, worm and cluster algorithms, and emerging connections to machine learning). A unifying thread is the use of string-theoretic and conformal-field-theoretic structures --- generalized symmetries, dualities, and categorical data --- to illuminate physics in both domains.
+
+Before UMass, I studied impurity dynamics in Dirac fermion systems during my master's thesis at IISER Bhopal, which resulted in a published paper in condensed matter theory.
 
 ---
 
 ## Education
 
 ::: {.callout-note appearance="minimal" icon=false}
-### PhD in Physics (Expected 2026)
+### PhD in Physics (Expected 2026) {.unnumbered}
 **University of Massachusetts Amherst**
 Advisor: Prof. Benjamin Heidenreich
 Amherst Center for Fundamental Interactions
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### MS in Physics, 2021 {.unnumbered}
+**University of Massachusetts Amherst**
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### MSc in Physics, 2018 {.unnumbered}
+**Indian Institute of Science Education and Research (IISER) Bhopal**
+Master's thesis on impurity dynamics in systems of Dirac fermions.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### BSc in Physics (Honours), 2013 {.unnumbered}
+**Kirori Mal College, University of Delhi**
 :::
 
 ---
 
 ## Research Interests
 
-- **String Theory & High-Energy Physics**
-  - Lagrangian descriptions of non-Lagrangian $\mathcal{N}=2$ SCFTs via geometric engineering
+- **High-Energy Theory**
+  - Lagrangian descriptions of non-Lagrangian $\mathcal{N}=2$ SCFTs via geometric engineering and brane tilings
   - $\mathcal{N}=1$ flavor orientifolds: discrete torsion, Wilson lines, and S-duality
-  - Quad-CFTs and infrared phases of theories with tensor matter
-  - Mirror geometry in type IIA with D6/O6-branes
-  - 2D CFT discrete gaugings and the Weak Gravity Conjecture
+  - Quad-CFTs and infrared phases of 4d $\mathcal{N}=1$ theories with tensor matter
+  - Mirror symmetry aspects of quad-CFTs (type IIA with D6/O6-branes)
+  - Discrete symmetries, orbifolding, and gauging in 2D CFTs; connections to the swampland
 
-- **Condensed Matter & Many-Body Physics**
-  - Symmetry-enriched criticality and boundary RG flows in Majorana chains
-  - Monte Carlo algorithms for long-range Coulomb interactions
-  - Superfluidity and phase transitions in 3D Bose gases
+- **Condensed Matter & Many-Body Theory**
+  - Impurity dynamics in Dirac fermion systems
+  - Boundary RG flow and symmetry-enriched criticality in interacting Majorana chains
+  - DMRG, MPS, and tensor-network approaches for extracting conformal data
+  - Superfluid transition in 3D Bose gases with long-range Coulomb interactions
+  - Monte Carlo studies of classical and quantum many-body systems
 
-- **Computational Methods**
-  - Tensor networks (DMRG, MPS) for extracting conformal data
-  - Worm-algorithm Monte Carlo for path-integral simulations
+- **Computational & Numerical Methods, ML Directions**
+  - Long-range worm and cluster Monte Carlo algorithms
+  - Tensor-network computations and analysis pipelines
+  - Physics-informed generative models (diffusion models, normalizing flows for sampling)
+  - Tensor cross-interpolation for high-dimensional function approximation
+  - Early-stage work on measurement-induced phase transitions
 
 - **Future Directions**
   - Generalized symmetries (higher-form, non-invertible, categorical) as a bridge between string-theoretic SCFTs and lattice models of quantum matter
@@ -50,16 +73,25 @@ For a detailed overview, see the [Research](research.qmd) page or browse the [No
 
 ## Skills
 
-**Programming Languages:** Julia, Python, C++, Mathematica
+**Programming Languages**
 
-**Scientific Computing:**
+- Python, Julia, C++, Mathematica
+- Some experience with R
 
-- ITensor (tensor network calculations)
-- PyTorch, JAX (machine learning)
-- Monte Carlo methods (worm algorithm, cluster algorithms)
-- MPI, parallel computing
+**Scientific & Computational Tools**
 
-**Tools:** Git, LaTeX, Quarto, Linux/Unix
+- NumPy, SciPy, JAX, TensorFlow, Matplotlib
+- ITensor (tensor-network calculations in Julia)
+- Jupyter, Git, LaTeX, Linux/Unix
+- HPC environments (SLURM, MPI, parallel computing)
+
+**Methods**
+
+- DMRG / MPS / tensor networks
+- Monte Carlo (worm algorithms, cluster algorithms, Metropolis)
+- Finite-size scaling and error analysis (bootstrap, jackknife, blocking)
+- Numerical many-body methods
+- Symmetry-aware computational modeling
 
 ---
 
@@ -71,4 +103,4 @@ I have served as a teaching assistant for several undergraduate physics courses 
 
 ## Publications & Contact
 
-See the [Publications](publications.qmd) page for papers and talks, or the [Contact](contact.qmd) page to get in touch.
+See the [Publications & Presentations](publications.qmd) page for papers, talks, and conference participation, or the [Contact](contact.qmd) page to get in touch.

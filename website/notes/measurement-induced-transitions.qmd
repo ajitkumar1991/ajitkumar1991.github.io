@@ -1,0 +1,408 @@
+---
+title: "Measurement-Induced Phase Transitions"
+subtitle: "Entanglement transitions in monitored quantum circuits"
+description: "Measurement-induced phase transitions: the competition between unitary entanglement growth and projective measurement, entanglement transitions in random circuits, the role of quantum error correction, and connections to statistical mechanics."
+author: "Ajit Kumar Sorout"
+date: 2026-03-29
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+## Introduction
+
+Consider a many-body quantum system --- a chain of $N$ qubits, say --- evolving under two competing processes. On one hand, random unitary gates act on neighboring pairs of qubits, generating entanglement and scrambling quantum information throughout the system. On the other hand, projective measurements are applied to individual qubits at some rate $p$, collapsing local degrees of freedom and destroying entanglement. What is the fate of the entanglement structure of the system as we tune the measurement rate?
+
+The remarkable answer, established in a series of works beginning with Li, Chen, and Fisher (2018) and Skinner, Ruhman, and Nahum (2019), is that the system undergoes a **genuine phase transition** in its entanglement structure as a function of $p$. At low measurement rates, the unitaries win: the entanglement entropy of a subsystem scales with its volume (a "volume-law" phase). At high measurement rates, measurements dominate: the entanglement entropy scales with the boundary of the subsystem (an "area-law" phase). The transition between these two regimes is sharp in the thermodynamic limit $N \to \infty$, occurring at a critical measurement rate $p_c$, and it exhibits universal critical behavior.
+
+This **measurement-induced phase transition** (MIPT) sits at the intersection of quantum information, condensed matter, and statistical mechanics. It reveals deep connections between the dynamics of entanglement, quantum error correction, and classical statistical mechanics models. These notes lay out the essential framework, the key results, and the open questions in this rapidly developing area.
+
+Throughout, we work with systems of $N$ qubits with Hilbert space $\mathcal{H} = (\mathbb{C}^2)^{\otimes N}$, and we focus on the entanglement entropy of a contiguous subsystem $A$ of $|A|$ qubits.
+
+---
+
+## Setup: Monitored Quantum Circuits
+
+### The Circuit Model
+
+The standard setup is a **brickwork random circuit** on a one-dimensional chain of $N$ qubits. Time proceeds in discrete steps. In each time step:
+
+1. **Unitary layer:** Apply random two-qubit unitary gates to neighboring pairs of qubits in a brickwork pattern --- even bonds $(1,2), (3,4), \ldots$ in one layer, odd bonds $(2,3), (4,5), \ldots$ in the next.
+2. **Measurement layer:** For each qubit, independently with probability $p$, perform a projective measurement in the computational basis $\{|0\rangle, |1\rangle\}$.
+
+After $T$ time steps, the state of the system is a pure state $|\psi_{\mathbf{m}}\rangle$ that depends on the specific set of measurement outcomes $\mathbf{m} = (m_1, m_2, \ldots)$ obtained during the evolution. Different runs of the circuit produce different pure states, because the measurement outcomes are random.
+
+The central object of study is the **trajectory-averaged entanglement entropy**:
+$$
+\overline{S(A)} = \sum_{\mathbf{m}} p(\mathbf{m}) \, S\bigl(\rho_A^{(\mathbf{m})}\bigr),
+$$
+where $\rho_A^{(\mathbf{m})} = \mathrm{Tr}_{\bar{A}} |\psi_{\mathbf{m}}\rangle\langle\psi_{\mathbf{m}}|$ is the reduced density matrix of subsystem $A$ for the trajectory with outcomes $\mathbf{m}$, and $p(\mathbf{m})$ is the Born-rule probability of that set of outcomes.
+
+### Clifford Circuits
+
+A key simplification comes from restricting the unitary gates to the **Clifford group**. Clifford gates map Pauli operators to Pauli operators under conjugation, and therefore the state of $N$ qubits can be tracked using the **stabilizer formalism**: one maintains a list of $N$ independent Pauli operators that stabilize the state, rather than the full $2^N$-dimensional state vector. This allows simulation of circuits with $N \sim 10^3$--$10^4$ qubits.
+
+Projective measurements in the Pauli basis are also efficiently simulable within the stabilizer formalism. Measurement of a Pauli operator $P$ either:
+
+- Commutes with all stabilizers, in which case the outcome is deterministic and the state is unchanged, or
+- Anticommutes with some stabilizers, in which case the outcome is random (50/50), and the stabilizer group is updated by replacing one generator.
+
+The entanglement entropy of a subsystem $A$ in a stabilizer state takes the form
+$$
+S(A) = |A| - \log_2 |\mathcal{S}_A|,
+$$
+where $\mathcal{S}_A$ is the number of independent stabilizers supported entirely within $A$. This is always an integer (in units of $\log 2$).
+
+The Clifford restriction is not merely a computational convenience --- the MIPT persists in Clifford circuits, and the critical behavior is believed to be in the same universality class as the generic (Haar-random) case for certain quantities.
+
+### Haar-Random Circuits
+
+The most general setting uses **Haar-random** two-qubit unitaries: each gate is drawn independently from the uniform (Haar) measure on $U(4)$. This ensures that the circuit has no special structure and generates the most generic entanglement dynamics. Haar-random circuits are harder to simulate (requiring full state-vector simulation with exponential cost in $N$), so system sizes are limited to $N \lesssim 20$--$24$ in exact numerics.
+
+### The Two Competing Effects
+
+The physics of the MIPT can be understood as a competition:
+
+- **Unitaries generate entanglement.** A Haar-random two-qubit gate generically creates entanglement between the two qubits it acts on, and between those qubits and the rest of the system. After $O(N)$ time steps of unitary-only evolution, a random initial product state reaches a volume-law entangled state with $S(A) \approx |A| \log 2$ for $|A| \leq N/2$.
+
+- **Measurements destroy entanglement.** A projective measurement on qubit $i$ collapses its state and disentangles it from the rest of the system. If every qubit is measured at every step ($p = 1$), the system is always in a product state with $S(A) = 0$.
+
+The question is: how does the steady-state entanglement scale with $|A|$ as a function of the measurement rate $p$?
+
+---
+
+## The Volume-Law to Area-Law Transition
+
+```{mermaid}
+%%| label: fig-mipt-phase-diagram
+%%| fig-cap: "Phase diagram of the measurement-induced phase transition. At low measurement rate p, entanglement grows extensively (volume law). Above the critical rate p_c, measurements drive the system to an area-law phase."
+%%| fig-width: 6
+flowchart LR
+    subgraph VL["Volume-Law Phase (p < p_c)"]
+        direction TB
+        V1["S(A) ~ |A|"]
+        V2["Information scrambled"]
+        V3["QEC code protects data"]
+    end
+    subgraph AL["Area-Law Phase (p > p_c)"]
+        direction TB
+        A1["S(A) ~ |∂A|"]
+        A2["Information revealed"]
+        A3["Measurements decode state"]
+    end
+    VL -->|"p = p_c\n(phase transition)"| AL
+```
+
+### The Two Phases
+
+Numerical simulations reveal two sharply distinct phases:
+
+**Volume-law phase** ($p < p_c$): The steady-state entanglement entropy of a contiguous subsystem $A$ of length $\ell$ in a chain of length $N$ scales as
+$$
+\overline{S(A)} \sim s_{\mathrm{vol}} \cdot \ell, \qquad \ell \ll N,
+$$
+where $s_{\mathrm{vol}}(p) > 0$ is a volume-law coefficient that depends on $p$ but remains nonzero throughout the phase. The entanglement is extensive --- it grows linearly with the size of the subsystem.
+
+**Area-law phase** ($p > p_c$): The steady-state entanglement entropy saturates to a value that depends only on the boundary of $A$:
+$$
+\overline{S(A)} \sim \text{const}, \qquad \ell \gg 1.
+$$
+In one dimension, the "area" of a contiguous subsystem is simply two points (its two endpoints), so the area-law entropy is $O(1)$ --- independent of $\ell$.
+
+The transition between these two regimes occurs at a **critical measurement rate** $p_c$, which depends on the details of the circuit (gate set, geometry) but is generically nonzero.
+
+### Critical Behavior
+
+At the critical point $p = p_c$, the entanglement entropy scales **logarithmically**:
+$$
+\overline{S(A)} \sim \frac{c_{\mathrm{eff}}}{3} \ln \ell,
+$$
+in close analogy with the ground-state entanglement entropy of a $(1+1)$-dimensional conformal field theory with "effective central charge" $c_{\mathrm{eff}}$. Numerical studies give $c_{\mathrm{eff}} \approx 0$ (or more precisely, a small value consistent with a logarithmic CFT), suggesting that the critical theory is highly non-trivial.
+
+Near the critical point, the correlation length diverges as
+$$
+\xi \sim |p - p_c|^{-\nu},
+$$
+with a correlation length exponent $\nu$. Numerical estimates for Haar-random and Clifford circuits give $\nu \approx 1.2$--$1.4$, which does not match any standard universality class (e.g., ordinary percolation has $\nu = 4/3 \approx 1.33$ in 2D, tantalizingly close but likely distinct).
+
+### The Original Proposals
+
+The MIPT was independently discovered in two foundational works:
+
+- **Li, Chen, and Fisher (2018)** studied random Clifford circuits with measurements and identified the volume-law to area-law transition through extensive numerics on the stabilizer entanglement entropy. They connected the transition to the quantum Zeno effect: frequent measurements freeze the dynamics and suppress entanglement growth.
+
+- **Skinner, Ruhman, and Nahum (2019)** studied Haar-random circuits and developed an analytical framework based on a mapping to a classical statistical mechanics model (discussed below). They identified the transition as a genuine phase transition and provided the first estimates of critical exponents.
+
+These two works, appearing nearly simultaneously, launched the field.
+
+---
+
+## Entanglement Entropy as an Order Parameter
+
+### Von Neumann and Renyi Entropies
+
+The primary diagnostic for the MIPT is the **entanglement entropy** of a subsystem $A$, computed for the pure state $|\psi_{\mathbf{m}}\rangle$ obtained from a specific measurement trajectory $\mathbf{m}$.
+
+The **von Neumann entropy** is
+$$
+S_1(\rho_A) = -\mathrm{Tr}\bigl(\rho_A \ln \rho_A\bigr),
+$$
+where $\rho_A = \mathrm{Tr}_{\bar{A}} |\psi_{\mathbf{m}}\rangle\langle\psi_{\mathbf{m}}|$.
+
+The **Renyi entropies** generalize this:
+$$
+S_n(\rho_A) = \frac{1}{1-n} \ln \mathrm{Tr}\bigl(\rho_A^n\bigr), \qquad n \geq 0, \; n \neq 1.
+$$
+The von Neumann entropy is recovered in the limit $n \to 1$. Different Renyi indices $n$ weight different parts of the entanglement spectrum: $S_0$ counts the number of nonzero eigenvalues (the Schmidt rank), $S_2 = -\ln \mathrm{Tr}(\rho_A^2)$ is related to the purity, and $S_\infty = -\ln \lambda_{\max}$ picks out the largest eigenvalue.
+
+An important subtlety is that **different Renyi indices can have different critical behaviors**. In Clifford circuits, all Renyi entropies coincide (since stabilizer states have flat entanglement spectra), but in Haar-random circuits, the transition point and critical exponents may depend on $n$. The zeroth Renyi entropy $S_0$ is the most analytically tractable (it is related to the minimal cut in a random tensor network), while $S_1$ is the most physically natural.
+
+### Purification as an Order Parameter
+
+An alternative order parameter is the **purification time**. Consider preparing the system in a maximally mixed state $\rho_0 = I/2^N$ (which can be realized by entangling the $N$ qubits with $N$ reference qubits and then tracing out the reference). Under the monitored circuit dynamics, the measurements gradually purify the state. Define the purification time $\tau_{\mathrm{pur}}$ as the time at which $S(\rho) \approx 0$.
+
+- In the **volume-law phase** ($p < p_c$): the purification time scales exponentially with $N$, $\tau_{\mathrm{pur}} \sim e^{\alpha N}$. The circuit protects the information against measurements.
+- In the **area-law phase** ($p > p_c$): the purification time scales as a power law, $\tau_{\mathrm{pur}} \sim N^z$ with dynamical exponent $z$.
+- At the **critical point** ($p = p_c$): the purification time scales as $\tau_{\mathrm{pur}} \sim N^z$ with a different exponent.
+
+The purification transition coincides with the entanglement transition and provides a complementary window into the physics.
+
+### The Post-Selection Problem
+
+A crucial distinction must be drawn between two different averages:
+
+1. **Trajectory-averaged entropy** (the MIPT order parameter):
+$$
+\overline{S(\rho_A)} = \sum_{\mathbf{m}} p(\mathbf{m}) \, S\bigl(\rho_A^{(\mathbf{m})}\bigr).
+$$
+This is the entropy averaged over measurement outcomes, where each term is computed for the pure state obtained by post-selecting on a specific outcome $\mathbf{m}$.
+
+2. **Entropy of the averaged state**:
+$$
+S\!\left(\sum_{\mathbf{m}} p(\mathbf{m}) \, \rho_A^{(\mathbf{m})}\right).
+$$
+This is the entropy of the mixed state obtained by averaging over measurement outcomes without conditioning.
+
+These are very different quantities. The concavity of the entropy function implies
+$$
+S\!\left(\overline{\rho_A}\right) \geq \overline{S(\rho_A)},
+$$
+and in fact the entropy of the averaged state $\overline{\rho_A}$ is always maximal (close to $|A| \ln 2$) regardless of $p$, because averaging over measurement outcomes produces a highly mixed state. The MIPT is a property of individual quantum trajectories, not of the unconditional dynamics.
+
+This has a devastating experimental consequence: to observe the MIPT, one must **condition on specific measurement outcomes**. Since the number of distinct measurement outcome strings $\mathbf{m}$ grows exponentially with both system size and circuit depth, verifying that a given trajectory has volume-law or area-law entanglement requires either (a) exponentially many repetitions of the same circuit with post-selection on a specific $\mathbf{m}$, or (b) some cleverer protocol. This is known as the **post-selection problem**, and it is the central obstacle to experimental observation of the MIPT.
+
+---
+
+## The Quantum Error-Correcting Code Perspective
+
+### The Volume-Law Phase as a Code
+
+A beautiful reinterpretation of the MIPT was given by Choi, Bao, Qi, and Altman (2020). They observed that the volume-law phase can be understood as a **dynamically generated quantum error-correcting code**.
+
+The idea is as follows. Consider the circuit as a quantum channel that maps an initial state (the "logical" information) to a final state, with the measurements acting as "errors" (information leakage to the environment). In the volume-law phase, the unitary dynamics scramble the quantum information so thoroughly that the measurements --- despite extracting classical bits --- cannot decode the logical information. The information is **protected** by the entanglement structure, just as in a quantum error-correcting code.
+
+More precisely, define the **reference system** $R$ to be a set of $N$ qubits, each maximally entangled with one system qubit at $t = 0$. Under the monitored dynamics, the mutual information $I(R:A) = S(R) + S(A) - S(RA)$ between $R$ and a subsystem $A$ of the system measures how much of the initial information is accessible in $A$.
+
+- In the **volume-law phase**: $I(R:A) \approx 0$ for any subsystem $A$ smaller than half the system. The initial information is delocalized and cannot be recovered from a local measurement. This is the hallmark of a quantum error-correcting code with macroscopic code distance.
+
+- In the **area-law phase**: $I(R:A) > 0$ for subsystems $A$ that include enough qubits near the boundary. The measurements have effectively decoded the information, making it locally accessible.
+
+### Connection to Scrambling and Hayden-Preskill
+
+The coding perspective connects naturally to the **Hayden-Preskill thought experiment** in black hole physics. In the Hayden-Preskill protocol, one asks: if a quantum state is thrown into a black hole that has already been evaporating for a long time (and is thus maximally entangled with its early radiation), how quickly can the information be recovered from the subsequent Hawking radiation?
+
+The answer, given by Hayden and Preskill (2007), is that the information can be recovered after a time of order $\log N$ (the scrambling time), provided one has access to the early radiation. The key is that the black hole dynamics are **scrambling**: they spread the information across all degrees of freedom so efficiently that any sufficiently large subsystem contains the information.
+
+The volume-law phase of the MIPT is analogous: the random circuit scrambles the information, and measurements (like Hawking radiation) cannot decode it as long as the measurement rate is below $p_c$. The transition at $p_c$ is the point at which the "error rate" (measurement rate) overwhelms the "encoding rate" (scrambling rate), and the code fails.
+
+### The Code Distance
+
+In the language of quantum error correction, the volume-law phase corresponds to an $[[N, k, d]]$ code where:
+
+- $N$ is the number of physical qubits (the system size),
+- $k$ is the number of logical qubits (the amount of protected information), which scales extensively with $N$ in the volume-law phase,
+- $d$ is the code distance (the minimum weight of an undetectable error), which also scales extensively with $N$.
+
+At the transition, the code distance vanishes (in the thermodynamic limit), and the code ceases to protect information.
+
+---
+
+## Mapping to Statistical Mechanics
+
+### The Replica Trick
+
+The analytical approach to the MIPT proceeds through the **replica trick**, borrowing a technique from disordered systems. The key object is the trajectory-averaged $n$-th Renyi entropy:
+$$
+\overline{S_n(A)} = \frac{1}{1-n} \overline{\ln \mathrm{Tr}(\rho_A^n)}.
+$$
+
+Averaging the logarithm is hard. The replica trick replaces it with
+$$
+\overline{\ln Z} = \lim_{n \to 0} \frac{\overline{Z^n} - 1}{n},
+$$
+where $Z = \mathrm{Tr}(\rho_A^n)$. For integer $n$, $Z^n$ can be computed by introducing $n$ replicas of the system and averaging over the random unitaries. This average can be performed exactly using Weingarten calculus for Haar-random gates.
+
+### The Emergent Statistical Mechanics Model
+
+For Haar-random gates, averaging over the unitaries produces a **classical spin model** on the spacetime lattice of the circuit. Each gate location carries a "spin" variable $\sigma$ that takes values in the permutation group $S_n$ (for $n$ replicas). The resulting partition function takes the form
+$$
+\overline{Z^n} = \sum_{\{\sigma\}} \prod_{\text{gates}} W(\sigma, \sigma') \prod_{\text{meas}} M(\sigma),
+$$
+where $W(\sigma, \sigma')$ are Boltzmann weights from the Haar-averaged gate contractions, and $M(\sigma)$ are weights from the measurements.
+
+The Renyi entropy $\overline{S_n(A)}$ is determined by the free energy cost of a **domain wall** in this spin model. In the volume-law phase, the domain wall is pinned to the minimal cut through the circuit (which spans the system, giving a volume-law entropy). In the area-law phase, the domain wall collapses to the boundary of $A$ (giving an area-law entropy). The MIPT is the **ordering transition** of the classical spin model.
+
+### Clifford Circuits and Percolation
+
+For Clifford circuits, the mapping becomes exact and much simpler. The entanglement entropy of a stabilizer state is determined by the rank of a certain binary matrix, which can be related to a **connectivity problem** on the circuit graph. Specifically, the entanglement entropy maps to the number of "minimal cuts" in a percolation problem on the spacetime lattice.
+
+The MIPT in Clifford circuits is therefore closely related to **bond percolation**: each measurement "breaks" a bond in the circuit, and the transition occurs when the percolation cluster ceases to span the system. For certain circuit geometries, this mapping is exact, and the critical exponents coincide with those of 2D percolation ($\nu = 4/3$, etc.).
+
+However, the universality class of the Haar-random MIPT is believed to be **distinct** from ordinary percolation. Numerical evidence suggests that different Renyi entropies have slightly different critical exponents in the Haar case, while they all coincide in the Clifford case (where the mapping to percolation is exact). The critical theory is believed to be a **conformal field theory with effective central charge $c \sim 0$**, possibly a logarithmic CFT --- a class of CFTs with unusual features such as logarithmic correlators and non-diagonalizable transfer matrices.
+
+### Connection to Random Tensor Networks
+
+A monitored quantum circuit can be viewed as a **random tensor network**. Each unitary gate is a tensor with four indices (two input, two output), and each measurement projects one index onto a specific state, effectively removing it from the network. The entanglement entropy of a subsystem $A$ in the output state is determined by the **minimal cut** through this tensor network.
+
+The MIPT is thus equivalent to a phase transition in the entanglement properties of random tensor networks as a function of the density of "broken bonds" (measurements). This connection is not merely an analogy --- it provides a precise mapping between the MIPT and the geometry of minimal surfaces in random geometries, echoing the Ryu-Takayanagi formula in holographic entanglement entropy.
+
+---
+
+## Free Fermion Models
+
+### Beyond Clifford: Gaussian States
+
+While Clifford circuits provide a tractable framework, they have the limitation that stabilizer states have flat entanglement spectra --- all nonzero Schmidt coefficients are equal. To study the MIPT in systems with a continuous entanglement structure, one can turn to **free fermion circuits**.
+
+A system of $N$ fermionic modes is described by $2N$ Majorana operators $\gamma_1, \ldots, \gamma_{2N}$ satisfying $\{\gamma_i, \gamma_j\} = 2\delta_{ij}$. A **Gaussian state** is fully characterized by the $2N \times 2N$ correlation matrix
+$$
+\Gamma_{ij} = \frac{i}{2} \langle [\gamma_i, \gamma_j] \rangle,
+$$
+which is a real antisymmetric matrix with eigenvalues $\pm i \lambda_k$, where $\lambda_k \in [0, 1]$. The entanglement entropy of a subsystem $A$ is determined by the restriction of $\Gamma$ to $A$:
+$$
+S(A) = -\sum_{k} \left[ \frac{1+\lambda_k}{2} \ln \frac{1+\lambda_k}{2} + \frac{1-\lambda_k}{2} \ln \frac{1-\lambda_k}{2} \right],
+$$
+where $\lambda_k$ are the eigenvalues of $i\Gamma_A$.
+
+Free fermion (Gaussian) unitary gates preserve the Gaussian structure, and projective measurements of fermion parity operators $i\gamma_j \gamma_k$ also preserve it. The entire monitored dynamics can therefore be simulated by evolving the $2N \times 2N$ matrix $\Gamma$, at a cost of $O(N^2)$ per gate --- polynomial rather than exponential.
+
+### The MIPT in Free Fermion Systems
+
+Cao, Tilloy, and De Luca (2019) studied monitored free fermion circuits and found that the MIPT persists but belongs to a **different universality class** than the generic (interacting) case. The critical entanglement entropy at the transition scales logarithmically, $\overline{S(A)} \sim \frac{c_{\mathrm{eff}}}{3} \ln \ell$, but with a different effective central charge.
+
+The free fermion MIPT has connections to the **Anderson localization transition** in one dimension. The correlation matrix $\Gamma$ satisfies a stochastic evolution equation, and the entanglement entropy is related to the Lyapunov exponents of the transfer matrix. At the critical point, the Lyapunov exponents vanish, corresponding to the delocalization transition.
+
+More precisely, the dynamics of the singular values of a subblock of $\Gamma$ can be mapped onto a stochastic process related to the **Dyson Brownian motion** of random matrix theory. The MIPT occurs when the stationary distribution of this process transitions from a state with extended support (volume-law) to one with localized support (area-law).
+
+The free fermion MIPT is analytically more tractable than the interacting case, and it provides a testing ground for analytical techniques. However, the universality class is distinct, reflecting the reduced entanglement-generating power of free fermion dynamics (which cannot produce states with generic entanglement spectra).
+
+---
+
+## Experimental Challenges and Proposals
+
+### The Post-Selection Problem Revisited
+
+The central obstacle to experimentally observing the MIPT is the post-selection problem discussed in the section on entanglement entropy. To measure the entanglement entropy of a specific quantum trajectory, one must:
+
+1. Run the circuit and record all measurement outcomes $\mathbf{m}$.
+2. Prepare the same initial state and run the same circuit again, post-selecting on the same outcomes $\mathbf{m}$.
+3. Repeat step 2 exponentially many times to obtain the reduced density matrix $\rho_A^{(\mathbf{m})}$ by state tomography.
+
+The probability of obtaining a specific outcome string $\mathbf{m}$ decreases exponentially with the number of measurements, making this approach impractical for large systems.
+
+### Cross-Entropy Benchmarking
+
+One approach to circumventing the post-selection problem is **cross-entropy benchmarking**, inspired by its use in quantum computational supremacy experiments. The idea is to compare the distribution of measurement outcomes from the quantum circuit to the classically computed distribution for the same circuit. The cross-entropy
+$$
+\chi = \overline{\ln p_{\mathrm{ideal}}(\mathbf{m})}
+$$
+(where the average is over experimental outcomes and $p_{\mathrm{ideal}}$ is the ideal probability) provides information about the fidelity of the quantum evolution without requiring post-selection on specific outcomes.
+
+However, computing $p_{\mathrm{ideal}}(\mathbf{m})$ classically is itself exponentially hard for generic circuits, limiting this approach to small systems or structured circuits.
+
+### Entanglement Probes with Ancilla Qubits
+
+A more promising approach uses **ancilla qubits** as entanglement probes. The idea is to entangle an ancilla qubit with the system at time $t = 0$, let the system evolve under the monitored circuit, and then measure the mutual information between the ancilla and the system at time $t$. In the volume-law phase, the ancilla remains entangled with the system (the information is protected), while in the area-law phase, the entanglement is destroyed.
+
+The advantage of this approach is that it does not require post-selection: one can measure the ancilla qubit in a random basis at the end of the circuit and accumulate statistics over many runs. The mutual information between the ancilla and the final measurement outcomes provides a signature of the MIPT that is accessible without exponential overhead.
+
+### Experimental Realizations
+
+Despite the theoretical challenges, there has been significant experimental progress:
+
+- **Noel et al. (2022)** reported the first observation of MIPT signatures in a **trapped-ion quantum computer** with up to 40 qubits. They used a combination of mid-circuit measurements and classical post-processing to detect the transition, employing a protocol based on the "space-time duality" of certain circuits that maps the post-selection problem to a problem solvable with polynomial overhead.
+
+- Experiments on **superconducting qubit** platforms have also explored monitored circuit dynamics, though with smaller system sizes. The primary challenge on these platforms is implementing high-fidelity mid-circuit measurements without disturbing the remaining qubits.
+
+These experiments represent first steps. Scaling to larger systems --- where the transition sharpens and the universal critical behavior emerges --- remains a major goal.
+
+---
+
+## Connections and Outlook
+
+### Holographic Connections
+
+The MIPT has intriguing parallels with **holographic duality** (AdS/CFT). In holographic systems, the entanglement entropy of a boundary region is given by the area of a minimal surface in the bulk (the Ryu-Takayanagi formula). The circuit-to-tensor-network mapping discussed above provides a concrete realization of this geometry: the minimal cut through the tensor network is the analog of the Ryu-Takayanagi surface.
+
+In this picture:
+
+- The **volume-law phase** is analogous to a **black hole interior**: information is scrambled and cannot be recovered from local measurements. The minimal surface extends deep into the bulk.
+- The **area-law phase** is analogous to the **exterior** of a black hole: information is localized and accessible. The minimal surface hugs the boundary.
+
+The MIPT itself is then analogous to a **Hawking-Page transition** between these two geometries. This analogy has been made precise in certain models of random tensor networks with a holographic structure.
+
+### Forced Measurements and Feedback
+
+The standard MIPT involves **random projective measurements** --- the experimenter has no control over the outcomes and does not adapt the circuit based on the results. A natural generalization is to allow **adaptive measurements** (also called "forced" measurements), where the choice of what to measure (and whether to apply a correction gate based on the outcome) depends on the history of previous outcomes.
+
+Adaptive protocols can dramatically alter the phase diagram. For example, one can use feedback to steer the system toward a specific entangled state, or to protect quantum information more efficiently. The interplay between adaptive measurements and entanglement dynamics is an active area of research, with connections to quantum error correction protocols and measurement-based quantum computation.
+
+### MIPTs in Higher Dimensions
+
+Most studies of the MIPT focus on one-dimensional systems (qubit chains), where the transition is between a volume-law phase ($S \sim L$) and an area-law phase ($S \sim \text{const}$). In higher dimensions, the phenomenology is richer:
+
+- In $d$ spatial dimensions, the volume-law entropy scales as $S \sim L^d$ and the area-law entropy scales as $S \sim L^{d-1}$.
+- The critical point $p_c$ and the universality class are expected to depend on the spatial dimension.
+- Analytical control is even harder in higher dimensions, and numerical simulations are limited by the exponential growth of the Hilbert space.
+
+The higher-dimensional MIPT is largely unexplored and represents an important frontier.
+
+### Connection to Tensor Networks
+
+As discussed in the [tensor networks](tensor-networks.qmd) notes, tensor networks provide a natural language for describing quantum states with structured entanglement. The monitored circuit is itself a tensor network, and the MIPT can be understood as a phase transition in the properties of this network.
+
+Specifically, the bond dimension of the effective tensor network description of the output state changes at the MIPT: in the volume-law phase, the bond dimension is exponential in the system size, while in the area-law phase, it is polynomial (or even constant). This connection suggests that MIPTs may be relevant for understanding the computational complexity of simulating quantum dynamics --- a theme explored further in the [quantum foundations](quantum-foundations.qmd) notes.
+
+### Open Questions
+
+The field of measurement-induced phase transitions remains vibrant, with many open questions:
+
+1. **What is the universality class of the MIPT?** Despite extensive numerics, the critical theory is not fully understood. Is it a logarithmic CFT? What are the exact critical exponents?
+
+2. **Can the MIPT be observed efficiently?** The post-selection problem is a fundamental obstacle. Are there protocols that can detect the MIPT with polynomial (rather than exponential) overhead for generic circuits?
+
+3. **What is the full phase diagram for adaptive circuits?** The interplay between measurement, feedback, and entanglement is barely explored.
+
+4. **Do MIPTs exist in realistic physical systems?** The random circuit model is idealized. Do MIPTs occur in continuous-time monitored Hamiltonian dynamics, or in systems with conservation laws?
+
+5. **What is the role of symmetry?** Imposing symmetries (e.g., $U(1)$ charge conservation) on the circuit can modify the MIPT and introduce new phases with distinct entanglement structures, such as a "charge-sharpening" transition.
+
+---
+
+## References
+
+1. Y. Li, X. Chen, M.P.A. Fisher, "Quantum Zeno effect and the many-body entanglement transition," Phys. Rev. B **98**, 205136 (2018). [arXiv:1808.06134](https://arxiv.org/abs/1808.06134)
+
+2. B. Skinner, J. Ruhman, A. Nahum, "Measurement-induced phase transitions in the dynamics of entanglement," Phys. Rev. X **9**, 031009 (2019). [arXiv:1808.05953](https://arxiv.org/abs/1808.05953)
+
+3. S. Choi, Y. Bao, X.-L. Qi, E. Altman, "Quantum error correction in scrambling dynamics and measurement-induced phase transition," Phys. Rev. Lett. **125**, 030505 (2020). [arXiv:1903.05124](https://arxiv.org/abs/1903.05124)
+
+4. C. Noel et al., "Measurement-induced quantum phases realized in a trapped-ion quantum computer," Nature Phys. **18**, 760 (2022). [arXiv:2106.05881](https://arxiv.org/abs/2106.05881)
+
+5. M.P.A. Fisher et al., "Random Quantum Circuits," Ann. Rev. Cond. Matt. Phys. (2023). [arXiv:2207.14280](https://arxiv.org/abs/2207.14280)
+
+6. X. Cao, A. Tilloy, A. De Luca, "Entanglement in a fermion chain under continuous monitoring," SciPost Phys. **7**, 024 (2019). [arXiv:1804.04638](https://arxiv.org/abs/1804.04638)
+
+7. P. Hayden, J. Preskill, "Black holes as mirrors: quantum information in random subsystems," JHEP **2007**, 120 (2007). [arXiv:0708.4025](https://arxiv.org/abs/0708.4025)

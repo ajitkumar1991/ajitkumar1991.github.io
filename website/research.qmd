@@ -5,7 +5,7 @@ toc: true
 toc-depth: 2
 ---
 
-My research develops theoretical and computational tools to understand strongly coupled quantum field theories. On the high-energy side, I use string theory and geometric engineering to construct and analyze four-dimensional superconformal field theories — building Lagrangian descriptions of non-Lagrangian theories, organizing infrared phase diagrams via strongly coupled building blocks, and classifying S-dual families arising from orientifolded geometries. On the condensed-matter side, I investigate symmetry-enriched criticality and superfluidity with long-range interactions, using tensor networks and Monte Carlo methods to study boundary renormalization-group flows and phase transitions. A unifying thread is the use of string-theoretic and conformal-field-theoretic structures — generalized symmetries, dualities, and categorical data — to illuminate physics in both domains.
+My research develops theoretical and computational tools to understand strongly coupled quantum field theories, spanning three areas: **high-energy theory** (geometric engineering, superconformal field theories, brane constructions, S-duality), **condensed matter and many-body theory** (boundary RG flows, superfluidity, impurity dynamics, symmetry-enriched criticality), and **computational and numerical methods** (tensor networks, Monte Carlo algorithms, and emerging connections to machine learning). A unifying thread is the use of string-theoretic and conformal-field-theoretic structures --- generalized symmetries, dualities, and categorical data --- to illuminate physics across domains.
 
 ---
 
@@ -206,6 +206,16 @@ The key challenge for critical systems is that the entanglement entropy diverges
 
 ---
 
+### Dynamics of Impurity in the Sea of Dirac Fermions
+
+In published work with Sarkar and Gangadharaiah at IISER Bhopal, I studied the dynamics of a localized impurity embedded in a system of Dirac fermions --- a problem relevant to graphene and topological surface states.
+
+The central question is how a quantum impurity interacts with a bath of massless Dirac fermions, which have a vanishing density of states at the Fermi level (scaling as $\rho(E) \propto |E|$ in 2D). This linear vanishing modifies the standard Kondo physics: the impurity-bath coupling is marginally irrelevant rather than marginally relevant, leading to qualitatively different low-temperature behavior compared to a conventional metallic host.
+
+We studied the impurity spectral function, the local density of states, and the real-time dynamics of spin correlations using analytical and numerical methods. The results, published in *Journal of Physics: Condensed Matter* **32**, 415604 (2020), characterize how the Dirac fermion bath screens (or fails to screen) the impurity spin, and how this depends on the coupling strength and the dimensionality of the Dirac dispersion.
+
+---
+
 ### Superfluidity in the 3D Lattice Bose Gas
 
 ::: {.callout-note appearance="simple" icon=false}
@@ -322,6 +332,24 @@ Benchmarks on systems up to $L = 16$ show that both algorithms achieve autocorre
 
 ---
 
+## Computational and Emerging Directions {#computational}
+
+Beyond the projects above, I am developing and exploring computational methods at various stages of maturity:
+
+**Long-range worm and cluster Monte Carlo algorithms.** The algorithms described above for the 3D Bose gas with Coulomb interactions represent a general framework for handling long-range interactions in lattice Monte Carlo. The mixed-representation worm algorithm and the density-invariant cluster algorithm achieve near-optimal scaling ($z \lesssim 0.2$) even with $1/r$ potentials, and extend naturally to dipolar interactions, power-law forces, and quantum models in the worldline representation. See the [Monte Carlo notes](notes/monte-carlo.qmd) and [error analysis tools](tools/monte-carlo-errors.qmd).
+
+**Tensor-network computations and analysis pipelines.** My DMRG work uses the ITensor library in Julia for ground-state calculations, entanglement entropy extraction, and conformal data from finite-size spectra. I am also interested in tensor cross-interpolation (TCI) for efficient function approximation in high-dimensional spaces. See the [Tensor Networks notes](notes/tensor-networks.qmd) and [Julia workflows](tools/julia-tensor-networks.qmd).
+
+**Physics-informed generative models.** Diffusion models and normalizing flows offer promising alternatives to MCMC for sampling lattice field theories and statistical mechanics systems. I am exploring how the connections between score-based methods and Langevin dynamics can be leveraged for physics applications --- see the [Machine Learning notes](notes/machine-learning.qmd) for the technical background.
+
+**Symmetry-aware ML architectures.** Incorporating gauge invariance, translation symmetry, and other physical symmetries into neural network architectures is an active direction. Graph neural networks and equivariant architectures are particularly relevant for molecular and lattice systems --- see the [Deep Learning Architectures notes](notes/deep-learning-architectures.qmd).
+
+**Measurement-induced phase transitions.** I am in the early stages of computational investigations of entanglement transitions in monitored quantum circuits --- a topic that bridges quantum information, condensed matter, and conformal field theory. See the [MIPT notes](notes/measurement-induced-transitions.qmd).
+
+These directions are at various stages of development --- from active algorithm development (Monte Carlo, tensor networks) to exploratory investigations (generative models, MIPTs). They are not presented as finished projects but as emerging research interests.
+
+---
+
 ## Future Directions {#future-directions}
 
 A unifying theme of my future work is to use **generalized symmetries** as a bridge between string-theoretic SCFTs and lattice models of quantum matter.
@@ -338,11 +366,16 @@ The past decade has transformed our understanding of symmetry in quantum field t
 
 The [Notes & Expositions](notes/index.qmd) section provides extended technical background on the methods and frameworks used in my research:
 
-- [Brane Tilings and SCFTs](notes/brane-tilings.qmd) — The combinatorial framework underlying the geometric engineering constructions
-- [Tensor Networks](notes/tensor-networks.qmd) — MPS, DMRG, and the numerical methods used for boundary RG flows
-- [Monte Carlo Methods](notes/monte-carlo.qmd) — Worm and cluster algorithms, error analysis
-- [2D CFT, Orbifolding, and the Swampland](notes/2d-cft-swampland.qmd) — Background for the discrete gauging and WGC project
-- [Mirror Symmetry and T-Duality](notes/mirror-symmetry.qmd) — Geometric dualities relevant to the mirror symmetry project
-- [Machine Learning and Neural Networks](notes/machine-learning.qmd) — Diffusion models, normalizing flows, and connections to statistical physics
+- [Brane Tilings and SCFTs](notes/brane-tilings.qmd) --- The combinatorial framework underlying the geometric engineering constructions
+- [Tensor Networks](notes/tensor-networks.qmd) --- MPS, DMRG, tree tensor networks, random tensors, and holographic connections
+- [Monte Carlo Methods](notes/monte-carlo.qmd) --- Worm and cluster algorithms, error analysis
+- [2D CFT, Orbifolding, and the Swampland](notes/2d-cft-swampland.qmd) --- Background for the discrete gauging and WGC project
+- [Mirror Symmetry and T-Duality](notes/mirror-symmetry.qmd) --- Geometric dualities relevant to the mirror symmetry project
+- [Machine Learning and Neural Networks](notes/machine-learning.qmd) --- Diffusion models, normalizing flows, grokking, and physics-ML connections
+- [Deep Learning Architectures](notes/deep-learning-architectures.qmd) --- RNNs, CNNs, transformers, graph neural networks
+- [Large Language Models](notes/large-language-models.qmd) --- Scaling laws, RLHF, emergent abilities
+- [Reinforcement Learning](notes/reinforcement-learning.qmd) --- MDPs, policy gradients, PPO, actor-critic
+- [Quantum Foundations](notes/quantum-foundations.qmd) --- Measurement, decoherence, quantum eraser, Everettian QM
+- [Measurement-Induced Phase Transitions](notes/measurement-induced-transitions.qmd) --- Entanglement transitions in monitored quantum circuits
 
-See [Publications](publications.qmd) for papers and preprints.
+See [Publications & Presentations](publications.qmd) for papers, talks, and conference participation.

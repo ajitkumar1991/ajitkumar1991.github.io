@@ -21,9 +21,9 @@ toc: false
 
 ::: {.g-col-12 .g-col-md-9}
 
-I develop theoretical and computational tools to understand **strongly coupled quantum field theories**. On the high-energy side, I use string theory and geometric engineering to construct and analyze four-dimensional superconformal field theories — building Lagrangian descriptions of non-Lagrangian theories, organizing IR phase diagrams, and classifying S-dual families. On the condensed-matter side, I investigate symmetry-enriched criticality and superfluidity with long-range interactions using tensor networks and Monte Carlo methods.
+I develop theoretical and computational tools to understand **strongly coupled quantum field theories**. On the high-energy side, I use string theory and geometric engineering to construct and analyze four-dimensional superconformal field theories — building Lagrangian descriptions of non-Lagrangian theories, organizing IR phase diagrams, and classifying S-dual families. On the condensed-matter side, I investigate symmetry-enriched criticality and superfluidity with long-range interactions using tensor networks and Monte Carlo methods. I also study the mathematical structures of **machine learning** — transformers, diffusion models, and reinforcement learning — through the lens of statistical physics.
 
-A unifying thread is the use of string-theoretic and conformal-field-theoretic structures — generalized symmetries, dualities, and categorical data — to illuminate physics in both domains.
+A unifying thread is the use of string-theoretic and conformal-field-theoretic structures — generalized symmetries, dualities, and categorical data — to illuminate physics across domains.
 
 :::
 
@@ -110,6 +110,16 @@ The quad-CFT framework from the perspective of **type IIA mirror geometry** with
 
 :::
 
+::: {.g-col-12 .g-col-md-6}
+
+### Impurity Dynamics in Dirac Fermion Systems
+
+How a localized impurity interacts with a bath of **massless Dirac fermions** --- modified Kondo physics due to the vanishing density of states at the Fermi level. Published with Sarkar and Gangadharaiah.
+
+- [Research details →](research.qmd#condensed-matter)
+
+:::
+
 :::
 
 ---
@@ -118,18 +128,46 @@ The quad-CFT framework from the perspective of **type IIA mirror geometry** with
 
 Technical expositions on the methods and frameworks underlying my research:
 
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+
+**Physics & Mathematics**
+
 | | |
 |:--|:--|
-| **[Brane Tilings](notes/brane-tilings.qmd)** | Orientifolds, geometric engineering, brane bending, Seiberg duality |
-| **[Tensor Networks](notes/tensor-networks.qmd)** | MPS, DMRG, entanglement entropy, TCI, quantics, holography |
-| **[Monte Carlo Methods](notes/monte-carlo.qmd)** | Metropolis, cluster, worm algorithms, bootstrap, jackknife, blocking |
-| **[2D CFT & Swampland](notes/2d-cft-swampland.qmd)** | Virasoro algebra, modular invariance, orbifolds, swampland conjectures |
-| **[Mirror Symmetry](notes/mirror-symmetry.qmd)** | Calabi-Yau pairs, T-duality, SYZ, enumerative geometry |
-| **[Machine Learning](notes/machine-learning.qmd)** | Transformers, diffusion models, normalizing flows, grokking |
+| **[Brane Tilings](notes/brane-tilings.qmd)** | Geometric engineering, orientifolds, Seiberg duality |
+| **[Tensor Networks](notes/tensor-networks.qmd)** | MPS, DMRG, entanglement entropy, TCI, holography |
+| **[Monte Carlo Methods](notes/monte-carlo.qmd)** | Metropolis, cluster, worm algorithms, error analysis |
+| **[2D CFT & Swampland](notes/2d-cft-swampland.qmd)** | Virasoro algebra, modular invariance, orbifolds |
+| **[Mirror Symmetry](notes/mirror-symmetry.qmd)** | Calabi-Yau pairs, T-duality, SYZ conjecture |
+| **[Quantum Foundations](notes/quantum-foundations.qmd)** | Quantum eraser, decoherence, Everettian QM |
+| **[Measurement-Induced Transitions](notes/measurement-induced-transitions.qmd)** | Entanglement transitions, monitored circuits, QEC |
 
-: {tbl-colwidths="[35,65]"}
+: {tbl-colwidths="[40,60]"}
 
-Browse [all notes](notes/index.qmd) or explore the [Computational Tools](tools/index.qmd).
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+**Machine Learning & Computation**
+
+| | |
+|:--|:--|
+| **[Machine Learning](notes/machine-learning.qmd)** | Neural nets, diffusion models, normalizing flows, grokking |
+| **[Deep Learning Architectures](notes/deep-learning-architectures.qmd)** | RNNs, CNNs, LSTMs, attention, transformers |
+| **[Large Language Models](notes/large-language-models.qmd)** | Scaling laws, RLHF, emergent abilities, chain-of-thought |
+| **[Reinforcement Learning](notes/reinforcement-learning.qmd)** | MDPs, policy gradients, PPO, actor-critic |
+| **[Computational Applications](notes/computational-applications.qmd)** | MC in finance, tensor networks for data, RMT |
+| **[Group Theory in QM](notes/group-theory-qm.qmd)** | Representations, symmetry, Clebsch-Gordan |
+
+: {tbl-colwidths="[40,60]"}
+
+:::
+
+:::
+
+Browse [all 14 notes](notes/index.qmd) or explore the [Computational Methods](tools/index.qmd).
 
 ---
 

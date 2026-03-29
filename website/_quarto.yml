@@ -4,7 +4,7 @@ project:
 
 website:
   title: "Ajit Kumar Sorout"
-  description: "Physics PhD Student | String Theory - Condensed Matter - Computational Physics"
+  description: "Physics PhD Student | String Theory - Condensed Matter - Computational Physics - Machine Learning"
   site-url: "https://ajitkumar1991.github.io"
 
   navbar:
@@ -22,7 +22,7 @@ website:
           - href: blog/index.qmd
             text: Blog
       - href: tools/index.qmd
-        text: Computational Tools
+        text: Computational Methods
       - href: publications.qmd
         text: Publications
       - text: More
@@ -69,13 +69,23 @@ website:
             - notes/tensor-networks.qmd
             - notes/monte-carlo.qmd
             - notes/quantum-information.qmd
-        - section: "Methods & Foundations"
+        - section: "Machine Learning & AI"
           contents:
             - notes/machine-learning.qmd
+            - notes/deep-learning-architectures.qmd
+            - notes/large-language-models.qmd
+            - notes/reinforcement-learning.qmd
+        - section: "Quantum Foundations"
+          contents:
+            - notes/quantum-foundations.qmd
+            - notes/measurement-induced-transitions.qmd
+        - section: "Methods & Mathematics"
+          contents:
             - notes/group-theory-qm.qmd
+            - notes/computational-applications.qmd
 
     - id: tools-sidebar
-      title: "Computational Tools"
+      title: "Computational Methods"
       style: floating
       contents:
         - tools/index.qmd
@@ -93,7 +103,7 @@ website:
           contents:
             - text: "Notes & Expositions"
               href: notes/index.qmd
-            - text: "Computational Tools"
+            - text: "Computational Methods"
               href: tools/index.qmd
 
   search: true

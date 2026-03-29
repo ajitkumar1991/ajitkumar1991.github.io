@@ -5,7 +5,7 @@ sidebar: notes-sidebar
 toc: false
 ---
 
-These are extended technical notes on topics I work with or find interesting. They are written at a level between a textbook and a research paper — rigorous enough to be useful as references, but with enough motivation and context to serve as introductions for graduate students entering the subject.
+These are extended technical notes on topics I work with or find interesting. They are written at a level between a textbook and a research paper --- rigorous enough to be useful as references, but with enough motivation and context to serve as introductions for graduate students entering the subject.
 
 Each note is tagged with a difficulty level:
 
@@ -21,17 +21,17 @@ Use the sidebar to navigate between topics.
 
 ::: {.callout-note appearance="minimal" icon=false}
 ### [Brane Tilings and 4D Supersymmetric Field Theory](brane-tilings.qmd) {.unnumbered}
-*Advanced / Research-level* — Brane tilings, orientifold projections, geometric engineering of $\mathcal{N}=1$ SCFTs, brane bending, and S-duality.
+*Advanced / Research-level* --- Brane tilings, orientifold projections, geometric engineering of $\mathcal{N}=1$ SCFTs, brane bending, and S-duality.
 :::
 
 ::: {.callout-note appearance="minimal" icon=false}
 ### [Mirror Symmetry and T-Duality](mirror-symmetry.qmd) {.unnumbered}
-*Advanced* — Calabi-Yau mirror pairs, T-duality, the SYZ conjecture, and connections to brane constructions.
+*Advanced* --- Calabi-Yau mirror pairs, T-duality, the SYZ conjecture, and connections to brane constructions.
 :::
 
 ::: {.callout-note appearance="minimal" icon=false}
 ### [2D CFT, Orbifolding, and the Swampland](2d-cft-swampland.qmd) {.unnumbered}
-*Advanced / Research-level* — Virasoro algebra, modular invariance, orbifolds, zeta regularization, and swampland conjectures.
+*Advanced / Research-level* --- Virasoro algebra, modular invariance, orbifolds, zeta regularization, and swampland conjectures.
 :::
 
 ---
@@ -40,29 +40,67 @@ Use the sidebar to navigate between topics.
 
 ::: {.callout-note appearance="minimal" icon=false}
 ### [Tensor Networks](tensor-networks.qmd) {.unnumbered}
-*Advanced* — MPS, DMRG, entanglement entropy, correlation functions, TCI, quantics methods, and connections to holography.
+*Advanced* --- MPS, DMRG, entanglement entropy, correlation functions, TCI, quantics methods, and connections to holography.
 :::
 
 ::: {.callout-note appearance="minimal" icon=false}
 ### [Monte Carlo and Computational Statistical Physics](monte-carlo.qmd) {.unnumbered}
-*Advanced* — Metropolis algorithm, cluster and worm algorithms, error analysis (bootstrap, jackknife, blocking), autocorrelation.
+*Advanced* --- Metropolis algorithm, cluster and worm algorithms, error analysis (bootstrap, jackknife, blocking), autocorrelation.
 :::
 
 ::: {.callout-note appearance="minimal" icon=false}
 ### [Quantum Information and Computation](quantum-information.qmd) {.unnumbered}
-*Advanced* — No-cloning theorem, quantum state discrimination, entanglement, and connections to tensor networks.
+*Advanced* --- No-cloning theorem, quantum state discrimination, entanglement, and connections to tensor networks.
 :::
 
 ---
 
-## Methods & Foundations
+## Machine Learning & AI
 
 ::: {.callout-note appearance="minimal" icon=false}
 ### [Machine Learning and Neural Networks](machine-learning.qmd) {.unnumbered}
-*Advanced* — Neural networks, transformers, diffusion models, normalizing flows, grokking, and manifold learning.
+*Advanced* --- Neural network fundamentals, transformers, diffusion models, normalizing flows, grokking, manifold learning, and physics-ML connections.
 :::
 
 ::: {.callout-note appearance="minimal" icon=false}
+### [Deep Learning Architectures: From RNNs to Transformers](deep-learning-architectures.qmd) {.unnumbered}
+*Advanced* --- RNNs, LSTMs, CNNs, the evolution of sequence models, attention variants, and the path to the transformer revolution.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Large Language Models](large-language-models.qmd) {.unnumbered}
+*Advanced* --- Scaling laws, tokenization, pretraining, RLHF, emergent abilities, chain-of-thought reasoning, and the landscape of modern LLMs.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Reinforcement Learning](reinforcement-learning.qmd) {.unnumbered}
+*Advanced* --- MDPs, policy gradients, Q-learning, actor-critic methods, and connections to RLHF and physics optimization.
+:::
+
+---
+
+## Quantum Foundations
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Quantum Foundations: Measurement, Decoherence, and Interpretations](quantum-foundations.qmd) {.unnumbered}
+*Advanced* --- The measurement problem, decoherence, quantum eraser, delayed-choice experiments, Everettian quantum mechanics, and which-path information.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Measurement-Induced Phase Transitions](measurement-induced-transitions.qmd) {.unnumbered}
+*Advanced / Research-level* --- Entanglement transitions in monitored quantum circuits, the competition between unitary dynamics and measurement, and connections to error correction.
+:::
+
+---
+
+## Methods & Mathematics
+
+::: {.callout-note appearance="minimal" icon=false}
 ### [Group Theory in Quantum Mechanics](group-theory-qm.qmd) {.unnumbered}
-*Introductory / Advanced* — Representations, symmetry and degeneracy, Clebsch-Gordan coefficients, and worked examples.
+*Introductory / Advanced* --- Representations, symmetry and degeneracy, Clebsch-Gordan coefficients, and worked examples.
+:::
+
+::: {.callout-note appearance="minimal" icon=false}
+### [Computational Methods Across Disciplines](computational-applications.qmd) {.unnumbered}
+*Advanced* --- Monte Carlo in finance, ML for quantitative research, tensor-network-inspired data analysis, and cross-disciplinary computational methods.
 :::

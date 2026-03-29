@@ -1,0 +1,442 @@
+---
+title: "Large Language Models"
+subtitle: "Scaling, alignment, and the structure of learned representations"
+description: "A physicist's perspective on large language models: scaling laws, tokenization, pretraining objectives, RLHF, emergent abilities, in-context learning, chain-of-thought reasoning, and the theoretical landscape."
+author: "Ajit Kumar Sorout"
+date: 2026-03-29
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+## Introduction
+
+Large language models are, from the standpoint of physics, among the most interesting complex systems to have emerged from engineering. They are not interesting because they generate fluent text — that is an engineering achievement. They are interesting because they exhibit **scaling laws**, **phase-transition-like behavior**, and **emergent capabilities** that were not explicitly designed into them. These are precisely the signatures that, in physics, signal the presence of underlying principles waiting to be identified.
+
+The central object of study is a parametric probability distribution $P_\theta(x_1, x_2, \ldots, x_n)$ over sequences of discrete tokens, where $\theta$ denotes the parameters of a neural network (typically a transformer) with anywhere from $10^8$ to $10^{12}$ trainable weights. The model is trained to minimize the cross-entropy loss on a corpus of text drawn from the internet, books, and code repositories — a dataset comprising trillions of tokens. The result is a system that, at sufficient scale, can perform arithmetic, write code, translate between languages, reason about novel problems, and exhibit behaviors that were never explicitly supervised.
+
+A physicist encountering this for the first time should ask: what are the relevant degrees of freedom? What are the order parameters? What is the effective theory? These notes attempt to develop the technical foundations needed to approach these questions seriously. We begin with the seemingly mundane question of how text is converted into numbers (tokenization), proceed through the training objective and its information-theoretic interpretation, examine the empirical scaling laws that govern performance as a function of model size and data, and then turn to the phenomena that make LLMs genuinely surprising: emergent abilities, in-context learning, chain-of-thought reasoning, and the internal representations that the model learns. We also treat reinforcement learning from human feedback (RLHF), the technique that transforms a raw language model into a system that can follow instructions and engage in dialogue.
+
+Throughout, we draw connections to statistical physics, information theory, and the theory of computation — not as loose analogies, but as structural parallels that may point toward a deeper theoretical understanding. The goal is not to mystify these systems but to understand them at the level of mathematical structure, the same way a physicist understands any other complex system: by identifying the right variables, the right symmetries, and the right effective description.
+
+## Tokenization and Input Representation
+
+### Why Tokenization Matters
+
+Before a language model can process text, it must convert a string of characters into a sequence of discrete tokens drawn from a finite vocabulary $\mathcal{V}$. This is not a mere preprocessing step — it defines the fundamental "lattice" on which the model operates. Just as the choice of lattice spacing in a lattice field theory affects the physics you can describe (and introduces lattice artifacts), the choice of tokenization affects what the model can efficiently represent.
+
+A character-level model operates on a vocabulary of $|\mathcal{V}| \sim 256$ tokens (for UTF-8 bytes). This is fine-grained but forces the model to learn long-range dependencies over many time steps. A word-level model has $|\mathcal{V}| \sim 10^5$ or more, but cannot handle novel words, misspellings, or morphological variation. Modern LLMs use **subword tokenization**, which finds a middle ground: the vocabulary consists of commonly occurring character sequences (subwords), with typical sizes $|\mathcal{V}| \sim 32{,}000$ to $128{,}000$.
+
+### Byte-Pair Encoding
+
+The dominant algorithm is **byte-pair encoding** (BPE), originally a data compression method (Gage, 1994), adapted for NLP by Sennrich et al. (2016). The algorithm is simple:
+
+1. Initialize the vocabulary with all individual characters (or bytes).
+2. Count the frequency of all adjacent token pairs in the training corpus.
+3. Merge the most frequent pair into a new token; add it to the vocabulary.
+4. Repeat steps 2--3 until the vocabulary reaches the desired size $|\mathcal{V}|$.
+
+The key insight is that BPE finds a **compression-optimal vocabulary** for the training distribution. Frequent character sequences (common words, morphemes) are represented as single tokens, while rare sequences are decomposed into smaller pieces. This is directly analogous to building an optimal codebook in information theory: the vocabulary is adapted to the source distribution to minimize the expected sequence length.
+
+**SentencePiece** (Kudo and Richardson, 2018) treats the input as a raw byte stream (no pre-tokenization by whitespace) and applies a unigram language model or BPE to learn the vocabulary. This makes it language-agnostic and avoids assumptions about word boundaries. **WordPiece** (Schuster and Nakajima, 2012), used in BERT, is similar to BPE but selects merges based on likelihood improvement rather than raw frequency. In practice, the differences between these methods are modest; what matters most is the vocabulary size and the training data distribution.
+
+### Embeddings as Points in High-Dimensional Space
+
+Once we have a vocabulary $\mathcal{V}$ with $V = |\mathcal{V}|$ tokens, each token $t \in \mathcal{V}$ is mapped to a dense vector $\mathbf{e}_t \in \mathbb{R}^d$ via a learned **embedding matrix**:
+$$
+E \in \mathbb{R}^{V \times d}
+$$
+The embedding of token $t$ is obtained by left-multiplying the one-hot vector $\mathbf{1}_t \in \mathbb{R}^V$ by $E$:
+$$
+\mathbf{e}_t = E^\top \mathbf{1}_t = E[t, :]
+$$
+This is simply a lookup operation, but the geometric structure of the embedding space is rich. After training, semantically related tokens tend to cluster together, and certain semantic relationships are encoded as approximately linear directions (the classic example: the vector from "king" to "queen" is approximately the same as from "man" to "woman"). The embedding space is the first place where the model represents linguistic structure geometrically, and it sets the stage for the much richer representations that emerge in the hidden layers of the transformer.
+
+Positional information must also be injected, since the transformer architecture is permutation-equivariant with respect to input positions. The original transformer used fixed sinusoidal position encodings; modern models typically use **Rotary Position Embeddings** (RoPE), which encode relative positions through rotations in the embedding space — a construction with a natural interpretation in terms of the representation theory of the group of translations.
+
+## Pretraining: Next-Token Prediction
+
+### The Autoregressive Objective
+
+The pretraining objective for GPT-style models is **autoregressive language modeling**: given a sequence of tokens $(x_1, x_2, \ldots, x_n)$, the model learns to predict each token given all preceding tokens. By the chain rule of probability, the joint distribution factorizes as:
+$$
+P(x_1, x_2, \ldots, x_n) = \prod_{t=1}^{n} P(x_t \mid x_1, \ldots, x_{t-1})
+$$
+
+The model parameterizes each conditional distribution $P_\theta(x_t \mid x_{<t})$ using a transformer network. The output at position $t$ is a vector of logits $\mathbf{z}_t \in \mathbb{R}^V$, converted to probabilities via the softmax function:
+$$
+P_\theta(x_t = v \mid x_{<t}) = \frac{\exp(z_{t,v})}{\sum_{v'=1}^{V} \exp(z_{t,v'})}
+$$
+
+### Cross-Entropy Loss and Information Theory
+
+The training loss is the **cross-entropy** between the empirical data distribution and the model distribution, averaged over the training corpus:
+$$
+\mathcal{L}(\theta) = -\frac{1}{N} \sum_{i=1}^{N} \sum_{t=1}^{n_i} \log P_\theta(x_t^{(i)} \mid x_{<t}^{(i)})
+$$
+
+This has a clean information-theoretic interpretation. Let $p$ denote the true distribution of natural language and $q_\theta$ the model distribution. The cross-entropy is:
+$$
+H(p, q_\theta) = -\mathbb{E}_{x \sim p}[\log q_\theta(x)] = H(p) + D_{\mathrm{KL}}(p \| q_\theta)
+$$
+where $H(p)$ is the entropy of natural language and $D_{\mathrm{KL}}(p \| q_\theta) \geq 0$ is the Kullback-Leibler divergence. A perfect model ($q_\theta = p$) achieves $\mathcal{L} = H(p)$, the irreducible entropy of natural language. Shannon (1951) estimated this at roughly 1--1.5 bits per character for English; modern LLMs achieve losses corresponding to roughly 0.7--0.9 bits per character on standard benchmarks, suggesting they capture a significant fraction of the statistical structure of language.
+
+The fact that the loss is bounded below by $H(p)$ is the fundamental reason why scaling laws eventually saturate: no amount of model capacity or data can push the loss below the intrinsic randomness of language.
+
+### Masked vs. Autoregressive Modeling
+
+An alternative factorization of the joint distribution is used by **masked language models** like BERT (Devlin et al., 2019). Instead of predicting tokens left-to-right, BERT masks a random subset of tokens and predicts them from context:
+$$
+\mathcal{L}_{\mathrm{MLM}} = -\mathbb{E}\left[\sum_{t \in \mathcal{M}} \log P_\theta(x_t \mid x_{\backslash \mathcal{M}})\right]
+$$
+where $\mathcal{M}$ is the set of masked positions and $x_{\backslash \mathcal{M}}$ denotes the unmasked tokens. This corresponds to a different factorization of the joint distribution — one that conditions on a random subset rather than a prefix. BERT-style models are powerful for representation learning but cannot directly generate text autoregressively, which is why the GPT-style autoregressive approach has become dominant for large-scale language modeling.
+
+### The Training Data Question
+
+The training corpus for a modern LLM typically comprises several trillion tokens drawn from web crawls (Common Crawl), books, Wikipedia, code repositories, and curated datasets. Data quality matters enormously: deduplication, filtering of low-quality text, and careful data mixing ratios all affect final model quality. The Chinchilla scaling laws (discussed below) show that data quantity is just as important as model size — a finding that has driven massive efforts in data curation and the creation of high-quality datasets like RedPajama, The Pile, and FineWeb.
+
+From an information-theoretic perspective, the training data defines the empirical distribution $\hat{p}$ that the model learns to approximate. Biases and gaps in the training data directly translate into biases and gaps in the model's world knowledge, which is why data curation is not merely an engineering concern but a fundamental limitation.
+
+## Scaling Laws
+
+### Empirical Power Laws
+
+One of the most striking empirical discoveries in the field of large language models is that the cross-entropy loss follows remarkably clean **power laws** as a function of model size $N$ (number of parameters), dataset size $D$ (number of tokens), and compute budget $C$ (floating-point operations).
+
+Kaplan et al. (2020) found that, when each variable is scaled independently (with the others sufficiently large), the loss follows:
+$$
+L(N) \approx \left(\frac{N_c}{N}\right)^{\alpha_N}, \quad L(D) \approx \left(\frac{D_c}{D}\right)^{\alpha_D}, \quad L(C) \approx \left(\frac{C_c}{C}\right)^{\alpha_C}
+$$
+with exponents $\alpha_N \approx 0.076$, $\alpha_D \approx 0.095$, and $\alpha_C \approx 0.050$. These power laws span several orders of magnitude and hold across different model architectures, with the exponents varying only modestly.
+
+### Chinchilla-Optimal Scaling
+
+Hoffmann et al. (2022) refined these scaling laws by training over 400 models ranging from 70M to 16B parameters and found that the Kaplan et al. analysis had overestimated the optimal model size for a given compute budget. The Chinchilla scaling law proposes a joint parameterization:
+$$
+L(N, D) = \frac{A}{N^{\alpha}} + \frac{B}{D^{\beta}} + L_{\infty}
+$$
+where $L_{\infty}$ represents the irreducible loss (the entropy of natural language), and the optimal allocation for a given compute budget $C \propto ND$ (since compute scales as the product of model size and data) is:
+$$
+N_{\mathrm{opt}} \propto C^{a}, \quad D_{\mathrm{opt}} \propto C^{b}
+$$
+with $a \approx b \approx 0.5$, meaning that model size and data should be scaled **equally**. This was a significant correction: Kaplan et al. had suggested scaling model size faster than data, leading to "undertrained" large models. The Chinchilla result implies that a 70B parameter model trained on 1.4T tokens (Chinchilla) outperforms a 280B parameter model trained on 300B tokens (Gopher) despite using the same compute budget.
+
+### The Physics of Power Laws
+
+To a physicist, the appearance of power laws is immediately suggestive. In statistical physics, power-law behavior emerges at **critical points** — at phase transitions where the correlation length diverges and the system becomes scale-invariant. The scaling laws of LLMs raise a natural question: is there a sense in which these models are operating near a critical point in some abstract parameter space?
+
+The analogy is suggestive but should be treated with care. In statistical physics, power laws emerge from the renormalization group and reflect the universality class of the phase transition. In LLMs, the power laws describe how the loss (a measure of model quality) decreases with resources. One possible interpretation is that the data distribution of natural language itself has a hierarchical, scale-free structure — reflecting the nested compositional structure of language, from characters to words to phrases to sentences to documents — and the power-law scaling of the loss reflects the model's progressive capture of structure at each scale.
+
+Caballero et al. (2023) studied **broken neural scaling laws**: regimes where the simple power-law relationship breaks down. They found that the loss can exhibit multiple scaling regimes with different exponents, separated by transitions. Whether these transitions are related to the model acquiring qualitatively new capabilities is an open and important question.
+
+### Compute-Optimal vs. Inference-Optimal Training
+
+The Chinchilla analysis optimizes for a fixed training compute budget. But in practice, inference costs dominate: a model is trained once but queried billions of times. This creates an incentive to train **smaller models for longer** (on more data than Chinchilla-optimal), producing models that are "overtrained" by Chinchilla standards but more efficient at inference time. The LLaMA family of models (Touvron et al., 2023) explicitly adopted this strategy, training 7B and 13B parameter models on 1--2T tokens, far beyond the Chinchilla-optimal data allocation. This trade-off between training efficiency and inference efficiency is a practical but theoretically interesting constraint.
+
+## Architecture Details at Scale
+
+### Decoder-Only Transformers
+
+The dominant architecture for large language models is the **decoder-only transformer**, as used in the GPT family. This consists of a stack of $L$ transformer blocks, each containing:
+
+1. **Multi-head self-attention**: given input $X \in \mathbb{R}^{n \times d}$ (where $n$ is the sequence length and $d$ the model dimension), compute queries, keys, and values:
+$$
+Q = XW_Q, \quad K = XW_K, \quad V = XW_V
+$$
+with $W_Q, W_K \in \mathbb{R}^{d \times d_k}$ and $W_V \in \mathbb{R}^{d \times d_v}$. The attention output is:
+$$
+\mathrm{Attn}(Q, K, V) = \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right) V
+$$
+where $M$ is a causal mask that sets $M_{ij} = -\infty$ for $j > i$, enforcing the autoregressive property.
+
+2. **Feed-forward network (FFN)**: a two-layer MLP applied position-wise:
+$$
+\mathrm{FFN}(x) = W_2 \, \sigma(W_1 x + b_1) + b_2
+$$
+with a nonlinearity $\sigma$ (typically GeLU or SwiGLU in modern models).
+
+3. **Residual connections and layer normalization**: each sub-layer's output is added to its input (residual connection), and layer normalization is applied. Modern models typically use **pre-norm** (normalize before the sub-layer) or **RMSNorm** rather than post-norm.
+
+### Key-Value Caching
+
+During autoregressive generation, the model generates one token at a time. Naively, each new token requires recomputing attention over the entire sequence, leading to $O(n^2)$ cost for generating $n$ tokens. **KV caching** stores the key and value matrices from previous time steps, so that at step $t$, only the new query vector needs to be computed and attended against the cached keys and values. This reduces the generation cost to $O(n)$ per token (excluding the initial prompt processing).
+
+For large context windows and large models, the KV cache itself becomes a significant memory bottleneck. Techniques like **grouped-query attention** (GQA) and **multi-query attention** (MQA), where multiple query heads share a single set of keys and values, reduce the KV cache size by a factor of the number of heads sharing.
+
+### Extending the Context Window
+
+Early models like GPT-3 had a context window of 2048 tokens. Modern models support 128K tokens or more. Extending the context window is non-trivial because position encodings must generalize to lengths not seen during training.
+
+**Rotary Position Embeddings (RoPE)** encode relative positions by applying a rotation matrix to query and key vectors. For a pair of dimensions $(q_{2i}, q_{2i+1})$ at position $m$:
+$$
+\begin{pmatrix} q_{2i}' \\ q_{2i+1}' \end{pmatrix} = \begin{pmatrix} \cos(m\omega_i) & -\sin(m\omega_i) \\ \sin(m\omega_i) & \cos(m\omega_i) \end{pmatrix} \begin{pmatrix} q_{2i} \\ q_{2i+1} \end{pmatrix}
+$$
+where $\omega_i = \theta^{-2i/d}$ for a base frequency $\theta$. The inner product $q_m \cdot k_n$ then depends only on the relative position $m - n$. To extend context, one can scale the frequencies (NTK-aware scaling) or apply position interpolation to map new positions into the trained range.
+
+**ALiBi** (Attention with Linear Biases) takes a different approach: instead of position embeddings, it adds a linear bias $-\lambda |i - j|$ to the attention logits, where $\lambda$ varies across heads. This has the advantage of requiring no learned position parameters and generalizing naturally to longer sequences.
+
+### Mixture of Experts
+
+**Mixture of Experts (MoE)** models, such as Mixtral (Jiang et al., 2024) and GShard, replace the dense FFN in each transformer block with a collection of $E$ "expert" FFNs, of which only $k \ll E$ are activated for each token. A learned **router** network computes gating scores:
+$$
+g(x) = \mathrm{softmax}(W_r x)
+$$
+and selects the top-$k$ experts. The output is a weighted sum:
+$$
+\mathrm{MoE}(x) = \sum_{i \in \mathrm{Top\text{-}k}(g(x))} g_i(x) \cdot \mathrm{FFN}_i(x)
+$$
+
+MoE allows scaling the total parameter count (and thus the model's capacity) while keeping the per-token compute roughly constant — only $k$ out of $E$ experts are active for each token. The challenge is **load balancing**: ensuring that tokens are distributed roughly evenly across experts, which requires auxiliary losses during training.
+
+### Landmark Models
+
+Several models have been architectural landmarks. **GPT-3** (Brown et al., 2020) demonstrated that a 175B parameter dense transformer, trained on 300B tokens, could perform few-shot learning across a wide range of tasks. **PaLM** (Chowdhery et al., 2022) scaled to 540B parameters and demonstrated strong reasoning and code generation. **LLaMA** (Touvron et al., 2023) showed that smaller, well-trained open models (7B--65B parameters, trained on 1--1.4T tokens) could match or exceed much larger models, validating the Chinchilla-optimal training philosophy. **Claude** (Anthropic) and **Gemini** (Google DeepMind) represent state-of-the-art systems optimized for helpfulness, safety, and long-context reasoning. Each of these models contributed to our understanding of how architecture, scale, data, and training methodology interact.
+
+## Emergent Abilities and Phase Transitions
+
+### Sharp Transitions in Capability
+
+Wei et al. (2022) documented a striking phenomenon: certain capabilities of language models appear to **emerge sharply** at a particular model scale, being essentially absent in smaller models and present in larger ones. Examples include:
+
+- **Multi-digit arithmetic**: models below a certain size fail almost completely; above it, they succeed with high accuracy.
+- **Multi-step logical reasoning**: similar threshold behavior.
+- **Code generation**: the ability to write syntactically and semantically correct code appears to require a minimum model scale.
+
+This behavior is reminiscent of **phase transitions** in statistical physics: a qualitative change in the macroscopic behavior of the system as a control parameter (here, model size) crosses a critical threshold. In physics, phase transitions are classified by the behavior of the order parameter: first-order transitions exhibit discontinuities; continuous transitions exhibit power-law singularities. The emergent abilities of LLMs, as originally reported, resemble first-order transitions --- a discontinuous jump from failure to success. There is a conceptual connection to **grokking** (see the [Machine Learning notes](machine-learning.qmd#grokking-delayed-generalization)), where networks trained on small algorithmic datasets exhibit a sharp transition from memorization to generalization after extended training. Both phenomena suggest that neural networks can undergo qualitative capability changes as a control parameter crosses a threshold.
+
+### The Measurement Debate
+
+Schaeffer, Miranda, and Koyejo (2023) argued that the apparent sharpness of emergent abilities is, at least in part, a **measurement artifact**. Their key insight: if a benchmark uses a nonlinear, threshold-like metric (e.g., exact-match accuracy, where a response is scored 1 if perfectly correct and 0 otherwise), then even a gradual improvement in the model's underlying capability can appear as a sharp transition in the metric. When they re-evaluated the same models using smooth metrics (e.g., token-level edit distance, log-likelihood of the correct answer), the transitions appeared much more gradual.
+
+From a physicist's perspective, this debate is illuminating but should not be overinterpreted. In statistical physics, the apparent sharpness of a phase transition also depends on the observable you measure and the system size. The magnetization of an Ising model shows a sharp transition at $T_c$; the energy shows a kink; the specific heat shows a divergence. Different observables reveal different aspects of the same underlying phenomenon. The fact that emergent abilities look sharp under some metrics and gradual under others does not mean the underlying phenomenon is uninteresting — it means we need to identify the right order parameter.
+
+The deeper question is whether there are **genuine qualitative changes** in the model's computational capabilities at certain scales — for example, the onset of the ability to perform multi-step reasoning, or the ability to represent certain compositional structures. This remains open.
+
+### In-Context Learning
+
+One of the most remarkable properties of large language models is **in-context learning** (ICL): the ability to learn from examples provided in the prompt, without any gradient updates. Given a prompt of the form:
+
+```
+Input: Le chat -> Output: The cat
+Input: Le chien -> Output: The dog
+Input: La maison -> Output:
+```
+
+the model can correctly produce "The house" — it has inferred the task (French-to-English translation) from the examples and applied it to a new input, all within a single forward pass.
+
+This is striking because the model's parameters are frozen during inference. The "learning" happens entirely through the attention mechanism, which allows later tokens to attend to and extract information from earlier tokens. In-context learning is a form of **meta-learning**: during pretraining, the model learns to learn from context, because the pretraining data contains many implicit examples of pattern completion.
+
+### Connection to Bayesian Inference
+
+Several theoretical works have proposed that in-context learning can be understood as **implicit Bayesian inference**. The idea is as follows: during pretraining, the model encounters text generated by many different "tasks" or "concepts" $\tau$ drawn from a prior $p(\tau)$. At inference time, the in-context examples provide evidence about which task $\tau$ is relevant, and the model's prediction implicitly marginalizes over the posterior:
+$$
+P(y \mid x_{\mathrm{test}}, \{(x_i, y_i)\}) \approx \sum_{\tau} P(y \mid x_{\mathrm{test}}, \tau) \, P(\tau \mid \{(x_i, y_i)\})
+$$
+
+Xie et al. (2022) formalized this perspective and showed that transformer models trained on mixtures of Hidden Markov Models (HMMs) perform in-context learning that closely matches the Bayes-optimal predictor. This is a beautiful result: it connects the empirical phenomenon of in-context learning to a well-understood framework in statistical inference, and it suggests that the transformer's attention mechanism is sufficiently expressive to implement (approximate) Bayesian updating.
+
+## Reinforcement Learning from Human Feedback (RLHF)
+
+```{mermaid}
+%%| label: fig-rlhf-pipeline
+%%| fig-cap: "The three stages of RLHF: supervised fine-tuning on curated data, training a reward model from human preferences, and PPO optimization against the reward model with a KL penalty."
+%%| fig-width: 7
+flowchart LR
+    PT["Pretrained\nLLM"] -->|"Stage 1"| SFT["SFT Model\n(instruction tuning)"]
+    SFT -->|"Stage 2"| RM["Reward Model\nR(x, y)"]
+    SFT -->|"Stage 3"| PPO["PPO\nOptimization"]
+    RM -->|"reward signal"| PPO
+    PPO --> Final["Aligned\nModel"]
+    HP["Human\nPreferences"] -->|"comparison data"| RM
+```
+
+### The Alignment Problem
+
+A language model trained purely by next-token prediction is a **text completer**, not a helpful assistant. It will happily continue any text in a way that is statistically consistent with its training data — including toxic, harmful, or factually incorrect text. The **alignment problem** is the challenge of shaping the model's behavior to be helpful, harmless, and honest.
+
+### Supervised Fine-Tuning
+
+The first step is **supervised fine-tuning** (SFT): training the pretrained model on a curated dataset of instruction-response pairs, where human labelers have written high-quality responses to diverse prompts. This shifts the model's output distribution from "text that might appear on the internet" toward "text that a helpful assistant would produce."
+
+Mathematically, SFT is simply further training with the same cross-entropy objective, but on a different data distribution:
+$$
+\mathcal{L}_{\mathrm{SFT}} = -\mathbb{E}_{(x,y) \sim \mathcal{D}_{\mathrm{SFT}}} \left[\sum_{t=1}^{|y|} \log P_\theta(y_t \mid x, y_{<t})\right]
+$$
+where $x$ is the instruction and $y$ is the desired response.
+
+### Reward Modeling
+
+SFT is limited by the quality and diversity of the curated data. To go further, we train a **reward model** $R_\phi(x, y)$ that assigns a scalar score to a response $y$ given a prompt $x$, reflecting human preferences. The reward model is trained from **pairwise comparisons**: given a prompt $x$ and two responses $y_1, y_2$, a human labeler indicates which response is preferred.
+
+The standard model for pairwise preferences is the **Bradley-Terry model**:
+$$
+P(y_1 \succ y_2 \mid x) = \sigma\!\left(R_\phi(x, y_1) - R_\phi(x, y_2)\right)
+$$
+where $\sigma$ is the sigmoid function and $\succ$ denotes "is preferred to." The reward model is trained to maximize the log-likelihood of the observed preferences:
+$$
+\mathcal{L}_{\mathrm{RM}} = -\mathbb{E}_{(x, y_w, y_l)} \left[\log \sigma\!\left(R_\phi(x, y_w) - R_\phi(x, y_l)\right)\right]
+$$
+where $y_w$ is the preferred (winning) response and $y_l$ the dispreferred (losing) response.
+
+### PPO Optimization
+
+Given a reward model, we optimize the language model policy $\pi_\theta$ to maximize expected reward, subject to a constraint that the policy does not deviate too far from the SFT policy $\pi_{\mathrm{ref}}$:
+$$
+\max_\theta \; \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot | x)} \left[R_\phi(x, y)\right] - \beta \, D_{\mathrm{KL}}\!\left(\pi_\theta(\cdot | x) \| \pi_{\mathrm{ref}}(\cdot | x)\right)
+$$
+
+The KL divergence penalty serves a crucial role: without it, the model would collapse to producing only the responses that score highest under the (imperfect) reward model, exploiting its weaknesses — a phenomenon known as **reward hacking**. The coefficient $\beta$ controls the trade-off between reward maximization and staying close to the reference policy.
+
+This optimization is typically carried out using **Proximal Policy Optimization** (PPO), a reinforcement learning algorithm that updates the policy in small steps, with clipping to ensure stability. The complete RLHF pipeline, as described by Ouyang et al. (2022) for InstructGPT, consists of three stages: (1) SFT, (2) reward model training, (3) PPO optimization.
+
+From a physics perspective, the RLHF objective has the structure of a **free energy minimization**:
+$$
+F = \langle E \rangle - T S
+$$
+where the "energy" is $-R_\phi(x, y)$ (we want to minimize negative reward, i.e., maximize reward), the "entropy" is measured relative to the reference policy, and the "temperature" is $T = 1/\beta$. At high temperature ($\beta \to 0$), the model stays close to the reference policy (maximum entropy); at low temperature ($\beta \to \infty$), it collapses to the reward-maximizing response (minimum energy). The KL coefficient $\beta$ thus plays exactly the role of inverse temperature, controlling the trade-off between exploitation (high reward) and exploration (diversity of responses).
+
+### Direct Preference Optimization
+
+Rafailov et al. (2023) observed that the RLHF objective has a closed-form solution for the optimal policy:
+$$
+\pi^*(y \mid x) = \frac{1}{Z(x)} \pi_{\mathrm{ref}}(y \mid x) \exp\!\left(\frac{1}{\beta} R(x, y)\right)
+$$
+where $Z(x)$ is a partition function. This is precisely a **Boltzmann distribution** — the equilibrium distribution of a statistical-mechanical system at inverse temperature $\beta$. By inverting this relation and substituting into the Bradley-Terry preference model, they derived the **Direct Preference Optimization** (DPO) loss:
+$$
+\mathcal{L}_{\mathrm{DPO}} = -\mathbb{E}_{(x, y_w, y_l)} \left[\log \sigma\!\left(\beta \log \frac{\pi_\theta(y_w | x)}{\pi_{\mathrm{ref}}(y_w | x)} - \beta \log \frac{\pi_\theta(y_l | x)}{\pi_{\mathrm{ref}}(y_l | x)}\right)\right]
+$$
+
+DPO bypasses the need for a separate reward model entirely: it directly optimizes the policy from preference data. The implicit reward is:
+$$
+R(x, y) = \beta \log \frac{\pi_\theta(y | x)}{\pi_{\mathrm{ref}}(y | x)} + \beta \log Z(x)
+$$
+
+This is an elegant result. The connection to statistical mechanics is not merely an analogy — the DPO derivation literally uses the Boltzmann distribution as an intermediate step. The partition function $Z(x)$ cancels in the preference probability, just as it cancels in ratios of Boltzmann weights — a fact that is familiar from statistical mechanics but was a genuine insight in the alignment context.
+
+### Constitutional AI
+
+**Constitutional AI** (Bai et al., 2022) takes a different approach to alignment: instead of relying entirely on human preference labels, it uses the model itself to generate critiques and revisions of its own outputs, guided by a set of principles (a "constitution"). The model generates a response, critiques it, revises it, and the revised outputs are used for preference training. This reduces the dependence on human labeling and allows the alignment process to scale.
+
+## Chain-of-Thought and Reasoning
+
+### The Power of Intermediate Steps
+
+Wei et al. (2022) demonstrated that prompting large language models to produce intermediate reasoning steps — **chain-of-thought** (CoT) prompting — dramatically improves performance on tasks requiring multi-step reasoning. For example, on the GSM8K math word problem benchmark, adding "Let's think step by step" to the prompt increased accuracy from roughly 18% to 57% for a 540B parameter model.
+
+Why does this work? The key insight is computational: a transformer with $L$ layers implements a computation of fixed depth $L$. For any single token prediction, the model has $L$ "steps" of computation available. But when the model generates intermediate tokens, each new token provides an additional $L$ steps of computation that can attend to and build on all previous tokens. Chain-of-thought effectively allows the model to use its own output as a **scratchpad**, increasing its effective computational depth from $L$ to $L \times n_{\mathrm{CoT}}$, where $n_{\mathrm{CoT}}$ is the number of chain-of-thought tokens.
+
+This has implications for **computational complexity**. A fixed-depth transformer (without CoT) can compute only functions in the complexity class $\mathsf{TC}^0$ (constant-depth threshold circuits), which cannot solve problems like addition of $n$-digit numbers for arbitrary $n$. But with chain-of-thought — where the model generates $O(n)$ intermediate tokens — the effective computation is no longer constant-depth, and the model can in principle solve problems in $\mathsf{P}$.
+
+### The Reasoning Debate
+
+The question of whether LLMs "truly reason" or merely "pattern-match" has generated extensive debate. From a physicist's perspective, this is a poorly posed question — or at least, less interesting than it appears. The relevant question is: **what computational structure does the model implement?** If a model produces correct chain-of-thought reasoning on novel problems that are far from its training distribution, then it has learned to implement something functionally equivalent to reasoning, regardless of whether we want to call it "real" reasoning.
+
+The more productive line of inquiry is mechanistic: what circuits in the model implement multi-step reasoning? How does information flow through the attention layers during chain-of-thought generation? These are empirical questions that the field of mechanistic interpretability is beginning to answer.
+
+### Extended Reasoning Strategies
+
+Several extensions of basic CoT have been developed:
+
+- **Self-consistency** (Wang et al., 2023): sample multiple chain-of-thought paths and take a majority vote over the final answers. This is analogous to ensemble averaging in statistical physics — individual samples fluctuate, but the average is more reliable.
+
+- **Tree-of-thought** (Yao et al., 2023): instead of a single linear chain, explore a tree of reasoning paths, with the model evaluating and pruning branches. This resembles beam search but at the level of reasoning steps rather than tokens.
+
+- **Program-of-thought**: generate a program (e.g., Python code) that, when executed, produces the answer. This offloads the numerical computation to an interpreter, allowing the model to focus on the problem structure.
+
+Each of these strategies trades increased inference compute for improved accuracy — a theme that connects to the broader question of how to optimally allocate computation between training and inference.
+
+## Representation Learning and Internal Structure
+
+### What Do LLMs Learn?
+
+A language model trained on next-token prediction learns, as a byproduct, rich internal representations of the concepts, entities, and relationships present in its training data. Understanding these representations is crucial for both scientific understanding and safety.
+
+### Linear Probing and the Linear Representation Hypothesis
+
+A powerful empirical finding is that many concepts are represented as **linear directions** in the model's activation space. Given a set of inputs with a binary attribute (e.g., sentences describing events in the past vs. future), one can train a **linear probe** — a simple linear classifier — on the model's hidden activations and achieve high accuracy in predicting the attribute.
+
+The **linear representation hypothesis** states that concepts are represented as directions in the residual stream, and that the model's computations operate on these representations via (approximately) linear transformations. This is a surprisingly strong claim: it says that the high-dimensional space of neural activations has a discoverable, interpretable geometric structure.
+
+If we denote the residual stream activations at layer $\ell$ and position $t$ as $\mathbf{h}_t^{(\ell)} \in \mathbb{R}^d$, then a concept $c$ is represented by a direction $\hat{\mathbf{v}}_c \in \mathbb{R}^d$ such that the projection $\mathbf{h}_t^{(\ell)} \cdot \hat{\mathbf{v}}_c$ is predictive of whether concept $c$ is active at position $t$.
+
+### Superposition
+
+Elhage et al. (2022), in the Anthropic paper "Toy Models of Superposition," demonstrated that neural networks represent **more features than they have dimensions** through **superposition**. If the model needs to represent $m \gg d$ approximately sparse binary features, it can assign each feature an approximately random direction in $\mathbb{R}^d$, tolerating small interference between features because sparsity ensures that few features are active simultaneously.
+
+The mathematics is clean. Consider $m$ features, each represented by a direction $\mathbf{v}_i \in \mathbb{R}^d$. The interference between features $i$ and $j$ is $|\mathbf{v}_i \cdot \mathbf{v}_j|^2$. For random directions in $\mathbb{R}^d$, the expected squared inner product is $1/d$. If each feature is active with probability $p \ll 1$, then the expected interference suffered by an active feature is approximately $mp/d$. As long as $mp/d \ll 1$ — i.e., the total number of simultaneously active features $mp$ is much less than the dimension $d$ — the interference is negligible.
+
+This is directly analogous to **compressed sensing** in signal processing: if the signal is sparse, it can be recovered from far fewer measurements than its nominal dimensionality would suggest. In the physics language, superposition is a form of **frustrated encoding** — the model is trying to compress a high-dimensional feature space into a lower-dimensional representation, and it does so optimally by exploiting the sparsity of feature activations.
+
+### Mechanistic Interpretability
+
+**Mechanistic interpretability** aims to reverse-engineer the computational circuits implemented by trained models. Key findings include:
+
+- **Induction heads** (Olsson et al., 2022): a circuit composed of two attention heads that implements pattern completion. The first head copies information from a previous token to the current position; the second head uses this information to predict what comes next. Induction heads are responsible for much of the model's in-context learning ability and appear to form during a **phase transition** in training.
+
+- **Indirect object identification** (Wang et al., 2023): a circuit in GPT-2 that identifies the indirect object in sentences like "Mary gave the book to John" — a multi-step computation involving several attention heads working in coordination.
+
+These circuits are the "Feynman diagrams" of interpretability: they decompose a complex computation into identifiable sub-computations, each implemented by specific model components.
+
+### Connection to Physics
+
+The residual stream of a transformer can be viewed as a high-dimensional **configuration space**, with the activations at each layer representing the "state" of the system. The attention mechanism and FFN layers implement a discrete dynamical system that transforms this state layer by layer. Features correspond to **order parameters** — macroscopic observables that characterize the state of the system. The phenomenon of superposition, where more features are represented than the dimensionality would naively allow, is a form of **compressed sensing** or, in the physics language, a system encoding information in a high-dimensional space using sparse codes.
+
+The linear representation hypothesis suggests that the geometry of the activation space is, to a good approximation, governed by a **linear structure** — much as the low-energy physics of many condensed-matter systems is captured by quadratic (free) theories, with interactions providing corrections. Whether this linear structure is exact or an approximation (analogous to mean-field theory) is an important open question.
+
+## Open Questions and Future Directions
+
+### Theoretical Foundations
+
+Despite the empirical success of large language models, our theoretical understanding remains incomplete. Several fundamental questions are open:
+
+1. **What determines capabilities at a given scale?** The scaling laws tell us how loss decreases with compute, but they do not tell us *which* capabilities emerge at *which* scales. Is there a theory that predicts the order in which abilities appear?
+
+2. **Is there a theory of in-context learning?** The Bayesian interpretation is compelling but limited to simple settings. For realistic models and tasks, what computation does the transformer implement during in-context learning, and how does it compare to optimal inference?
+
+3. **Can we predict emergent abilities before they appear?** If there is a phase-transition-like phenomenon, can we identify "precursors" — early signs that a capability is about to emerge — analogous to critical fluctuations before a phase transition?
+
+4. **What is the relationship between compression and intelligence?** A language model that achieves low cross-entropy is, by the source coding theorem, a good compressor of text. Hutter's prize and Solomonoff induction formalize the idea that compression and prediction are equivalent. How deep does this connection go? Is intelligence reducible to (some form of) compression?
+
+5. **What is the right effective theory?** In physics, we do not need to track every microscopic degree of freedom to understand macroscopic behavior — we use effective theories. What is the effective theory of a large language model? What are the relevant "macroscopic" variables, and what are the "renormalization group" transformations that relate models at different scales?
+
+### Multimodality
+
+Modern frontier models are increasingly **multimodal**: they process not just text but images, audio, video, and code. Vision-language models like GPT-4V, Gemini, and Claude integrate visual and textual information in a shared representation space. The training objective is extended to include image-text pairs, video captioning, and other cross-modal tasks.
+
+From a physics perspective, multimodality raises the question of whether different modalities converge to a shared representation — a "universal" feature space — or whether they remain in distinct sectors that are coupled only through cross-attention. Evidence from representation similarity analysis suggests significant convergence, pointing toward the existence of abstract, modality-independent representations of concepts.
+
+### The Path Forward
+
+The field of large language models is evolving rapidly. The coming years will likely bring continued scaling (with new architectures to improve efficiency), deeper theoretical understanding (drawing on tools from statistical physics, information theory, and computational complexity), and new capabilities (reasoning, planning, tool use, scientific discovery). For physicists, LLMs represent both a powerful tool — for literature search, code generation, mathematical reasoning — and a fascinating object of study in their own right: a complex system that exhibits emergent phenomena, obeys scaling laws, and challenges our understanding of computation and intelligence.
+
+## References
+
+1. T. Brown, B. Mann, N. Ryder, et al., "Language Models are Few-Shot Learners," *NeurIPS* (2020). [arXiv:2005.14165](https://arxiv.org/abs/2005.14165)
+
+2. J. Kaplan, S. McCandlish, T. Henighan, et al., "Scaling Laws for Neural Language Models," (2020). [arXiv:2001.08361](https://arxiv.org/abs/2001.08361)
+
+3. J. Hoffmann, S. Borgeaud, A. Mensch, et al., "Training Compute-Optimal Large Language Models," *NeurIPS* (2022). [arXiv:2203.15556](https://arxiv.org/abs/2203.15556)
+
+4. J. Wei, Y. Tay, R. Bommasani, et al., "Emergent Abilities of Large Language Models," *TMLR* (2022). [arXiv:2206.07682](https://arxiv.org/abs/2206.07682)
+
+5. J. Wei, X. Wang, D. Schuurmans, et al., "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models," *NeurIPS* (2022). [arXiv:2201.11903](https://arxiv.org/abs/2201.11903)
+
+6. R. Schaeffer, B. Miranda, S. Koyejo, "Are Emergent Abilities of Large Language Models a Mirage?" *NeurIPS* (2023). [arXiv:2304.15004](https://arxiv.org/abs/2304.15004)
+
+7. R. Rafailov, A. Sharma, E. Mitchell, et al., "Direct Preference Optimization: Your Language Model is Secretly a Reward Model," *NeurIPS* (2023). [arXiv:2305.18290](https://arxiv.org/abs/2305.18290)
+
+8. N. Elhage, T. Hume, C. Olsson, et al., "Toy Models of Superposition," *Anthropic Research* (2022). [Transformer Circuits Thread](https://transformer-circuits.pub/2022/toy_model/index.html)
+
+9. L. Ouyang, J. Wu, X. Jiang, et al., "Training language models to follow instructions with human feedback," *NeurIPS* (2022). [arXiv:2203.02155](https://arxiv.org/abs/2203.02155)
+
+10. J. Devlin, M.-W. Chang, K. Lee, K. Toutanova, "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding," *NAACL* (2019). [arXiv:1810.04805](https://arxiv.org/abs/1810.04805)
+
+11. C. Olsson, N. Elhage, N. Nanda, et al., "In-context Learning and Induction Heads," *Anthropic Research* (2022). [Transformer Circuits Thread](https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html)
+
+12. S. Xie, A. Raghunathan, P. Liang, T. Ma, "An Explanation of In-context Learning as Implicit Bayesian Inference," *ICLR* (2022). [arXiv:2111.02080](https://arxiv.org/abs/2111.02080)
+
+13. E. Caballero, K. Gupta, I. Rish, D. Krueger, "Broken Neural Scaling Laws," *ICLR* (2023). [arXiv:2210.14891](https://arxiv.org/abs/2210.14891)
+
+14. S. Bai, A. Jones, K. Ndousse, et al., "Constitutional AI: Harmlessness from AI Feedback," (2022). [arXiv:2212.08073](https://arxiv.org/abs/2212.08073)

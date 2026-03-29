@@ -1,0 +1,637 @@
+---
+title: "Deep Learning Architectures: From RNNs to Transformers"
+subtitle: "The evolution of sequence models and beyond"
+description: "A detailed exposition of deep learning architectures — RNNs, LSTMs, GRUs, CNNs, attention mechanisms in their many forms, and the path to transformers — written for physicists."
+author: "Ajit Kumar Sorout"
+date: 2026-03-29
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+The history of deep learning architectures is, at its core, a story about inductive biases. Each major architectural advance --- from the perceptron to the transformer --- introduced a structural assumption about the data that allowed networks to learn more efficiently from finite samples. For a physicist, this narrative is immediately recognizable: it is the same logic that drives the construction of effective field theories, where we choose the right degrees of freedom and symmetry constraints for the scale of interest. A convolutional network imposes translation invariance, just as a lattice action respects discrete translational symmetry. A recurrent network propagates a hidden state forward in time, much like a transfer matrix propagates correlations along a spin chain. The transformer replaces sequential propagation with global pairwise interactions, analogous to moving from a nearest-neighbor Hamiltonian to a mean-field theory. These notes trace this architectural evolution in mathematical detail, with the aim of making the design choices --- and the physics they encode --- transparent.
+
+For neural network fundamentals (the universal approximation theorem, backpropagation, loss landscapes), see the companion [Machine Learning and Neural Networks](machine-learning.qmd) note. Here we focus on architectures: the structures built on top of those foundations.
+
+## The Perceptron and Early Neural Networks
+
+### Rosenblatt's Perceptron
+
+The story begins with Frank Rosenblatt's perceptron (1958), the simplest possible neural network: a single linear threshold unit that computes
+
+$$
+y = \Theta\!\left(\sum_{i=1}^{d} w_i x_i + b\right),
+$$
+
+where $\Theta$ is the Heaviside step function, $w_i$ are learnable weights, $b$ is a bias, and $x \in \mathbb{R}^d$ is the input. The perceptron convergence theorem guarantees that if the data are linearly separable, the learning algorithm will find a separating hyperplane in a finite number of updates. This was an exciting result, but it carried a fatal limitation.
+
+### The XOR Problem and the AI Winter
+
+Minsky and Papert (1969) proved rigorously that a single-layer perceptron cannot compute the XOR function. The geometric content is simple: XOR is not linearly separable in $\mathbb{R}^2$. More generally, they showed that many predicates of practical interest --- connectivity, parity --- require the perceptron to access high-order correlations among inputs, which a single linear threshold cannot capture. This result, combined with the lack of a principled method for training multi-layer networks, contributed to a dramatic decline in neural network research through the 1970s.
+
+### Multi-Layer Perceptrons
+
+The resolution came with multi-layer perceptrons (MLPs), which stack multiple layers of nonlinear units. An MLP with one hidden layer computes
+
+$$
+f(x) = W_2 \, \sigma(W_1 x + b_1) + b_2,
+$$
+
+where $\sigma$ is a nonlinear activation applied element-wise. The universal approximation theorem (Cybenko 1989, Hornik 1991) establishes that such networks, with sufficient width, can approximate any continuous function on a compact domain to arbitrary accuracy --- see the detailed statement in the [Machine Learning](machine-learning.qmd) note. But the theorem is purely existential; it provides no algorithm for finding the weights.
+
+### The Backpropagation Breakthrough
+
+The missing algorithm was **backpropagation**, popularized by Rumelhart, Hinton, and Williams (1986). The key insight is that for a differentiable network --- replacing the step function with smooth activations like the sigmoid $\sigma(z) = 1/(1 + e^{-z})$ --- the gradient of a loss function with respect to all weights can be computed efficiently by recursive application of the chain rule, propagating error signals backward through the computational graph. For a network with $L$ layers, the gradient with respect to weights in layer $\ell$ is
+
+$$
+\frac{\partial \mathcal{L}}{\partial W_\ell} = \frac{\partial \mathcal{L}}{\partial h_L} \prod_{k=\ell+1}^{L} \frac{\partial h_k}{\partial h_{k-1}} \cdot \frac{\partial h_\ell}{\partial W_\ell},
+$$
+
+and the total cost of computing all gradients is proportional to a single forward pass. This made gradient-based optimization of deep networks computationally feasible and launched the modern era of neural network research.
+
+## Convolutional Neural Networks
+
+### Motivation: Translation Invariance as Inductive Bias
+
+Consider the task of classifying images. A na\"ive fully connected network treats every pixel independently, ignoring the spatial structure of the input. But the laws of image formation are approximately translation-invariant: a cat in the upper left of an image is still a cat if shifted to the lower right. Encoding this symmetry directly into the network architecture --- rather than hoping the network will learn it from data --- dramatically improves sample efficiency.
+
+This is the same logic that governs physics: in condensed matter, the lattice Hamiltonian is invariant under discrete translations, and we build this into our ansatz from the start. In field theory, we write Lagrangians that are Lorentz-invariant rather than hoping Lorentz symmetry emerges from an arbitrary functional form. Convolutional neural networks (CNNs) are the realization of translation equivariance as an architectural constraint.
+
+### The Convolution Operation
+
+A convolutional layer applies a set of learnable filters (kernels) to an input feature map. For an input $x \in \mathbb{R}^{H \times W \times C_{\text{in}}}$ (height, width, channels), a single filter $K \in \mathbb{R}^{k \times k \times C_{\text{in}}}$ produces an output feature map via the discrete cross-correlation (conventionally called "convolution" in the deep learning literature):
+
+$$
+(x * K)_{ij} = \sum_{m=0}^{k-1} \sum_{n=0}^{k-1} \sum_{c=1}^{C_{\text{in}}} K_{m,n,c} \, x_{i+m, \, j+n, \, c}.
+$$
+
+Applying $C_{\text{out}}$ different filters produces an output with $C_{\text{out}}$ channels. The crucial properties are:
+
+- **Weight sharing**: the same filter is applied at every spatial location, enforcing translation equivariance.
+- **Locality**: each output depends only on a $k \times k$ patch of the input, introducing a local receptive field.
+- **Parameter efficiency**: a convolutional layer with $C_{\text{out}}$ filters of size $k \times k \times C_{\text{in}}$ has $O(k^2 C_{\text{in}} C_{\text{out}})$ parameters, independent of the spatial dimensions $H$ and $W$. A fully connected layer treating the same input would have $O(H W C_{\text{in}} \cdot H W C_{\text{out}})$ parameters.
+
+**Pooling** operations (max-pooling, average-pooling) downsample the spatial dimensions, introducing approximate translation invariance (as opposed to equivariance) and progressively expanding the effective receptive field of deeper layers.
+
+### Architectural Milestones
+
+**LeNet** (LeCun et al. 1998) was the first practical CNN architecture, designed for handwritten digit recognition. It established the fundamental pattern: alternating convolutional layers and pooling layers, followed by fully connected layers for classification. LeNet demonstrated that convolutional architectures could achieve state-of-the-art performance with far fewer parameters than fully connected networks.
+
+**AlexNet** (Krizhevsky, Sutskever, Hinton 2012) scaled this design to the ImageNet challenge, using ReLU activations ($\text{ReLU}(z) = \max(0, z)$), dropout regularization, and GPU training. Its decisive victory in the 2012 ImageNet competition is widely cited as the event that reignited industrial and academic interest in deep learning.
+
+**ResNet** (He et al. 2015) introduced the most consequential architectural innovation since backpropagation: **residual connections**. Instead of learning a direct mapping $x \mapsto \mathcal{F}(x)$, each block learns a residual:
+
+$$
+x_{\ell+1} = x_\ell + \mathcal{F}(x_\ell; \theta_\ell).
+$$
+
+This seemingly simple modification solved the **degradation problem**: empirically, very deep networks (50+ layers) without residual connections performed *worse* than shallower networks, even on training data. The issue was not overfitting but optimization difficulty. Residual connections address this by providing identity shortcuts through which gradients can flow without attenuation. The gradient of the loss with respect to an early layer $\ell$ now includes a direct term:
+
+$$
+\frac{\partial \mathcal{L}}{\partial x_\ell} = \frac{\partial \mathcal{L}}{\partial x_L} \prod_{k=\ell}^{L-1}\left(I + \frac{\partial \mathcal{F}(x_k)}{\partial x_k}\right),
+$$
+
+and expanding this product always includes the identity, preventing the gradient from vanishing even when some of the Jacobian factors $\partial \mathcal{F}/\partial x_k$ have small norm.
+
+The physics analogy is instructive: residual connections are like skip connections in a renormalization group flow, where information from short-distance degrees of freedom can bypass intermediate coarse-graining steps and directly influence long-distance observables. They ensure that no information is irreversibly lost during the hierarchical processing of the network.
+
+### Physics Applications of CNNs
+
+CNNs have found direct applications in physics:
+
+- **Phase classification**: CNNs trained on spin configurations of the 2D Ising model can learn to identify the ferromagnetic-paramagnetic phase transition, effectively learning a nonlinear order parameter (Carrasquilla and Melko 2017). The filters learned by the first convolutional layer often resemble block-spin coarse-graining operators.
+- **Lattice QCD**: CNNs are used to accelerate the computation of observables in lattice gauge theory, learning to predict correlation functions from gauge field configurations.
+- **Cosmology**: CNNs classify large-scale structure in cosmological simulations, extract cosmological parameters from weak lensing maps, and denoise CMB observations.
+
+## Recurrent Neural Networks
+
+### Motivation: Sequential Data and Memory
+
+Many problems in physics and machine learning involve sequential data: time series, language, symbolic sequences, trajectories. The essential requirement is that the model must maintain some form of memory across time steps. In statistical mechanics, the transfer matrix formalism provides exactly this: correlations along a 1D chain are propagated by repeated multiplication of the transfer matrix $T$, with the partition function $Z = \text{Tr}(T^N)$. Recurrent neural networks (RNNs) are the neural network analogue: a learned nonlinear transfer matrix that propagates a hidden state along a sequence.
+
+### Vanilla RNN
+
+The simplest recurrent architecture updates a hidden state $h_t \in \mathbb{R}^{d_h}$ at each time step according to
+
+$$
+h_t = \sigma\!\left(W_h h_{t-1} + W_x x_t + b\right),
+$$
+
+where $x_t \in \mathbb{R}^{d_x}$ is the input at time $t$, $W_h \in \mathbb{R}^{d_h \times d_h}$ and $W_x \in \mathbb{R}^{d_h \times d_x}$ are weight matrices, $b$ is a bias vector, and $\sigma$ is a nonlinear activation (typically $\tanh$). The output at time $t$ is computed from the hidden state:
+
+$$
+y_t = W_y h_t + b_y.
+$$
+
+The hidden state $h_t$ serves as the network's memory: it compresses all information from the past inputs $x_1, \ldots, x_t$ into a fixed-dimensional vector. This is a strong compression --- whether it preserves the relevant information depends entirely on the learned dynamics encoded in $W_h$.
+
+### The Vanishing and Exploding Gradient Problem
+
+Training RNNs requires computing gradients through the full temporal unrolling of the network, a procedure known as **backpropagation through time** (BPTT). The gradient of the loss at time $T$ with respect to the hidden state at time $t$ involves a product of Jacobians:
+
+$$
+\frac{\partial h_T}{\partial h_t} = \prod_{k=t+1}^{T} \frac{\partial h_k}{\partial h_{k-1}} = \prod_{k=t+1}^{T} \text{diag}\!\left(\sigma'(z_k)\right) W_h,
+$$
+
+where $z_k = W_h h_{k-1} + W_x x_k + b$ is the pre-activation. The norm of this product is controlled by the eigenvalues of $W_h$. If $\lambda_{\max}$ is the largest singular value of $W_h$, then for long sequences ($T - t \gg 1$):
+
+- If $\lambda_{\max} \|\sigma'\|_\infty < 1$: the gradient decays exponentially as $\sim (\lambda_{\max} \|\sigma'\|_\infty)^{T-t}$, the **vanishing gradient** problem.
+- If $\lambda_{\max} \|\sigma'\|_\infty > 1$: the gradient grows exponentially, the **exploding gradient** problem.
+
+The connection to dynamical systems is direct. The iterated map $h_t = f(h_{t-1})$ defined by the RNN is a discrete-time dynamical system, and the Jacobian products above are precisely the quantities that determine the **Lyapunov exponents** of the system. The vanishing gradient problem corresponds to the dynamics being contractive (negative Lyapunov exponents), while the exploding gradient problem corresponds to chaotic dynamics (positive Lyapunov exponents). Stable, long-range gradient propagation requires the system to sit at the edge of chaos --- a marginal condition that is difficult to maintain with simple architectures.
+
+Exploding gradients can be mitigated by **gradient clipping** (rescaling the gradient when its norm exceeds a threshold). Vanishing gradients, however, require architectural solutions.
+
+## LSTMs and GRUs
+
+### Long Short-Term Memory (LSTM)
+
+The Long Short-Term Memory network (Hochreiter and Schmidhuber 1997) was designed explicitly to solve the vanishing gradient problem. The key innovation is the introduction of a **cell state** $c_t$ that runs through the network with only linear interactions, alongside the hidden state $h_t$. Information is added to or removed from the cell state through multiplicative **gates** --- learned sigmoid functions that control the flow of information.
+
+The full LSTM equations are:
+
+**Forget gate** (what to erase from the cell state):
+$$
+f_t = \sigma\!\left(W_f [h_{t-1}, x_t] + b_f\right)
+$$
+
+**Input gate** (what new information to write):
+$$
+i_t = \sigma\!\left(W_i [h_{t-1}, x_t] + b_i\right)
+$$
+
+**Candidate cell state** (the proposed new information):
+$$
+\tilde{c}_t = \tanh\!\left(W_c [h_{t-1}, x_t] + b_c\right)
+$$
+
+**Cell state update** (the core operation):
+$$
+c_t = f_t \odot c_t + i_t \odot \tilde{c}_t
+$$
+
+**Output gate** (what to expose as the hidden state):
+$$
+o_t = \sigma\!\left(W_o [h_{t-1}, x_t] + b_o\right)
+$$
+
+**Hidden state**:
+$$
+h_t = o_t \odot \tanh(c_t)
+$$
+
+Here $\sigma$ is the sigmoid function, $\odot$ denotes element-wise multiplication, and $[h_{t-1}, x_t]$ denotes concatenation.
+
+The crucial property is the cell state update equation. When the forget gate $f_t \approx 1$ and the input gate $i_t \approx 0$, the cell state is simply copied forward: $c_t \approx c_{t-1}$. This creates a linear pathway through which gradients can flow across many time steps without attenuation. The gradient of the loss with respect to the cell state at time $t$ through the cell state at time $T$ is
+
+$$
+\frac{\partial c_T}{\partial c_t} = \prod_{k=t+1}^{T} f_k,
+$$
+
+and since the forget gate values $f_k \in (0, 1)$ are learned and can be close to 1, this product need not vanish even for long sequences.
+
+### The Physics of Gating
+
+The physics analogy is illuminating. The cell state $c_t$ acts as a **protected degree of freedom** --- like a topologically protected edge mode in a topological insulator. In a topological system, edge states are robust against local perturbations because they are protected by a topological invariant; the bulk cannot scatter them. Similarly, the LSTM cell state is protected from the noisy, nonlinear dynamics of the hidden state by the gating mechanism. Information stored in $c_t$ can propagate over long distances (many time steps) without being corrupted, because the gates learn to shield it from unnecessary interactions.
+
+The multiplicative gating also implements a form of **conditional computation**: the network can learn to write information into the cell state at specific times, preserve it for an arbitrary duration, and read it out when needed. This is qualitatively different from the additive interactions of a vanilla RNN, where every time step necessarily mixes all components of the hidden state.
+
+### Gated Recurrent Unit (GRU)
+
+The Gated Recurrent Unit (Cho et al. 2014) simplifies the LSTM by merging the cell state and hidden state into a single state vector and using two gates instead of three:
+
+**Reset gate**:
+$$
+r_t = \sigma\!\left(W_r [h_{t-1}, x_t] + b_r\right)
+$$
+
+**Update gate**:
+$$
+z_t = \sigma\!\left(W_z [h_{t-1}, x_t] + b_z\right)
+$$
+
+**Candidate hidden state**:
+$$
+\tilde{h}_t = \tanh\!\left(W [r_t \odot h_{t-1}, x_t] + b\right)
+$$
+
+**Hidden state update**:
+$$
+h_t = (1 - z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t
+$$
+
+The update gate $z_t$ plays the combined role of the LSTM's forget and input gates: when $z_t \approx 0$, the hidden state is copied forward unchanged; when $z_t \approx 1$, it is replaced by the candidate. The reset gate $r_t$ controls how much of the previous hidden state is visible when computing the candidate.
+
+**LSTM vs. GRU**: empirically, GRUs perform comparably to LSTMs on most tasks while being computationally cheaper (fewer parameters and gates). LSTMs tend to have a slight edge on tasks requiring very long-range dependencies, likely because the separate cell state provides a more robust information highway. In practice, the choice between them is often made empirically.
+
+## The Sequence-to-Sequence Revolution
+
+### Encoder-Decoder Architecture
+
+The **sequence-to-sequence** (seq2seq) framework (Sutskever, Vinyals, and Le 2014) applies RNNs (or LSTMs) to variable-length input-output problems such as machine translation. The architecture consists of two components:
+
+1. An **encoder** RNN that reads the input sequence $x_1, \ldots, x_S$ and compresses it into a fixed-length **context vector** $c = h_S^{\text{enc}}$, the final hidden state of the encoder.
+2. A **decoder** RNN that generates the output sequence $y_1, \ldots, y_T$ one token at a time, conditioned on $c$.
+
+The decoder generates token $y_t$ by computing
+
+$$
+h_t^{\text{dec}} = f_{\text{dec}}(h_{t-1}^{\text{dec}}, y_{t-1}, c), \qquad p(y_t | y_{<t}, x) = \text{softmax}(W_y h_t^{\text{dec}}),
+$$
+
+where the context vector $c$ is fed to the decoder at every step (or only at the first step, depending on the variant).
+
+### The Information Bottleneck
+
+The fundamental limitation of this architecture is the **information bottleneck**: the entire input sequence, regardless of its length, must be compressed into a single fixed-dimensional vector $c$. For short sequences this is adequate, but for long inputs the context vector cannot faithfully represent all the relevant information. This is the neural network analogue of a lossy compression problem, and the information loss grows with sequence length.
+
+The degradation is particularly severe for machine translation, where the decoder needs access to specific parts of the input at different stages of generation (e.g., word alignments between source and target languages are rarely monotonic). Forcing all this information through a single bottleneck vector is fundamentally limiting.
+
+This bottleneck directly motivates the development of attention mechanisms.
+
+## Attention Mechanisms
+
+### Bahdanau Attention
+
+Bahdanau, Cho, and Bengio (2014) proposed the first attention mechanism for neural machine translation. The key idea: instead of compressing the input into a single vector, allow the decoder to look back at all encoder hidden states and selectively focus on the most relevant ones at each decoding step.
+
+Given encoder hidden states $h_1^{\text{enc}}, \ldots, h_S^{\text{enc}}$ and the current decoder state $h_{t-1}^{\text{dec}}$, Bahdanau attention computes:
+
+**Alignment scores** (additive attention):
+$$
+e_{t,s} = v^T \tanh\!\left(W_a h_{t-1}^{\text{dec}} + U_a h_s^{\text{enc}}\right)
+$$
+
+**Attention weights** (normalized via softmax):
+$$
+\alpha_{t,s} = \frac{\exp(e_{t,s})}{\sum_{s'=1}^{S} \exp(e_{t,s'})}
+$$
+
+**Context vector** (weighted sum of encoder states):
+$$
+c_t = \sum_{s=1}^{S} \alpha_{t,s} \, h_s^{\text{enc}}
+$$
+
+The context vector $c_t$ is now time-dependent --- different at each decoding step --- allowing the decoder to attend to different parts of the input as needed. The attention weights $\alpha_{t,s}$ are interpretable: they form a soft alignment between output position $t$ and input position $s$.
+
+### Luong Attention
+
+Luong, Pham, and Manning (2015) proposed simplified variants. **Dot-product attention** replaces the learned alignment function with a simple inner product:
+
+$$
+e_{t,s} = (h_t^{\text{dec}})^T h_s^{\text{enc}},
+$$
+
+while **general attention** uses a learned bilinear form:
+
+$$
+e_{t,s} = (h_t^{\text{dec}})^T W_a \, h_s^{\text{enc}}.
+$$
+
+Dot-product attention is computationally cheaper and, when the hidden dimensions are equal, performs comparably to additive attention.
+
+### The Query-Key-Value Framework
+
+The modern formulation of attention abstracts the mechanism into three components:
+
+- **Query** $q$: what we are looking for (from the decoder)
+- **Key** $k$: what each position offers to match against (from the encoder)
+- **Value** $v$: the content to retrieve (from the encoder)
+
+The attention output is a weighted sum of values, where the weights are determined by query-key compatibility:
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V,
+$$
+
+where $Q \in \mathbb{R}^{n \times d_k}$, $K \in \mathbb{R}^{m \times d_k}$, $V \in \mathbb{R}^{m \times d_v}$, and the scaling factor $1/\sqrt{d_k}$ prevents the dot products from growing large in magnitude (which would push the softmax into saturated regions with vanishingly small gradients). This is **scaled dot-product attention**, the form used in the transformer.
+
+### Self-Attention vs. Cross-Attention
+
+- **Cross-attention**: queries come from one sequence, keys and values from another (e.g., decoder attending to encoder). This is the original attention mechanism.
+- **Self-attention**: queries, keys, and values all come from the same sequence. Each position attends to every other position in the same sequence, computing pairwise interactions. Self-attention is the core operation of the transformer.
+
+Self-attention computes, for position $i$:
+
+$$
+q_i = W_Q x_i, \quad k_j = W_K x_j, \quad v_j = W_V x_j,
+$$
+$$
+\alpha_{ij} = \frac{\exp(q_i \cdot k_j / \sqrt{d_k})}{\sum_{j'} \exp(q_i \cdot k_{j'} / \sqrt{d_k})}, \quad \text{output}_i = \sum_j \alpha_{ij} v_j.
+$$
+
+This is a fully connected pairwise interaction: every position communicates with every other position. The computational cost is $O(n^2 d)$ for sequence length $n$ and dimension $d$.
+
+### Multi-Head Attention
+
+Rather than computing a single attention function, **multi-head attention** runs $H$ independent attention computations in parallel, each with its own learned projection matrices:
+
+$$
+\text{head}_h = \text{Attention}(Q W_Q^h, K W_K^h, V W_V^h), \quad h = 1, \ldots, H,
+$$
+$$
+\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_H) \, W_O.
+$$
+
+Each head operates in a lower-dimensional subspace ($d_k = d_v = d_{\text{model}} / H$), so the total cost is comparable to single-head attention at the full dimension. Different heads can learn to attend to different types of relationships: syntactic dependencies, semantic similarity, positional proximity, etc. Empirically, multi-head attention consistently outperforms single-head attention.
+
+### Sparse Attention
+
+Standard self-attention has $O(n^2)$ complexity in sequence length, which becomes prohibitive for long sequences. **Sparse attention** introduces structure into the attention pattern, restricting which positions can attend to which:
+
+- **Longformer** (Beltagy et al. 2020): combines local sliding-window attention (each token attends to its $w$ nearest neighbors) with global attention on a small set of designated tokens. This gives $O(nw)$ complexity.
+- **BigBird** (Zaheer et al. 2020): combines local attention, global attention, and random attention (each token attends to a random subset of other tokens). The random component ensures that the attention graph has logarithmic diameter, preserving the ability to propagate information across the full sequence.
+
+The physics interpretation is natural: sparse attention introduces **locality** as an inductive bias, analogous to restricting a Hamiltonian to nearest-neighbor or finite-range interactions. The global and random attention components ensure that long-range correlations can still propagate, preventing the model from being trapped in a purely local description.
+
+### Linear Attention
+
+The $O(n^2)$ bottleneck of standard attention arises from the explicit computation and storage of the $n \times n$ attention matrix. **Linear attention** (Katharopoulos et al. 2020) avoids this by replacing the softmax kernel with a decomposable kernel:
+
+$$
+\text{Attention}(Q, K, V)_i = \frac{\sum_j \phi(q_i)^T \phi(k_j) \, v_j}{\sum_j \phi(q_i)^T \phi(k_j)} = \frac{\phi(q_i)^T \sum_j \phi(k_j) v_j^T}{\phi(q_i)^T \sum_j \phi(k_j)},
+$$
+
+where $\phi$ is a feature map. The sums $\sum_j \phi(k_j) v_j^T$ and $\sum_j \phi(k_j)$ can be computed once and reused for all queries, reducing the complexity to $O(n d^2)$. This is the **kernel trick** applied to attention: the softmax is viewed as a kernel function $\kappa(q, k) = \exp(q^T k / \sqrt{d_k})$, and the trick is to approximate it with a separable kernel $\kappa(q, k) \approx \phi(q)^T \phi(k)$.
+
+### Flash Attention
+
+**FlashAttention** (Dao et al. 2022) does not change the mathematical definition of attention but rethinks how it is computed on modern GPU hardware. The key observation is that standard attention implementations are **memory-bandwidth bound**: the attention matrix $A = \text{softmax}(QK^T/\sqrt{d_k})$ is $n \times n$ and must be written to and read from GPU high-bandwidth memory (HBM), which is slow compared to on-chip SRAM.
+
+FlashAttention uses **tiling** and **kernel fusion** to compute attention block-by-block in SRAM, never materializing the full attention matrix in HBM. The algorithm computes exact attention (not an approximation) while achieving significant wall-clock speedups (2--4$\times$) and substantial memory savings ($O(n)$ instead of $O(n^2)$). This is a pure systems optimization with no approximation error, and it has become the de facto standard for attention computation in modern implementations.
+
+### Rotary Position Embeddings (RoPE)
+
+Position information must be injected into the transformer because self-attention is permutation-equivariant --- without positional encoding, the model cannot distinguish the sequence $[a, b, c]$ from $[c, a, b]$. **Rotary Position Embeddings** (Su et al. 2021) encode positions using rotation matrices in the embedding space.
+
+For a $d$-dimensional embedding split into $d/2$ pairs, RoPE applies a position-dependent rotation to each pair:
+
+$$
+\text{RoPE}(x_m, m) = \begin{pmatrix} x_m^{(1)} \cos(m\theta_1) - x_m^{(2)} \sin(m\theta_1) \\ x_m^{(1)} \sin(m\theta_1) + x_m^{(2)} \cos(m\theta_1) \\ \vdots \\ x_m^{(d-1)} \cos(m\theta_{d/2}) - x_m^{(d)} \sin(m\theta_{d/2}) \\ x_m^{(d-1)} \sin(m\theta_{d/2}) + x_m^{(d)} \cos(m\theta_{d/2}) \end{pmatrix},
+$$
+
+where $\theta_i = 10000^{-2i/d}$ are fixed frequencies. The critical property is that the dot product between two rotated vectors depends only on their relative position:
+
+$$
+\langle \text{RoPE}(q, m), \text{RoPE}(k, n) \rangle = \langle R_{m-n} \, q, \, k \rangle,
+$$
+
+where $R_{m-n}$ is a block-diagonal rotation matrix parameterized by the position difference $m - n$. This encodes relative positional information directly into the attention scores, without requiring separate positional embeddings to be added to the input. For a physicist, this is simply the representation theory of translations: relative distances are encoded as rotations in an internal space, much as relative phases encode momentum in quantum mechanics.
+
+### Physics of Attention
+
+The physics interpretation of attention is revealing. Self-attention computes pairwise interactions between all positions:
+
+$$
+\text{output}_i = \sum_j \alpha_{ij} v_j, \quad \alpha_{ij} \propto \exp\!\left(\frac{q_i \cdot k_j}{\sqrt{d_k}}\right).
+$$
+
+This is structurally identical to a **mean-field interaction**: each site $i$ feels an effective field that is a weighted average over all other sites $j$, with the coupling determined by the query-key compatibility. The softmax normalization ensures $\sum_j \alpha_{ij} = 1$, so the effective field is a convex combination --- a self-consistent mean field.
+
+Sparse attention, in this language, restricts the interaction graph: instead of all-to-all coupling, each site interacts only with a structured subset of neighbors. This is the move from infinite-range (Curie-Weiss) mean-field theory to a finite-range lattice model, introducing locality as a constraint.
+
+## The Transformer Architecture
+
+### Full Architecture
+
+The transformer (Vaswani et al. 2017) abandons recurrence entirely, processing the entire sequence in parallel through stacked blocks of self-attention and feed-forward layers.
+
+```{mermaid}
+%%| label: fig-transformer-block
+%%| fig-cap: "A single transformer encoder block. The decoder block adds a cross-attention sublayer between self-attention and FFN."
+%%| fig-width: 5
+flowchart TB
+    Input["Input Embeddings + Position"] --> SA["Multi-Head Self-Attention"]
+    SA --> Add1["Add & LayerNorm"]
+    Input --> Add1
+    Add1 --> FFN["Feed-Forward Network"]
+    FFN --> Add2["Add & LayerNorm"]
+    Add1 --> Add2
+    Add2 --> Output["To Next Block"]
+```
+
+The original architecture is an encoder-decoder model:
+
+**Encoder block** (repeated $N$ times):
+$$
+\tilde{h}_\ell = \text{LayerNorm}\!\left(h_{\ell-1} + \text{MultiHeadSelfAttention}(h_{\ell-1})\right)
+$$
+$$
+h_\ell = \text{LayerNorm}\!\left(\tilde{h}_\ell + \text{FFN}(\tilde{h}_\ell)\right)
+$$
+
+**Decoder block** (repeated $N$ times):
+$$
+\tilde{h}_\ell = \text{LayerNorm}\!\left(h_{\ell-1} + \text{MaskedMultiHeadSelfAttention}(h_{\ell-1})\right)
+$$
+$$
+\hat{h}_\ell = \text{LayerNorm}\!\left(\tilde{h}_\ell + \text{MultiHeadCrossAttention}(\tilde{h}_\ell, h^{\text{enc}})\right)
+$$
+$$
+h_\ell = \text{LayerNorm}\!\left(\hat{h}_\ell + \text{FFN}(\hat{h}_\ell)\right)
+$$
+
+The feed-forward network (FFN) in each block is a two-layer MLP applied independently to each position:
+
+$$
+\text{FFN}(x) = W_2 \, \text{ReLU}(W_1 x + b_1) + b_2,
+$$
+
+with $W_1 \in \mathbb{R}^{d_{\text{model}} \times d_{\text{ff}}}$ and $W_2 \in \mathbb{R}^{d_{\text{ff}} \times d_{\text{model}}}$, typically $d_{\text{ff}} = 4 d_{\text{model}}$.
+
+Every sub-layer (attention and FFN) is wrapped in a **residual connection** and **layer normalization**. The residual connections ensure gradient flow (as in ResNets), while layer normalization stabilizes the forward pass.
+
+### Architectural Variants
+
+**Encoder-only** (BERT, Devlin et al. 2018): uses only the encoder stack with bidirectional self-attention. Trained with masked language modeling (predicting randomly masked tokens). Best for tasks requiring bidirectional context: classification, named entity recognition, extractive QA.
+
+**Decoder-only** (GPT, Radford et al. 2018): uses only the decoder stack with causal (masked) self-attention --- each position can only attend to preceding positions. Trained with next-token prediction. This is the architecture behind GPT-2, GPT-3, GPT-4, Claude, LLaMA, and essentially all modern large language models. See the [Large Language Models](large-language-models.qmd) note for details on scaling.
+
+**Encoder-decoder** (T5, Raffel et al. 2020): the original transformer structure, using both encoder and decoder with cross-attention. Used for sequence-to-sequence tasks like translation and summarization.
+
+### Layer Normalization
+
+**Layer normalization** (Ba, Kiros, Hinton 2016) normalizes the activations within each layer:
+
+$$
+\text{LayerNorm}(x) = \gamma \odot \frac{x - \mu}{\sqrt{\sigma^2 + \varepsilon}} + \beta,
+$$
+
+where $\mu$ and $\sigma^2$ are the mean and variance computed across the feature dimension of $x$, and $\gamma, \beta$ are learned affine parameters. This keeps activations on a controlled scale throughout the network, preventing the accumulation of scale drift across many layers. The analogy to renormalization is apt: just as renormalization group transformations maintain a controlled flow in coupling space, layer normalization maintains a controlled flow in activation space.
+
+### Pre-Norm vs. Post-Norm
+
+The original transformer uses **post-norm**: layer normalization is applied after the residual addition, i.e., $\text{LayerNorm}(x + \text{SubLayer}(x))$. The **pre-norm** variant applies normalization before the sub-layer: $x + \text{SubLayer}(\text{LayerNorm}(x))$.
+
+Pre-norm transformers are significantly more stable to train, especially at large depth. The reason is that in the pre-norm configuration, the residual path carries unnormalized activations, providing an unimpeded gradient highway from output to input. In the post-norm configuration, the gradient must pass through the normalization at every layer, which can introduce additional nonlinearity in the backward pass. Most modern large-scale transformers (GPT-3 and successors) use pre-norm.
+
+### The FFN as Associative Memory
+
+An intriguing interpretation of the feed-forward layers is as a **key-value memory** (Geva et al. 2021). The first layer $W_1 x + b_1$ computes a set of "key" comparisons, the ReLU selects which memories are activated, and the second layer $W_2$ retrieves the corresponding "values." In this view, the FFN stores factual knowledge in its parameters, while the attention layers route information between positions. This decomposition --- attention for routing, FFN for storage --- provides a useful mental model for understanding what each component of the transformer does.
+
+### Positional Encodings
+
+Since self-attention is permutation-equivariant, positional information must be explicitly supplied. Several approaches exist:
+
+- **Sinusoidal** (Vaswani et al. 2017): fixed positional encodings using sine and cosine functions at different frequencies, $\text{PE}(p, 2i) = \sin(p / 10000^{2i/d})$, $\text{PE}(p, 2i+1) = \cos(p / 10000^{2i/d})$. The choice of sinusoidal functions ensures that relative positions can be represented as linear transformations of absolute positions.
+- **Learned**: trainable embedding vectors for each position, used in BERT and GPT-2. Simple but limited to the maximum training sequence length.
+- **Rotary (RoPE)**: rotation-based relative positional encoding, discussed above. Used in LLaMA, PaLM, and most modern LLMs.
+- **ALiBi** (Press, Smith, Lewis 2021): adds a linear bias to attention scores proportional to the distance between positions, $\text{bias}_{ij} = -m |i - j|$ where $m$ is a head-specific slope. This requires no additional parameters and provides strong length generalization.
+
+### Scaling Behavior
+
+A remarkable empirical observation is that transformer performance improves predictably with scale. Kaplan et al. (2020) found power-law relationships between loss and model size $N$, dataset size $D$, and compute budget $C$:
+
+$$
+L(N) \propto N^{-\alpha_N}, \quad L(D) \propto D^{-\alpha_D}, \quad L(C) \propto C^{-\alpha_C},
+$$
+
+with exponents $\alpha_N \approx 0.076$, $\alpha_D \approx 0.095$, $\alpha_C \approx 0.050$ for language modeling. These **scaling laws** hold over many orders of magnitude and have guided the development of increasingly large models. The existence of clean power laws strongly suggests an underlying statistical structure, reminiscent of critical phenomena and universality in physics. Why transformers obey scaling laws, and what determines the exponents, remains an open theoretical question. See the [Large Language Models](large-language-models.qmd) note for an extended discussion.
+
+RNNs and LSTMs do not exhibit comparably clean scaling behavior. The sequential nature of their computation limits parallelism, and their fixed-dimensional hidden state becomes an information bottleneck as model and data scale increase. The transformer's ability to scale both width and depth independently, combined with its fully parallel computation, is the primary reason it has displaced recurrent architectures.
+
+## State Space Models and Alternatives
+
+### The Problem with Quadratic Attention
+
+Despite their empirical success, transformers have a fundamental computational limitation: the $O(n^2)$ cost of self-attention in sequence length $n$. For sequences of length $10^5$ or longer (genomics, long documents, high-resolution time series), this is prohibitive. This has motivated the search for architectures with linear or near-linear complexity that can match transformer quality.
+
+### Structured State Space Models (S4)
+
+The **Structured State Space Sequence** model (S4, Gu et al. 2021) approaches the problem through the lens of continuous-time linear dynamical systems. The core idea is to parameterize a linear time-invariant (LTI) state space model:
+
+$$
+\dot{x}(t) = A x(t) + B u(t), \quad y(t) = C x(t) + D u(t),
+$$
+
+where $x(t) \in \mathbb{R}^N$ is the hidden state, $u(t)$ is the input, and $y(t)$ is the output. After discretization (e.g., zero-order hold with step size $\Delta$), this becomes a linear recurrence:
+
+$$
+x_k = \bar{A} x_{k-1} + \bar{B} u_k, \quad y_k = \bar{C} x_k + \bar{D} u_k,
+$$
+
+where $\bar{A} = \exp(\Delta A)$, $\bar{B} = (\Delta A)^{-1}(\exp(\Delta A) - I) \Delta B$.
+
+The connection to **control theory** is direct: this is a standard state space representation, and the matrix $A$ governs the dynamics. The key technical innovation of S4 is to parameterize $A$ using the **HiPPO** (High-order Polynomial Projection Operators) framework, which initializes $A$ to optimally compress the input history into a fixed-dimensional state. Specifically, the HiPPO matrix produces a state $x(t)$ whose components are the coefficients of the best polynomial approximation to the input signal over the interval $[0, t]$.
+
+Because the model is linear, the entire output sequence can be computed as a **convolution**: $y = K * u$ where $K_k = \bar{C} \bar{A}^k \bar{B}$ is the convolution kernel. This convolution can be computed in $O(n \log n)$ using the FFT, giving a dramatic speedup over the $O(n^2)$ cost of attention. During inference, the model can instead use the recurrent form for $O(1)$ per-step generation.
+
+### Mamba and Selective State Spaces
+
+A limitation of S4 and related models is that the state space parameters $(A, B, C)$ are fixed (input-independent). This means the model applies the same dynamics regardless of the content of the input --- it cannot selectively focus on or ignore specific tokens the way attention does.
+
+**Mamba** (Gu and Dao 2023) addresses this by making the state space parameters **data-dependent**:
+
+$$
+B_k = s_B(x_k), \quad C_k = s_C(x_k), \quad \Delta_k = s_\Delta(x_k),
+$$
+
+where $s_B, s_C, s_\Delta$ are learned linear projections from the input. This **selective** state space model can modulate its dynamics based on the input content: it can choose to store certain inputs in the state, ignore others, and control the timescale of integration.
+
+The trade-off is that data-dependent parameters break the LTI structure, so the efficient FFT-based convolution is no longer available. Mamba addresses this with a hardware-aware parallel scan algorithm that computes the recurrence efficiently on GPUs, achieving near-linear scaling in practice.
+
+Mamba and its successors (Mamba-2, various hybrid architectures) have demonstrated performance competitive with transformers on language modeling while scaling linearly in sequence length. Whether they will ultimately replace transformers or complement them remains an active area of research.
+
+## Graph Neural Networks
+
+### Motivation: Data on Non-Euclidean Domains
+
+The architectures discussed so far assume that data lives on regular structures: sequences (RNNs, transformers) or grids (CNNs). But many important data types have **graph structure**: molecules (atoms as nodes, bonds as edges), social networks, citation networks, crystal lattices, Feynman diagrams, and lattice gauge theories. Graph neural networks (GNNs) generalize neural networks to arbitrary graph-structured data.
+
+For a physicist, the key insight is immediate: a GNN is a neural network whose architecture respects the **symmetry of the graph** --- specifically, invariance (or equivariance) under permutations of the nodes. This is the same logic that leads to gauge-invariant lattice actions: the architecture should not depend on arbitrary labeling choices.
+
+### Message Passing
+
+The dominant GNN paradigm is **message passing** (Gilmer et al. 2017). Given a graph $G = (V, E)$ with node features $h_v^{(0)}$ and edge features $e_{uv}$, each layer updates node representations by aggregating information from neighbors:
+
+$$
+m_v^{(\ell)} = \bigoplus_{u \in \mathcal{N}(v)} \phi^{(\ell)}\!\left(h_v^{(\ell)}, h_u^{(\ell)}, e_{uv}\right)
+$$
+$$
+h_v^{(\ell+1)} = \psi^{(\ell)}\!\left(h_v^{(\ell)}, m_v^{(\ell)}\right)
+$$
+
+where $\phi$ is the **message function**, $\psi$ is the **update function**, and $\bigoplus$ is a permutation-invariant aggregation (sum, mean, or max). The message function computes pairwise interactions, and the aggregation ensures invariance under neighbor ordering.
+
+Specific choices define well-known architectures:
+
+- **GCN** (Kipf and Welling 2017): $h_v^{(\ell+1)} = \sigma\!\left(\sum_{u \in \mathcal{N}(v)} \frac{1}{\sqrt{d_u d_v}} W^{(\ell)} h_u^{(\ell)}\right)$, where $d_u$ is the degree of node $u$. The normalization is a symmetric graph Laplacian --- familiar from spectral graph theory.
+
+- **GAT** (Velickovic et al. 2018): Replaces the fixed normalization with learned attention weights $\alpha_{uv}$, so the model learns which neighbors are most relevant. This is self-attention on a graph.
+
+- **SchNet** (Schutt et al. 2017): For molecular systems, uses continuous edge features (interatomic distances) and radial basis functions, respecting $\text{SE}(3)$ equivariance.
+
+### Physics Applications
+
+GNNs have found striking applications in physics:
+
+- **Molecular property prediction**: Predicting energies, forces, and properties of molecules from their graph structure. Equivariant GNNs (respecting rotation and translation symmetry) like NequIP and MACE achieve near-DFT accuracy at a fraction of the cost.
+
+- **Particle physics**: Jet classification and track reconstruction at the LHC, where the detector hits form a point cloud naturally represented as a graph.
+
+- **Lattice field theory**: Gauge-equivariant neural networks for lattice QCD, where the graph is the lattice and the symmetry group is the gauge group.
+
+- **Many-body physics**: Learning force fields and potential energy surfaces for molecular dynamics simulations.
+
+### The Weisfeiler-Leman Hierarchy
+
+A fundamental limitation of message-passing GNNs: they cannot distinguish graph structures that the **Weisfeiler-Leman (WL) graph isomorphism test** cannot distinguish. Xu et al. (2019) proved that message-passing GNNs are at most as powerful as the 1-WL test. Higher-order GNNs (operating on $k$-tuples of nodes) can match the $k$-WL test, but at increased computational cost.
+
+This is a useful result because it precisely characterizes the expressiveness of the architecture, much as circuit complexity theory characterizes the power of different computational models.
+
+## Summary and Connections
+
+The arc from the perceptron to the transformer is a story about finding the right inductive biases for increasingly complex tasks:
+
+| Architecture | Inductive Bias | Physics Analogue |
+|:---|:---|:---|
+| MLP | Universal function approximation | Generic EFT |
+| CNN | Translation equivariance, locality | Lattice field theory |
+| RNN | Sequential Markov structure | Transfer matrix |
+| LSTM/GRU | Gated memory, protected information flow | Topological protection |
+| Transformer | Global pairwise interactions, no locality bias | Mean-field theory |
+| SSM/Mamba | Linear dynamics with selective gating | Driven linear response |
+
+Each architecture succeeded by encoding the right structural assumption for its target domain. CNNs dominate vision because images have local, translationally invariant structure. RNNs were natural for sequential data but struggled with long-range dependencies. LSTMs solved the gradient problem but remained sequential. The transformer abandoned locality entirely in favor of global interactions and parallel computation, which turned out to be the right trade-off for modern hardware and large-scale training.
+
+The story is ongoing. State space models challenge whether attention is truly necessary, proposing that structured linear dynamics with selective gating might be sufficient. Hybrid architectures combining attention and state space layers are being actively explored. The search for the right inductive bias continues.
+
+For the foundations underlying these architectures --- gradient descent, loss landscapes, the universal approximation theorem --- see the [Machine Learning and Neural Networks](machine-learning.qmd) note. For how transformers are scaled up to large language models, including scaling laws, training recipes, and emergent abilities, see the [Large Language Models](large-language-models.qmd) note.
+
+## References
+
+1. F. Rosenblatt, "The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain," *Psychological Review* **65**, 386--408 (1958).
+
+2. M. Minsky and S. Papert, *Perceptrons: An Introduction to Computational Geometry* (MIT Press, 1969).
+
+3. D. E. Rumelhart, G. E. Hinton, and R. J. Williams, "Learning representations by back-propagating errors," *Nature* **323**, 533--536 (1986).
+
+4. S. Hochreiter and J. Schmidhuber, "Long Short-Term Memory," *Neural Computation* **9**, 1735--1780 (1997).
+
+5. Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner, "Gradient-Based Learning Applied to Document Recognition," *Proceedings of the IEEE* **86**, 2278--2324 (1998).
+
+6. K. Cho, B. van Merrienboer, C. Gulcehre, D. Bahdanau, F. Bougares, H. Schwenk, and Y. Bengio, "Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation," [arXiv:1406.1078](https://arxiv.org/abs/1406.1078) (2014).
+
+7. I. Sutskever, O. Vinyals, and Q. V. Le, "Sequence to Sequence Learning with Neural Networks," [arXiv:1409.3215](https://arxiv.org/abs/1409.3215) (2014).
+
+8. D. Bahdanau, K. Cho, and Y. Bengio, "Neural Machine Translation by Jointly Learning to Align and Translate," [arXiv:1409.0473](https://arxiv.org/abs/1409.0473) (2014).
+
+9. K. He, X. Zhang, S. Ren, and J. Sun, "Deep Residual Learning for Image Recognition," [arXiv:1512.03385](https://arxiv.org/abs/1512.03385) (2015).
+
+10. M.-T. Luong, H. Pham, and C. D. Manning, "Effective Approaches to Attention-based Neural Machine Translation," [arXiv:1508.04025](https://arxiv.org/abs/1508.04025) (2015).
+
+11. A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I. Polosukhin, "Attention Is All You Need," [arXiv:1706.03762](https://arxiv.org/abs/1706.03762) (2017).
+
+12. A. Gu, K. Goel, and C. Re, "Efficiently Modeling Long Sequences with Structured State Spaces," [arXiv:2111.00396](https://arxiv.org/abs/2111.00396) (2021).
+
+13. A. Gu and T. Dao, "Mamba: Linear-Time Sequence Modeling with Selective State Spaces," [arXiv:2312.00752](https://arxiv.org/abs/2312.00752) (2023).
+
+14. T. Dao, D. Y. Fu, S. Ermon, A. Rudra, and C. Re, "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness," [arXiv:2205.14135](https://arxiv.org/abs/2205.14135) (2022).
+
+15. J. Su, Y. Lu, S. Pan, A. Murtadha, B. Wen, and Y. Liu, "RoFormer: Enhanced Transformer with Rotary Position Embedding," [arXiv:2104.09864](https://arxiv.org/abs/2104.09864) (2021).
+
+16. J. Kaplan, S. McCandlish, T. Henighan, T. B. Brown, B. Chess, R. Child, S. Gray, A. Radford, J. Wu, and D. Amodei, "Scaling Laws for Neural Language Models," [arXiv:2001.08361](https://arxiv.org/abs/2001.08361) (2020).
+
+17. J. Carrasquilla and R. G. Melko, "Machine learning phases of matter," *Nature Physics* **13**, 431--434 (2017).

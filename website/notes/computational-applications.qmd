@@ -1,0 +1,436 @@
+---
+title: "Computational Methods Across Disciplines"
+subtitle: "From physics simulations to quantitative finance and data science"
+description: "Monte Carlo methods in finance, machine learning for quantitative research, tensor-network-inspired approaches to high-dimensional data, and how computational physics methods transfer to broader applications."
+author: "Ajit Kumar Sorout"
+date: 2026-03-29
+date-modified: last-modified
+sidebar: notes-sidebar
+toc: true
+toc-depth: 3
+code-fold: true
+---
+
+## Introduction
+
+Computational physicists spend years developing methods for sampling high-dimensional distributions, optimizing complex functions, and extracting structure from noisy data. The tools we build — Monte Carlo sampling, tensor decompositions, spectral analysis, stochastic differential equations — are not specific to physics. They solve a class of mathematical problems that arises across quantitative finance, data science, engineering, and beyond. The transfer is not metaphorical: the same algorithms, the same convergence theorems, and often the same code can be applied directly.
+
+This note maps the connections concretely. For each area, the goal is to identify the precise mathematical structure that physics and the application domain share, then describe how specific computational physics techniques carry over. The emphasis throughout is on methods where the physics background provides genuine advantage — not vague analogies, but shared mathematical frameworks.
+
+The perspective is that of a physicist looking outward: what do I already know that is useful elsewhere, and what do I need to learn to apply it effectively?
+
+## Monte Carlo Methods in Quantitative Finance
+
+### The Core Connection
+
+The central problem in derivative pricing is computing expectations over stochastic processes. The price of a derivative is the discounted expected payoff under a risk-neutral measure:
+$$
+V_0 = e^{-rT} \, \mathbb{E}^{\mathbb{Q}}[\text{Payoff}(S_T)]
+$$
+where $r$ is the risk-free rate, $T$ is the maturity, and the expectation is taken under the risk-neutral measure $\mathbb{Q}$. This is importance sampling — computing an expectation with respect to a non-trivial probability distribution — which is exactly the problem we solve when we compute $\langle O \rangle$ in statistical physics using Monte Carlo.
+
+In physics, we estimate:
+$$
+\langle O \rangle = \frac{1}{Z} \int O(\mathcal{C}) \, e^{-\beta E(\mathcal{C})} \, d\mathcal{C}
+$$
+by sampling configurations from $p(\mathcal{C}) \propto e^{-\beta E(\mathcal{C})}$. In finance, we sample paths from the risk-neutral dynamics and average payoffs. The mathematical structure is identical.
+
+### Black-Scholes as a Diffusion Equation
+
+The foundational model of quantitative finance is geometric Brownian motion for the stock price $S_t$:
+$$
+dS_t = \mu \, S_t \, dt + \sigma \, S_t \, dW_t
+$$
+where $\mu$ is the drift, $\sigma$ is the volatility, and $W_t$ is a standard Wiener process. Under the risk-neutral measure, $\mu$ is replaced by the risk-free rate $r$, and the solution is:
+$$
+S_T = S_0 \exp\!\left[\left(r - \tfrac{\sigma^2}{2}\right)T + \sigma \sqrt{T} \, Z\right], \quad Z \sim \mathcal{N}(0,1)
+$$
+
+The Black-Scholes formula for a European call option with strike $K$ gives:
+$$
+C = S_0 \, \Phi(d_+) - K e^{-rT} \, \Phi(d_-)
+$$
+where $\Phi$ is the standard normal CDF and $d_{\pm} = \frac{\ln(S_0/K) + (r \pm \sigma^2/2)T}{\sigma\sqrt{T}}$. This is an exactly solvable case — the analog of a free field theory. Real-world pricing involves models that cannot be solved analytically, which is where Monte Carlo becomes essential.
+
+### Monte Carlo Pricing
+
+The Monte Carlo approach is straightforward: simulate $N$ independent paths of $S_T$, compute the payoff for each, and average:
+$$
+\hat{C} = e^{-rT} \cdot \frac{1}{N} \sum_{i=1}^{N} \max(S_T^{(i)} - K, 0)
+$$
+The error scales as $\sigma_{\text{payoff}} / \sqrt{N}$, exactly as in physics Monte Carlo. Here is a minimal implementation:
+
+```python
+import numpy as np
+
+def mc_european_call(S0, K, r, sigma, T, n_paths=100000, seed=42):
+    """Monte Carlo pricing of a European call option under Black-Scholes."""
+    rng = np.random.default_rng(seed)
+    Z = rng.standard_normal(n_paths)
+
+    # Simulate terminal stock prices under risk-neutral measure
+    S_T = S0 * np.exp((r - 0.5 * sigma**2) * T + sigma * np.sqrt(T) * Z)
+
+    # Discounted payoffs
+    payoffs = np.exp(-r * T) * np.maximum(S_T - K, 0)
+
+    price = np.mean(payoffs)
+    std_err = np.std(payoffs) / np.sqrt(n_paths)
+    return price, std_err
+
+# Parameters
+S0 = 100       # initial stock price
+K = 105        # strike price
+r = 0.05       # risk-free rate
+sigma = 0.2    # volatility
+T = 1.0        # time to maturity (years)
+
+mc_price, mc_err = mc_european_call(S0, K, r, sigma, T)
+
+# Black-Scholes analytical price for comparison
+from scipy.stats import norm
+d_plus = (np.log(S0/K) + (r + 0.5*sigma**2)*T) / (sigma*np.sqrt(T))
+d_minus = d_plus - sigma*np.sqrt(T)
+bs_price = S0 * norm.cdf(d_plus) - K * np.exp(-r*T) * norm.cdf(d_minus)
+
+print(f"Monte Carlo price: {mc_price:.4f} +/- {mc_err:.4f}")
+print(f"Black-Scholes price: {bs_price:.4f}")
+print(f"Difference: {abs(mc_price - bs_price):.4f}")
+```
+
+The Monte Carlo estimate converges to the Black-Scholes price as $N \to \infty$. The slow $1/\sqrt{N}$ convergence motivates variance reduction.
+
+### Variance Reduction Techniques from Physics
+
+The variance reduction methods used in computational physics transfer directly to financial Monte Carlo, because the underlying mathematical structures are the same.
+
+**Importance sampling.** In physics, we change the sampling distribution to reduce variance — for example, umbrella sampling biases the simulation toward rare configurations and corrects with reweighting factors. In finance, we apply a change of measure (Girsanov's theorem) to shift the drift of the process so that more simulated paths end up in the region where the payoff is large. If we simulate under a new measure $\tilde{\mathbb{P}}$ with drift $\tilde{\mu}$, the estimator becomes:
+$$
+\hat{C} = e^{-rT} \cdot \frac{1}{N} \sum_{i=1}^{N} \text{Payoff}(S_T^{(i)}) \cdot \frac{d\mathbb{Q}}{d\tilde{\mathbb{P}}}
+$$
+The Radon-Nikodym derivative $d\mathbb{Q}/d\tilde{\mathbb{P}}$ plays the same role as the reweighting factor in umbrella sampling. For deep out-of-the-money options, where the payoff region has very low probability, importance sampling can reduce variance by orders of magnitude.
+
+**Control variates.** If we have an observable $Y$ that is correlated with the payoff and whose expectation is known analytically, we can form the improved estimator:
+$$
+\hat{C}_{\text{cv}} = \hat{C} - \alpha \left(\bar{Y} - \mathbb{E}[Y]\right)
+$$
+where $\alpha$ is chosen to minimize variance. In lattice QCD, improved estimators work on the same principle — subtracting a correlated quantity with known expectation. In finance, a common control variate for exotic options is the payoff of a simpler option whose price is known in closed form.
+
+**Antithetic variates.** For each sample $Z$, also use $-Z$. Since $S_T(Z)$ and $S_T(-Z)$ are negatively correlated, their average has lower variance. This exploits the symmetry $Z \leftrightarrow -Z$ of the normal distribution, analogous to using microreversibility or time-reversal symmetry to improve estimators in physics simulations.
+
+### Stochastic Volatility: The Heston Model
+
+The Black-Scholes model assumes constant volatility, which contradicts market observations (the "volatility smile"). The Heston model (1993) makes volatility itself stochastic:
+$$
+\begin{aligned}
+dS_t &= \mu \, S_t \, dt + \sqrt{v_t} \, S_t \, dW_t^{(1)} \\
+dv_t &= \kappa(\theta - v_t) \, dt + \xi \sqrt{v_t} \, dW_t^{(2)}
+\end{aligned}
+$$
+where $v_t$ is the instantaneous variance, $\kappa$ is the mean-reversion speed, $\theta$ is the long-run variance, $\xi$ is the volatility of volatility, and $W_t^{(1)}, W_t^{(2)}$ are correlated Wiener processes with $dW_t^{(1)} dW_t^{(2)} = \rho \, dt$. This is a two-dimensional stochastic process — a coupled system of SDEs that must be solved numerically, much like simulating a system with two coupled degrees of freedom in physics.
+
+The Heston model has five free parameters ($\kappa, \theta, \xi, \rho, v_0$) that must be calibrated to market data (observed option prices). This calibration is an inverse problem that often uses MCMC methods — the same Bayesian parameter estimation techniques used in physics to fit models to experimental data.
+
+### American Options and Optimal Stopping
+
+European options can only be exercised at maturity. American options can be exercised at any time, making their pricing an **optimal stopping problem**: at each time step, the holder must decide whether to exercise now or continue holding. The value satisfies a Bellman equation:
+$$
+V_t = \max\!\big(\text{Payoff}_t, \; e^{-r \Delta t} \, \mathbb{E}[V_{t+\Delta t} \mid \mathcal{F}_t]\big)
+$$
+This is exactly the structure encountered in reinforcement learning (see the [reinforcement learning note](reinforcement-learning.qmd)), where an agent must decide between immediate reward and future expected return.
+
+The Longstaff-Schwartz algorithm (2001) solves this by backward induction: at each time step, the continuation value $\mathbb{E}[V_{t+\Delta t} \mid S_t]$ is estimated by regressing discounted future payoffs on basis functions of the current state. This regression-based approach converts the high-dimensional conditional expectation into a tractable computation — a technique that foreshadows modern applications of machine learning to dynamic programming problems.
+
+## Machine Learning for Quantitative Research
+
+### Why Physicists Are Valued in Quantitative Finance
+
+The skills that make a good computational physicist — comfort with stochastic processes, fluency in Bayesian reasoning, experience with high-dimensional optimization, information-theoretic thinking, and the ability to write efficient numerical code — are precisely the skills needed for quantitative research in finance. This is not coincidence: the mathematical structures are shared.
+
+A physicist constructing a lattice QCD simulation is solving a problem that involves sampling from a complex distribution, estimating expectations with controlled errors, and managing systematic biases. A quantitative researcher building a trading strategy faces the same challenges: estimating expected returns from noisy data, controlling for multiple testing, and managing model risk. The tools differ in their domain-specific details, but the mathematical substrate is common.
+
+### Supervised Learning for Alpha Generation
+
+In quantitative finance, "alpha" refers to excess return above a benchmark. Generating alpha from data involves constructing features from financial time series (returns, volumes, order book data, news sentiment) and training models to predict future returns or risk.
+
+The feature engineering step draws on signal processing and statistical physics. Useful features often involve:
+
+- Rolling statistical moments (mean, variance, skewness, kurtosis) of returns at multiple timescales
+- Autocorrelation functions and spectral features
+- Cross-correlations between assets
+- Order flow imbalance and market microstructure signals
+- Sentiment scores from news and social media text
+
+Supervised learning models — from linear regression and random forests to deep neural networks — map these features to predictions. The choice of loss function matters: in finance, we often care about the ranking of predictions (which assets outperform?) rather than point estimates, leading to ranking losses and information-coefficient-based objectives.
+
+### Concrete ML Applications
+
+**Time series forecasting.** Financial time series exhibit complex temporal dependencies. Recurrent architectures like LSTMs and modern transformer models (see the [deep learning architectures note](deep-learning-architectures.qmd)) can capture long-range dependencies in sequential data. The attention mechanism in transformers is particularly well-suited to identifying which past events are relevant for predicting future behavior — a form of learned feature selection over time.
+
+**Anomaly detection.** Autoencoders trained on "normal" market data learn a compressed representation of typical market behavior. Anomalous market regimes — liquidity crises, flash crashes, regime changes — produce high reconstruction error, flagging unusual conditions. This connects to manifold learning (see the [machine learning note](machine-learning.qmd)): the autoencoder learns the low-dimensional manifold of normal market states, and deviations from this manifold signal anomalies.
+
+**Natural language processing.** Financial text — earnings reports, SEC filings, analyst notes, news articles — contains information that moves markets. Large language models (see the [LLM note](large-language-models.qmd)) can extract sentiment, identify key entities, and summarize large volumes of text. The challenge is calibrating the signal: most text is noise, and the relevant information has already been partially priced in by the time it is published.
+
+### Risk Modeling with ML
+
+Traditional risk models (e.g., Value-at-Risk computed from historical simulation or parametric models) rely on distributional assumptions that often fail during crises. Machine learning offers more flexible approaches:
+
+- **Quantile regression** estimates conditional quantiles of the return distribution directly, without assuming a parametric form.
+- **Gradient-boosted trees** can model complex, nonlinear relationships between risk factors and portfolio losses.
+- **Bayesian neural networks** provide uncertainty estimates on predictions, which is essential for risk management.
+
+The key quantity is **Value-at-Risk** (VaR): the loss level that is exceeded with probability $\alpha$ (typically 1% or 5%) over a given horizon. The **Expected Shortfall** (ES), also called Conditional VaR, is the expected loss given that the loss exceeds VaR:
+$$
+\text{ES}_\alpha = \mathbb{E}[L \mid L > \text{VaR}_\alpha]
+$$
+ES is a coherent risk measure (it satisfies subadditivity), unlike VaR, and is now the regulatory standard under Basel III.
+
+### Overfitting: Why Financial ML Is Hard
+
+Financial ML is fundamentally harder than standard ML benchmarks for several reasons that physicists should understand:
+
+1. **Non-stationarity.** The data-generating process changes over time. A model trained on 2010--2020 data may be useless for 2021 because market dynamics have shifted. This is analogous to studying a physical system whose Hamiltonian changes over time — the equilibrium properties you measured are no longer valid.
+
+2. **Low signal-to-noise ratio.** Daily stock returns have a signal-to-noise ratio on the order of $10^{-2}$ (the expected return is tiny compared to the volatility). Extracting a reliable signal requires enormous amounts of data and careful statistical treatment.
+
+3. **Lookahead bias.** Using information that would not have been available at the time of the prediction. This is insidious: it includes using the full dataset to normalize features, select hyperparameters, or choose which models to deploy.
+
+4. **Multiple testing.** If you test 1000 strategies and deploy the one with the best backtest, you have a severe multiple comparisons problem. The Bonferroni correction or more sophisticated methods (e.g., the deflated Sharpe ratio of Bailey and Lopez de Prado) are essential.
+
+Rigorous backtesting in finance follows the same principles as cross-validation in physics, with one critical constraint: the train/test split must respect temporal order. You cannot randomly shuffle financial time series data, because doing so destroys the temporal structure and introduces lookahead bias. Walk-forward validation — training on data up to time $t$, testing on data from $t$ to $t + \Delta t$, then rolling forward — is the standard approach.
+
+## Tensor Networks and High-Dimensional Data
+
+### The Curse of Dimensionality
+
+Representing a function $f: \mathbb{R}^d \to \mathbb{R}$ on a discrete grid with $n$ points per dimension requires $n^d$ storage — exponential in the dimension $d$. For $d = 50$ (e.g., a portfolio of 50 assets) and $n = 100$ grid points, this is $100^{50} \approx 10^{100}$ numbers, which is absurd. This is the curse of dimensionality, and it is the same problem that makes many-body quantum mechanics intractable without clever representations.
+
+### Tensor Decompositions
+
+Tensor decompositions provide a way to represent high-dimensional objects with a number of parameters that scales polynomially (or even linearly) in $d$, at the cost of restricting to a manifold of "low-rank" tensors.
+
+**CP decomposition.** A tensor $\mathcal{T}_{i_1 i_2 \cdots i_d}$ is written as a sum of rank-1 terms:
+$$
+\mathcal{T}_{i_1 \cdots i_d} = \sum_{r=1}^{R} a^{(1)}_{i_1, r} \, a^{(2)}_{i_2, r} \cdots a^{(d)}_{i_d, r}
+$$
+with $R$ the CP rank. This uses $O(Rdn)$ parameters instead of $n^d$.
+
+**Tucker decomposition.** The tensor is written as a core tensor contracted with factor matrices along each mode. More flexible than CP but the core tensor can still be large.
+
+**Tensor train (TT) decomposition.** The TT format, introduced by Oseledets (2011), writes:
+$$
+\mathcal{T}_{i_1 i_2 \cdots i_d} = \sum_{\alpha_0, \alpha_1, \ldots, \alpha_d} G^{(1)}_{{\alpha_0}, i_1, {\alpha_1}} \, G^{(2)}_{{\alpha_1}, i_2, {\alpha_2}} \cdots G^{(d)}_{{\alpha_{d-1}}, i_d, {\alpha_d}}
+$$
+where $G^{(k)}$ are 3-index tensors (the "cores"), and $\alpha_k$ runs from 1 to $r_k$ (the bond dimension at site $k$), with $\alpha_0 = \alpha_d = 1$. The total storage is $O(d n r^2)$ where $r = \max_k r_k$.
+
+This is exactly the **matrix product state** (MPS) from the [tensor networks note](tensor-networks.qmd) — the same mathematical object, developed independently in the applied mathematics and physics communities. The bond dimension $r$ controls the expressiveness of the representation, just as the bond dimension of an MPS controls the amount of entanglement it can describe.
+
+### Tensor Cross-Interpolation
+
+The TT-cross algorithm, or **tensor cross-interpolation** (TCI), constructs a TT decomposition of a function from a small number of function evaluations — exponentially fewer than a full grid. The algorithm is closely related to DMRG (density matrix renormalization group) in physics: it iteratively optimizes the TT cores by sweeping back and forth along the chain, selecting the most informative "pivots" (function evaluation points) at each step.
+
+The key idea, formalized by Savostyanov (2014), is that if the function admits a good low-rank TT approximation with bond dimension $r$, then $O(dnr^2)$ function evaluations suffice to construct it — compared to $n^d$ for a full grid. This is analogous to how DMRG finds the ground state of a 1D quantum system with polynomial cost despite the exponentially large Hilbert space.
+
+Applications of TCI outside physics include:
+
+- **Compressing high-dimensional functions**: the quantics tensor train (QTT) represents functions on fine grids with $\log(n)$-scaling cost by treating each binary digit of the grid index as a separate tensor index.
+- **Data completion**: the Netflix recommendation problem (predicting missing entries of a user-movie rating matrix) is a low-rank matrix completion problem. Tensor decomposition generalizes this to higher-order data (e.g., user $\times$ movie $\times$ time).
+- **Multi-asset derivative pricing**: the price of a basket option on $d$ assets is a function of $d$ underlying prices. TT decomposition can represent the pricing function with polynomial cost in $d$, making high-dimensional pricing tractable.
+
+### Financial Applications
+
+For a basket option on $d$ assets with correlated dynamics, the price is:
+$$
+V_0 = e^{-rT} \, \mathbb{E}^{\mathbb{Q}}\!\left[\text{Payoff}(S_T^{(1)}, S_T^{(2)}, \ldots, S_T^{(d)})\right]
+$$
+Representing the payoff function or the joint probability density in TT format allows efficient computation even for $d = 50$ or $d = 100$, which is completely infeasible with grid-based methods. The bond dimension required depends on the correlation structure: weakly correlated assets admit lower bond dimensions (less "entanglement"), just as weakly entangled quantum states are well-approximated by low-bond-dimension MPS.
+
+## Optimization Methods from Physics
+
+### Simulated Annealing
+
+Simulated annealing, introduced by Kirkpatrick, Gelatt, and Vecchi (1983), directly imports the Metropolis algorithm from statistical physics into combinatorial optimization. The idea is simple and powerful: treat the objective function as an energy, introduce a temperature parameter $T$, and run a Metropolis simulation while slowly decreasing $T$.
+
+At high temperature, the algorithm explores the configuration space freely, crossing energy barriers. As the temperature decreases, the system settles into lower-energy configurations. If the cooling schedule is sufficiently slow (logarithmic in the number of steps, as shown by Geman and Geman, 1984), the algorithm converges to the global optimum with probability 1. In practice, faster cooling schedules are used at the cost of approximate optimality.
+
+The algorithm applies to any optimization problem that can be formulated as minimizing a function over a discrete or continuous space with a notion of "neighboring" configurations. Applications include:
+
+- **Portfolio optimization**: finding the optimal allocation across assets subject to constraints
+- **Traveling salesman and routing problems**: logistics and supply chain optimization
+- **VLSI circuit design**: the original application of Kirkpatrick et al.
+- **Protein folding**: finding the minimum-energy conformation
+
+### Parallel Tempering
+
+Parallel tempering (replica exchange Monte Carlo) runs $M$ copies of the system simultaneously at temperatures $T_1 < T_2 < \cdots < T_M$, periodically proposing swaps between adjacent replicas. The swap acceptance probability:
+$$
+P_{\text{swap}} = \min\!\left(1, \; e^{(\beta_i - \beta_j)(E_i - E_j)}\right)
+$$
+ensures detailed balance. High-temperature replicas explore broadly and pass configurations down to low-temperature replicas, dramatically improving sampling of multimodal distributions.
+
+In optimization, parallel tempering avoids the problem of choosing a cooling schedule by maintaining a fixed set of temperatures and using the exchange mechanism to move configurations between exploration (high $T$) and exploitation (low $T$). This is used in both protein structure prediction and financial portfolio optimization with complex constraints.
+
+### Variational Methods
+
+Variational methods are ubiquitous in physics: the variational principle in quantum mechanics, variational free energy in statistical mechanics, and the ELBO in variational inference all share the same structure. We parameterize a distribution $q_\theta$ and optimize $\theta$ to minimize a divergence from the target distribution $p$:
+$$
+\theta^* = \arg\min_\theta \; D_{\text{KL}}(q_\theta \| p)
+$$
+or equivalently maximize a lower bound on the log-evidence.
+
+In machine learning, this appears as:
+
+- **Variational autoencoders** (VAEs): the encoder defines $q_\theta(z|x)$, the decoder defines $p_\phi(x|z)$, and the ELBO is maximized.
+- **Variational inference**: approximate Bayesian posterior inference for complex models where exact computation is intractable.
+
+The connection to physics is precise: the ELBO has the form of a free energy $F = \langle E \rangle - T S$, where the energy term is the expected negative log-likelihood and the entropy term comes from the KL divergence to the prior. Minimizing the variational free energy is the same operation in both domains.
+
+### Genetic Algorithms and Evolutionary Strategies
+
+While less directly connected to physics, genetic algorithms maintain a population of candidate solutions that undergo mutation, crossover, and selection. They are effective for problems where the objective function is non-differentiable, discontinuous, or has many local optima. In practice, they are often outperformed by gradient-based methods when gradients are available, but remain useful for combinatorial problems and as a component of hybrid optimization schemes.
+
+## Signal Processing and Time Series
+
+### Fourier Analysis
+
+Fourier analysis is the bread and butter of physics, and it applies directly to financial time series. The discrete Fourier transform of a time series $x_0, x_1, \ldots, x_{N-1}$:
+$$
+\hat{x}_k = \sum_{n=0}^{N-1} x_n \, e^{-2\pi i k n / N}
+$$
+decomposes the series into frequency components. The power spectrum $|\hat{x}_k|^2$ reveals periodicities (daily, weekly, monthly patterns in trading activity), and spectral filtering can separate signal from noise at different frequency scales.
+
+Financial returns at high frequencies often exhibit a power spectral density that decays as $S(f) \sim f^{-\gamma}$ with $\gamma$ between 0 and 2, indicating long-range correlations in volatility (though not in returns themselves, which are approximately uncorrelated). This connects to the physics of $1/f$ noise and fractional Brownian motion.
+
+### Wavelet Analysis
+
+Wavelets provide multi-scale decomposition — they localize both in time and frequency, unlike the Fourier transform which localizes only in frequency. The continuous wavelet transform:
+$$
+W(a, b) = \frac{1}{\sqrt{a}} \int x(t) \, \psi^*\!\left(\frac{t - b}{a}\right) dt
+$$
+with scale parameter $a$ and time shift $b$ gives a time-frequency representation. In physics, wavelets are used in turbulence analysis (where energy cascades across scales) and signal processing in gravitational wave detection.
+
+In finance, wavelet decomposition is applied to:
+
+- **Market microstructure analysis**: separating high-frequency noise from lower-frequency trends
+- **Denoising**: removing measurement noise while preserving signal structure
+- **Multi-scale correlation analysis**: correlations between assets may differ at different timescales (intraday vs. monthly)
+
+### Information Theory
+
+Information-theoretic quantities provide model-free measures of statistical dependence. The **mutual information** between two random variables:
+$$
+I(X; Y) = \sum_{x,y} p(x,y) \log \frac{p(x,y)}{p(x)p(y)}
+$$
+captures all statistical dependence (not just linear correlation). For continuous variables, estimation of mutual information from finite data is a non-trivial statistical problem — the same problem arises in physics when estimating entropy production or information flow in dynamical systems.
+
+**Transfer entropy** (a directed version of mutual information) can identify causal relationships in time series:
+$$
+T_{X \to Y} = I(Y_{t+1}; X_t^{(k)} \mid Y_t^{(l)})
+$$
+This is related to Granger causality but does not assume linearity. It has been used to study information flow between financial markets and identify lead-lag relationships.
+
+### Random Matrix Theory in Finance
+
+One of the most striking applications of physics to finance comes from random matrix theory (RMT). Laloux, Cizeau, Bouchaud, and Potters (1999) studied the eigenvalue distribution of the correlation matrix of stock returns and found that the bulk of the distribution is well-described by the **Marchenko-Pastur law** — the eigenvalue distribution of a random matrix with i.i.d. entries:
+$$
+\rho(\lambda) = \frac{Q}{2\pi\sigma^2} \frac{\sqrt{(\lambda_+ - \lambda)(\lambda - \lambda_-)}}{\lambda}
+$$
+where $Q = T/N$ (ratio of number of time steps to number of assets), $\lambda_{\pm} = \sigma^2(1 \pm 1/\sqrt{Q})^2$, and $\sigma^2$ is the variance of the returns. Eigenvalues within the Marchenko-Pastur bulk correspond to noise — they carry no more information than a random correlation matrix would. Only eigenvalues that deviate significantly from the bulk contain genuine signal (market-wide factors, sector structure, etc.).
+
+This result has practical consequences: when constructing portfolios, one should filter the correlation matrix by removing the noisy eigenvalues and retaining only the significant ones. This "cleaned" correlation matrix gives more stable and out-of-sample-reliable portfolio allocations. The physics insight — distinguishing signal from noise using RMT — directly improves financial practice.
+
+## Stochastic Processes and Statistical Physics in Finance
+
+### The Random Walk Hypothesis
+
+The mathematical theory of finance has deep roots in physics. Louis Bachelier's 1900 doctoral thesis, "Theorie de la speculation," modeled stock prices as a random walk — five years before Einstein's 1905 paper on Brownian motion. Bachelier derived the diffusion equation for the probability distribution of prices, arriving at the same mathematics that Einstein would use for the position of a pollen grain in water.
+
+The efficient market hypothesis (EMH) formalizes this: if all available information is reflected in prices, then price changes must be unpredictable — i.e., returns are a martingale. In its strong form, the EMH implies that prices follow a random walk with drift. In practice, the EMH holds approximately at low frequencies but is violated at high frequencies by microstructure effects (bid-ask bounce, transaction costs, latency).
+
+### Fat Tails and Power Laws
+
+Financial returns are emphatically not Gaussian. The tails of the return distribution follow a power law:
+$$
+P(|r| > x) \sim x^{-\alpha}
+$$
+with the tail exponent $\alpha$ typically between 2 and 5 for daily returns (with $\alpha \approx 3$ being a common estimate — the "inverse cubic law"). This means that extreme events are far more common than a Gaussian model predicts. A "25-sigma event" under a Gaussian model has probability $\sim 10^{-137}$; in reality, such events occur every few years.
+
+The appearance of power-law tails connects to physics through the theory of critical phenomena. Near a critical point, physical observables exhibit power-law distributions because the system has correlations at all length scales. The analogy in finance is that market participants interact across many scales (from millisecond HFT to pension fund rebalancing over months), and these interactions can produce scale-free behavior.
+
+### Volatility Clustering
+
+Financial time series exhibit **volatility clustering**: large price moves tend to be followed by large moves (of either sign), and quiet periods tend to persist. The autocorrelation of absolute returns $|r_t|$ decays slowly, often as a power law $C(\tau) \sim \tau^{-\gamma}$ with $\gamma \approx 0.3$. This long memory in volatility is analogous to **critical slowing down** in physics: near a critical point, correlation times diverge, and the system takes a long time to decorrelate.
+
+GARCH models (Bollerslev, 1986) capture volatility clustering phenomenologically:
+$$
+\sigma_t^2 = \omega + \alpha \, r_{t-1}^2 + \beta \, \sigma_{t-1}^2
+$$
+This is an autoregressive model for the variance — the financial analog of a Langevin equation with state-dependent noise.
+
+### Agent-Based Models
+
+Agent-based models (ABMs) in finance simulate the interactions of many market participants, each following simple rules. They are the financial analog of lattice models in statistical mechanics: individual agents are like spins, their trading decisions are like spin flips, and collective market behavior emerges from local interactions.
+
+A simple example: consider $N$ agents who can be "bullish" ($+1$) or "bearish" ($-1$). Each agent's opinion is influenced by their neighbors (herding) and by an external signal (fundamentals). If the interaction strength exceeds a threshold, the system undergoes a phase transition from a disordered state (opinions cancel, market is stable) to an ordered state (consensus forms, creating a bubble or crash). The **Ising model** provides the simplest mathematical framework for this: the coupling constant $J$ represents the tendency to follow neighbors, the external field $h$ represents fundamental information, and the temperature $T$ represents the level of noise or independent thinking.
+
+This is not a precise quantitative model of markets — real markets have heterogeneous agents, complex information structures, and evolving strategies. But it captures the qualitative physics of herding, bubbles, and crashes, and it explains why markets can exhibit critical phenomena (fat tails, long-range correlations, sudden transitions) without fine-tuning to a critical point — the market dynamics may be self-organized critical, as in sandpile models.
+
+## Career Paths and Practical Advice
+
+### Where Computational Physicists Work
+
+The skills developed in computational physics are valued across many industries:
+
+- **Quantitative trading firms** (Citadel, Two Sigma, Jane Street, DE Shaw, Renaissance Technologies): develop and implement trading strategies using statistical models, Monte Carlo methods, and machine learning.
+- **Technology companies** (Google, Meta, Apple, Amazon): work on recommendation systems, search ranking, ads optimization, and infrastructure — all of which involve large-scale optimization and statistical modeling.
+- **National laboratories** (Los Alamos, Argonne, Oak Ridge, Lawrence Livermore): continue computational research in physics, materials science, and energy, often with access to leadership-class supercomputers.
+- **Hedge funds and asset managers**: quantitative portfolio management, risk modeling, derivative pricing.
+- **Consulting and data science**: McKinsey QuantumBlack, Boston Consulting Group Gamma, and similar practices that apply analytical methods to business problems.
+
+### Skills That Transfer Directly
+
+The following skills, developed through physics training, transfer with minimal adaptation:
+
+- **Monte Carlo methods**: importance sampling, MCMC, variance reduction — directly applicable to derivative pricing and Bayesian inference.
+- **Optimization**: simulated annealing, gradient descent, variational methods — used everywhere from portfolio optimization to hyperparameter tuning.
+- **Machine learning**: especially Bayesian methods, generative models, and neural network architectures — the overlap with physics research is extensive.
+- **Programming**: Python (NumPy, SciPy, PyTorch), C++ (performance-critical code), Julia (scientific computing) — the standard tools of quantitative research.
+- **Bayesian reasoning**: updating beliefs in light of evidence, model comparison, uncertainty quantification — essential for any field involving noisy data.
+- **High-performance computing**: parallel algorithms, GPU programming, distributed computing — valued in both industry and national labs.
+
+### What Needs to Be Learned
+
+The physics background does not cover everything. Skills that must be acquired include:
+
+- **Financial instruments**: understanding options, futures, swaps, bonds, and their pricing conventions. This is domain knowledge, not mathematics — it takes time to learn but is not conceptually difficult for someone comfortable with stochastic processes.
+- **Market microstructure**: how exchanges work, order types, latency, transaction costs. This is the "experimental apparatus" of finance.
+- **Regulatory constraints**: risk limits, capital requirements, compliance rules. These constrain what strategies can actually be implemented.
+- **Software engineering practices**: production code quality, version control workflows, CI/CD, monitoring. Academic code is typically not held to production standards.
+
+### The Value Proposition
+
+The core value proposition of a physicist in industry is the combination of rigorous mathematical thinking, comfort with uncertainty and approximation, and the ability to learn new domains quickly by identifying the underlying mathematical structure. Many industries have abundant data but lack people who can reason carefully about what the data means — who can distinguish signal from noise, quantify uncertainty, and build models that are robust rather than overfit.
+
+Physics training specifically develops the habit of asking: "What is the simplest model that captures the essential features?" and "How do I know my answer is correct?" These habits are scarce and valuable.
+
+## References
+
+1. P. Glasserman, *Monte Carlo Methods in Financial Engineering*, Springer (2003). The standard reference for Monte Carlo in finance.
+
+2. I. Oseledets, "Tensor-Train Decomposition," SIAM J. Sci. Comput. **33**, 2295 (2011). Foundational paper on the TT decomposition.
+
+3. S. Kirkpatrick, C. D. Gelatt, M. P. Vecchi, "Optimization by Simulated Annealing," Science **220**, 671 (1983). Original paper introducing simulated annealing.
+
+4. L. Laloux, P. Cizeau, J.-P. Bouchaud, M. Potters, "Noise Dressing of Financial Correlation Matrices," Phys. Rev. Lett. **83**, 1467 (1999). Application of random matrix theory to financial correlations.
+
+5. F. Longstaff, E. Schwartz, "Valuing American Options by Simulation: A Simple Least-Squares Approach," Rev. Financial Studies **14**, 113 (2001). The LSM algorithm for American option pricing.
+
+6. L. Bachelier, "Theorie de la speculation," Annales Scientifiques de l'Ecole Normale Superieure **17**, 21 (1900). The founding document of mathematical finance.
+
+7. D. Savostyanov, "Quasioptimality of maximum-volume cross interpolation of tensors," Linear Algebra Appl. **458**, 217 (2014). Theoretical foundations for tensor cross-interpolation.
+
+8. J.-P. Bouchaud, M. Potters, *Theory of Financial Risk and Derivative Pricing*, Cambridge University Press (2003). Physics-oriented treatment of financial risk.
+
+9. S. Heston, "A Closed-Form Solution for Options with Stochastic Volatility with Applications to Bond and Currency Options," Rev. Financial Studies **6**, 327 (1993). The Heston stochastic volatility model.
+
+10. T. Bollerslev, "Generalized Autoregressive Conditional Heteroskedasticity," J. Econometrics **31**, 307 (1986). The GARCH model for volatility clustering.
